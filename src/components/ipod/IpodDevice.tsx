@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
 import {
   motion,
   useMotionValue,
@@ -30,6 +36,8 @@ type IpodDeviceProps = {
   onBack?: () => void;
   /** Shrink the LCD status bar while reading a scrolled case study. */
   statusCompact?: boolean;
+  /** Hide the viewport-native sharp chrome (About / reading cover it). */
+  suppressSharpChrome?: boolean;
   overlay?: React.ReactNode;
   children: React.ReactNode;
   onMenu?: () => void;
@@ -67,6 +75,7 @@ export function IpodDevice({
   showPlaying = false,
   onBack,
   statusCompact = false,
+  suppressSharpChrome = false,
   overlay,
   children,
   onMenu,
@@ -83,6 +92,7 @@ export function IpodDevice({
   const [transformOrigin, setTransformOrigin] = useState(
     `${REST_GEOMETRY.originX}px ${REST_GEOMETRY.originY}px`,
   );
+  const [portalReady, setPortalReady] = useState(false);
 
   const zoomRender = useSpring(zoomProgress, {
     stiffness: 280,
@@ -103,6 +113,10 @@ export function IpodDevice({
     forceStageRef.current = forceStage;
     onStageModeChangeRef.current = onStageModeChange;
   }, [forceStage, onStageModeChange]);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   const seedExitGeometry = useCallback(() => {
     const { widthPx: w, screenAspect: aspect } = sizeRef.current;
@@ -204,6 +218,38 @@ export function IpodDevice({
     progress > 0.02 ? "none" : "auto",
   );
 
+  // HTML chrome (status bar / nav) re-rasterizes soft under the chassis
+  // scale — same reason Cover Flow titles are canvas. Keep the in-glass
+  // bar on the chassis transform for the whole zoom, then swap to a
+  // viewport-native overlay only at the very end (once sizes already
+  // match) so the top bar doesn't appear to race ahead of the screen.
+  const glassUiOpacity = useTransform(zoomRender, [0.97, 1], [1, 0]);
+  const sharpUiOpacity = useTransform(zoomRender, [0.97, 1], [0, 1]);
+  const [sharpChrome, setSharpChrome] = useState(
+    () => !stageMode && zoomRender.get() >= 0.97,
+  );
+
+  useMotionValueEvent(zoomRender, "change", (progress) => {
+    setSharpChrome((prev) => {
+      if (stageMode) return false;
+      // Hysteresis so the portal stays mounted through the crossfade.
+      if (prev) return progress >= 0.96;
+      return progress >= 0.97;
+    });
+  });
+
+  useEffect(() => {
+    if (stageMode) {
+      setSharpChrome(false);
+      return;
+    }
+    setSharpChrome(zoomRender.get() >= 0.97);
+  }, [stageMode, zoomRender]);
+
+  const statusBarCqi = statusCompact ? "5.2cqi" : "8.5cqi";
+  const showSharpPortal =
+    portalReady && sharpChrome && !suppressSharpChrome;
+
   return (
     <motion.div
       ref={chassisRef}
@@ -296,24 +342,35 @@ export function IpodDevice({
               }
               style={{
                 ...(stageMode ? undefined : { aspectRatio: screenAspect }),
-                ["--status-bar-h" as string]: statusCompact
-                  ? "5.2cqi"
-                  : "8.5cqi",
+                ["--status-bar-h" as string]: statusBarCqi,
               }}
             >
-              <StatusBar
-                title={statusTitle}
-                showPlaying={showPlaying}
-                onBack={onBack}
-                compact={statusCompact}
-              />
+              <motion.div
+                className={
+                  showSharpPortal ? "pointer-events-none" : undefined
+                }
+                style={{
+                  opacity:
+                    stageMode || !showSharpPortal ? 1 : glassUiOpacity,
+                }}
+                aria-hidden={showSharpPortal || undefined}
+              >
+                <StatusBar
+                  title={statusTitle}
+                  showPlaying={showPlaying}
+                  onBack={onBack}
+                  compact={statusCompact}
+                />
+              </motion.div>
               <div
                 className="absolute inset-x-0 bottom-0 overflow-hidden"
-                style={{ top: statusCompact ? "5.2cqi" : "8.5cqi" }}
+                style={{ top: statusBarCqi }}
               >
                 {children}
               </div>
-              {overlay}
+              {overlay && (stageMode || !showSharpPortal) ? (
+                <div className="absolute inset-0 z-30">{overlay}</div>
+              ) : null}
             </div>
           </motion.div>
 
@@ -337,6 +394,26 @@ export function IpodDevice({
           ) : null}
         </div>
       </motion.div>
+
+      {showSharpPortal
+        ? createPortal(
+            <motion.div
+              className="pointer-events-none fixed inset-0 z-[15] [container-type:size]"
+              style={{ opacity: sharpUiOpacity }}
+            >
+              <div className="pointer-events-auto relative z-20 w-full">
+                <StatusBar
+                  title={statusTitle}
+                  showPlaying={showPlaying}
+                  onBack={onBack}
+                  compact={statusCompact}
+                />
+              </div>
+              {overlay}
+            </motion.div>,
+            document.body,
+          )
+        : null}
     </motion.div>
   );
 }

@@ -364,6 +364,7 @@ export function PortfolioExperience() {
       <IpodDevice
         zoomProgress={zoomProgress}
         forceStage={false}
+        suppressSharpChrome={overlayOpen}
         onStageModeChange={handleStageModeChange}
         statusTitle={glassStatusTitle}
         showPlaying={false}
@@ -419,7 +420,9 @@ export function PortfolioExperience() {
           <motion.div
             key="about"
             custom={slideDirection}
-            variants={screenVariants}
+            // Shell variants are empty — they only orchestrate the content
+            // child so the status bar never slides/fades with the page.
+            variants={{ enter: {}, center: {}, exit: {} }}
             initial="enter"
             animate="center"
             exit="exit"
@@ -430,16 +433,19 @@ export function PortfolioExperience() {
             }}
           >
             <StatusBar title="About" onBack={overlayBack} />
-            <div
-              className="absolute inset-x-0 bottom-0 overflow-hidden"
+            <motion.div
+              custom={slideDirection}
+              variants={screenVariants}
+              transition={{ duration: 0.45, ease: SCREEN_EASE }}
+              className="absolute inset-x-0 bottom-0 overflow-hidden bg-white"
               style={{ top: "var(--status-bar-h)" }}
             >
               <AboutScreen
                 scrollRef={aboutScrollRef}
                 onScrollBack={goPrev}
               />
-              {drawer}
-            </div>
+            </motion.div>
+            {drawer}
           </motion.div>
         ) : null}
 
@@ -470,8 +476,8 @@ export function PortfolioExperience() {
                 scrollRef={studyScrollRef}
                 onReturn={backToCoverFlow}
               />
-              {drawer}
             </div>
+            {drawer}
           </motion.div>
         ) : null}
       </AnimatePresence>

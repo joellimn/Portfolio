@@ -21,6 +21,9 @@ import {
 import { CoverArt } from "@/components/ipod/CoverArt";
 import type { Project } from "@/data/projects";
 
+// Match StatusBar non-compact height (8.5cqi of glass / viewport width).
+const STATUS_BAR_FRACTION = 0.085;
+
 // Adapted from ashishgogula/coverflow (MIT) — https://coverflow.ashishgogula.in/
 // Same spring-driven 3D carousel (covers fan out left/right, rotateY), but
 // navigated with vertical input: drag up/down and vertical wheel scroll
@@ -115,10 +118,8 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       mass: 0.8,
     });
 
-    // Match StatusBar's non-compact height (8.5cqi of the glass width) so
-    // the destination frame equals the staged Cover Flow content box.
-    const STATUS_BAR_CQI = 0.085;
-
+    // Match StatusBar's non-compact height so the destination frame equals
+    // the Cover Flow content box below the status bar.
     const measureContainer = useCallback(() => {
       const container = containerRef.current;
       if (!container) return;
@@ -174,7 +175,10 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
     // fit-scale (→1) — cover bitmaps never remount/resize.
     const destWidth = hasViewport ? viewportSize.width : 0;
     const destHeight = hasViewport
-      ? Math.max(1, viewportSize.height - viewportSize.width * STATUS_BAR_CQI)
+      ? Math.max(
+          1,
+          viewportSize.height - viewportSize.width * STATUS_BAR_FRACTION,
+        )
       : 0;
 
     const size =

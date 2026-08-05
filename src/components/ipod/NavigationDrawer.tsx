@@ -101,7 +101,7 @@ export function NavigationDrawer({
   return (
     <AnimatePresence>
       {open ? (
-        <div className="absolute inset-0 z-30 overflow-hidden">
+        <div className="pointer-events-auto absolute inset-0 z-30 overflow-hidden">
           <motion.button
             type="button"
             aria-label="Close navigation"
