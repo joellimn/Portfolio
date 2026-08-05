@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 
 /**
- * True when the primary pointing device is touch (phones / tablets).
- * Desktop trackpads and mice stay on the scroll/vertical Cover Flow model.
+ * True on phones / tablets / touch-primary devices.
+ * Includes maxTouchPoints so mobile browsers that spoof a fine pointer
+ * (e.g. some in-app browsers requesting “desktop” layout) still get the
+ * touch interaction model.
  */
 export function useIsTouchScreen() {
   const [isTouch, setIsTouch] = useState(false);
@@ -14,7 +16,11 @@ export function useIsTouchScreen() {
     const noHover = window.matchMedia("(hover: none)");
 
     const update = () => {
-      setIsTouch(coarse.matches || noHover.matches);
+      setIsTouch(
+        coarse.matches ||
+          noHover.matches ||
+          (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0),
+      );
     };
 
     update();

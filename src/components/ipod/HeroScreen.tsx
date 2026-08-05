@@ -4,9 +4,9 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 
 type HeroScreenProps = {
-  /** Touch / tablet: tap the CTA (or screen) to zoom into Works. */
+  /** Touch / tablet: tap the CTA text to zoom into Works. */
   onEnterWorks?: () => void;
-  /** When true, copy reads "Tap…" and the CTA is a button. */
+  /** When true, copy reads "Tap…" (no arrow) and the text is the trigger. */
   touchMode?: boolean;
 };
 
@@ -34,30 +34,18 @@ export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps)
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.55, duration: 0.6 }}
-        className="absolute bottom-[12%] flex flex-col items-center"
+        className="absolute bottom-[12%] z-10 flex flex-col items-center"
       >
         {touchMode && onEnterWorks ? (
           <button
             type="button"
-            onClick={onEnterWorks}
-            className="flex flex-col items-center outline-none"
+            onClick={(event) => {
+              event.stopPropagation();
+              onEnterWorks();
+            }}
+            className="relative z-10 -m-3 touch-manipulation px-3 py-3 text-[clamp(10px,3.2cqi,12px)] text-black outline-none active:opacity-60"
           >
-            <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
-              Tap to view works
-            </p>
-            <motion.div
-              animate={{ y: [0, 4, 0] }}
-              transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
-              className="relative mt-1 size-4"
-            >
-              <Image
-                src="/assets/ipod/arrow-down.svg"
-                alt=""
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </motion.div>
+            Tap to view works
           </button>
         ) : (
           <>
