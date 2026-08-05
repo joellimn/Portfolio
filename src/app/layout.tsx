@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Joel Lim · MP3 Design Portfolio",
-  description:
-    "A tactile, retro-futuristic UX portfolio inspired by the iPod Classic.",
+  title: "Joel Lim",
+  description: "Joel Lim",
 };
 
 export default function RootLayout({
