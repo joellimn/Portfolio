@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --aluminum-light: #f2f2f2;
+  --aluminum-mid: #c8c8c8;
+  --aluminum-dark: #adadad;
+  --bezel: #2f2f2f;
+  --status-bar: #e8e8e8;
+  --wheel-label: #8793a0;
+  --accent-blue: #33b4ff;
+  --accent-green: #34c759;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-aluminum-light: var(--aluminum-light);
+  --color-aluminum-mid: var(--aluminum-mid);
+  --color-aluminum-dark: var(--aluminum-dark);
+  --color-bezel: var(--bezel);
+  --color-status-bar: var(--status-bar);
+  --color-wheel-label: var(--wheel-label);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-green: var(--accent-green);
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent-blue) 35%, white);
+}
+
+/* Reading stage: sticky screen frame */
+.screen-frame {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 24px 80px rgba(0, 0, 0, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
