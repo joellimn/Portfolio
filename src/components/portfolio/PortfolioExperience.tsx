@@ -30,6 +30,8 @@ import { projects } from "@/data/projects";
 type Screen = "hero" | "projects" | "about" | "reading";
 
 // 1 = scroll forward into About, -1 = scroll back to Works.
+// Enter and exit both travel through the same offset for a given
+// direction so scroll-in and scroll-out feel like one continuous motion.
 const screenVariants = {
   enter: (direction: number) => ({
     opacity: 0,
@@ -420,9 +422,7 @@ export function PortfolioExperience() {
           <motion.div
             key="about"
             custom={slideDirection}
-            // Shell variants are empty — they only orchestrate the content
-            // child so the status bar never slides/fades with the page.
-            variants={{ enter: {}, center: {}, exit: {} }}
+            variants={screenVariants}
             initial="enter"
             animate="center"
             exit="exit"
@@ -432,19 +432,29 @@ export function PortfolioExperience() {
               ["--status-bar-h" as string]: "8.5cqi",
             }}
           >
-            <StatusBar title="About" onBack={overlayBack} />
+            {/* Status bar is painted in a counter-moving layer so it stays
+                visually fixed while the page slides — same enter and exit. */}
             <motion.div
               custom={slideDirection}
-              variants={screenVariants}
+              variants={{
+                enter: (direction: number) => ({ y: direction * -28 }),
+                center: { y: 0 },
+                exit: (direction: number) => ({ y: direction * 28 }),
+              }}
               transition={{ duration: 0.45, ease: SCREEN_EASE }}
-              className="absolute inset-x-0 bottom-0 overflow-hidden bg-white"
+              className="relative z-20"
+            >
+              <StatusBar title="About" onBack={overlayBack} />
+            </motion.div>
+            <div
+              className="absolute inset-x-0 bottom-0 overflow-hidden"
               style={{ top: "var(--status-bar-h)" }}
             >
               <AboutScreen
                 scrollRef={aboutScrollRef}
                 onScrollBack={goPrev}
               />
-            </motion.div>
+            </div>
             {drawer}
           </motion.div>
         ) : null}
