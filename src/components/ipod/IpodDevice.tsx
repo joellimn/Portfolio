@@ -12,7 +12,10 @@ import {
 import { ClickWheel } from "@/components/ipod/ClickWheel";
 import { IpodStickers } from "@/components/ipod/IpodStickers";
 import { StatusBar } from "@/components/ipod/StatusBar";
-import { useIpodChassisSize } from "@/hooks/useIpodChassisSize";
+import {
+  computeRestZoomGeometry,
+  useIpodChassisSize,
+} from "@/hooks/useIpodChassisSize";
 
 type IpodDeviceProps = {
   /** 0 = resting (full chassis visible), 1 = fully zoomed in so the screen
@@ -93,26 +96,43 @@ export function IpodDevice({
   const stageBlend = useMotionValue(stageMode ? 1 : 0);
   const forceStageRef = useRef(forceStage);
   const onStageModeChangeRef = useRef(onStageModeChange);
+  const sizeRef = useRef({ widthPx, screenAspect });
+  sizeRef.current = { widthPx, screenAspect };
 
   useEffect(() => {
     forceStageRef.current = forceStage;
     onStageModeChangeRef.current = onStageModeChange;
   }, [forceStage, onStageModeChange]);
 
+  const seedExitGeometry = useCallback(() => {
+    const { widthPx: w, screenAspect: aspect } = sizeRef.current;
+    const next = computeRestZoomGeometry(
+      w,
+      aspect,
+      window.innerWidth,
+      window.innerHeight,
+    );
+    geometryRef.current = next;
+    setTransformOrigin(`${next.originX}px ${next.originY}px`);
+  }, []);
+
   const syncStage = useCallback(() => {
     const open = zoomProgress.get() >= 1;
     const settled = zoomRender.get() >= 0.995;
     const alreadyStaged = stageBlend.get() === 1;
-    // Menu→Works is one continuous chassis zoom (no layout swap).
-    // Full-bleed stage only engages for About / case study (forceStage),
-    // and stays on if we return to Works while still zoomed in.
+    // Stage only while About / case study need full-bleed. Leaving those
+    // (or zooming out) must drop stage immediately — staying staged until
+    // mid-zoom-out caused a geometry-less layout swap that flickered on
+    // production. Seed rest zoom geometry first so the chassis transform
+    // picks up at the same visual scale.
     const next =
-      open && ((forceStageRef.current && settled) || alreadyStaged);
+      open && forceStageRef.current && (settled || alreadyStaged);
     if (alreadyStaged === next) return;
+    if (alreadyStaged && !next) seedExitGeometry();
     stageBlend.set(next ? 1 : 0);
     setStageMode(next);
     onStageModeChangeRef.current?.(next);
-  }, [stageBlend, zoomProgress, zoomRender]);
+  }, [stageBlend, zoomProgress, zoomRender, seedExitGeometry]);
 
   useMotionValueEvent(zoomProgress, "change", syncStage);
   useMotionValueEvent(zoomRender, "change", syncStage);

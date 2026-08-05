@@ -41,6 +41,53 @@ export type IpodChassisSize = {
   screenAspect: number;
 };
 
+/** Chassis height ÷ width for a given screen aspect (matches IpodDevice layout). */
+export function chassisHeightRatio(screenAspect: number) {
+  return (
+    TOP_PAD_FRACTION +
+    BOTTOM_PAD_FRACTION +
+    CONTENT_WIDTH_FRACTION * WHEEL_TOP_MARGIN_FRACTION +
+    CONTENT_WIDTH_FRACTION * WHEEL_WIDTH_FRACTION +
+    CONTENT_WIDTH_FRACTION / screenAspect
+  );
+}
+
+/**
+ * Zoom transform that maps the resting on-device glass to cover the viewport.
+ * Used when leaving full-bleed stage so the chassis handoff matches visually.
+ */
+export function computeRestZoomGeometry(
+  widthPx: number,
+  screenAspect: number,
+  viewportWidth: number,
+  viewportHeight: number,
+) {
+  const chassisW = widthPx;
+  const chassisH = chassisW * chassisHeightRatio(screenAspect);
+  const chassisLeft = (viewportWidth - chassisW) / 2;
+  const chassisTop = (viewportHeight - chassisH) / 2;
+
+  const contentLeft = chassisLeft + chassisW * SIDE_PAD_FRACTION;
+  const contentTop = chassisTop + chassisW * TOP_PAD_FRACTION;
+  const contentW = chassisW * CONTENT_WIDTH_FRACTION;
+  // Bezel padding is 1.9% of the bezel box (content width).
+  const bezelPad = contentW * 0.019;
+  const glassW = contentW - bezelPad * 2;
+  const glassH = glassW / screenAspect;
+  const glassLeft = contentLeft + bezelPad;
+  const glassTop = contentTop + bezelPad;
+  const glassCenterX = glassLeft + glassW / 2;
+  const glassCenterY = glassTop + glassH / 2;
+
+  return {
+    originX: glassCenterX - chassisLeft,
+    originY: glassCenterY - chassisTop,
+    tx: viewportWidth / 2 - glassCenterX,
+    ty: viewportHeight / 2 - glassCenterY,
+    scale: Math.max(viewportWidth / glassW, viewportHeight / glassH),
+  };
+}
+
 function computeSize(
   viewportWidth: number,
   viewportHeight: number,
@@ -51,14 +98,7 @@ function computeSize(
     MAX_VIEWPORT_ASPECT,
   );
 
-  // Chassis height, as a multiple of its own width, given this screen
-  // aspect ratio (top/bottom padding + click wheel + the screen itself).
-  const chassisAspect =
-    TOP_PAD_FRACTION +
-    BOTTOM_PAD_FRACTION +
-    CONTENT_WIDTH_FRACTION * WHEEL_TOP_MARGIN_FRACTION +
-    CONTENT_WIDTH_FRACTION * WHEEL_WIDTH_FRACTION +
-    CONTENT_WIDTH_FRACTION / screenAspect;
+  const chassisAspect = chassisHeightRatio(screenAspect);
 
   const widthPx = clamp(
     Math.min(
