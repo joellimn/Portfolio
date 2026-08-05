@@ -205,6 +205,18 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
     // Match @ashishgogula/coverflow — reflection strip is ~42% of cover height.
     const reflectionHeight = Math.round(size * 0.42);
 
+    // On wide/landscape frames the stack reads low — give more air above
+    // the covers and less below (reflection + title already eat the bottom).
+    const stageAspect =
+      destWidth > 0 && destHeight > 0 ? destWidth / destHeight : 1;
+    const wideT = Math.min(1, Math.max(0, (stageAspect - 1) / 0.75));
+    const coverPadTop = Math.round(
+      reflectionHeight * (0.35 + wideT * 0.45),
+    );
+    const coverPadBottom = Math.round(
+      reflectionHeight * (0.75 - wideT * 0.4),
+    );
+
     // Keep the spring in sync when the index changes from outside
     // (click wheel prev/next, auto-advance) rather than from a drag.
     useEffect(() => {
@@ -443,9 +455,9 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
               style={{
                 transformStyle: "preserve-3d",
                 // Keep reflections above the title band, with a little
-                // extra headroom above the covers.
-                paddingTop: Math.round(reflectionHeight * 0.35),
-                paddingBottom: Math.round(reflectionHeight * 0.75),
+                // extra headroom above the covers (more on wide screens).
+                paddingTop: coverPadTop,
+                paddingBottom: coverPadBottom,
               }}
             >
               {size > 0
@@ -479,6 +491,7 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
             title={hasSize ? (projects[activeIndex]?.title ?? "") : ""}
             subtitle={hasSize ? (projects[activeIndex]?.subtitle ?? "") : ""}
             width={destWidth}
+            wideT={wideT}
           />
         </div>
       </motion.div>
@@ -493,10 +506,13 @@ function CoverFlowLabel({
   title,
   subtitle,
   width,
+  wideT = 0,
 }: {
   title: string;
   subtitle: string;
   width: number;
+  /** 0 = square/portrait, 1 = wide — trims bottom label padding. */
+  wideT?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const titleSize = Math.round(Math.min(48, Math.max(11, width * 0.021)));
@@ -582,7 +598,10 @@ function CoverFlowLabel({
   return (
     <div
       className="pointer-events-none relative z-[1100] flex shrink-0 justify-center bg-white"
-      style={{ paddingBottom: "4.5%", paddingTop: "0.4%" }}
+      style={{
+        paddingBottom: `${4.5 - wideT * 2.2}%`,
+        paddingTop: "0.4%",
+      }}
       aria-hidden
     >
       <canvas ref={canvasRef} />
