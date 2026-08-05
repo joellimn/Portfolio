@@ -15,6 +15,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import { usePathname, useRouter } from "next/navigation";
 import { AboutScreen } from "@/components/ipod/AboutScreen";
 import { CaseStudyView } from "@/components/ipod/CaseStudyView";
 import { CoverFlow, type CoverFlowHandle } from "@/components/ipod/CoverFlow";
@@ -27,8 +28,14 @@ import {
 import { StatusBar } from "@/components/ipod/StatusBar";
 import { projects } from "@/data/projects";
 import { useIsTouchScreen } from "@/hooks/useIsTouchScreen";
+import {
+  pathForRoute,
+  routeFromPath,
+  shouldReplaceHistory,
+  type PortfolioScreen,
+} from "@/lib/portfolioRoutes";
 
-type Screen = "hero" | "projects" | "about" | "reading";
+type Screen = PortfolioScreen;
 
 // 1 = scroll forward into About, -1 = scroll back to Works.
 // Enter and exit both travel through the same offset for a given
@@ -63,28 +70,115 @@ const TITLE_SWAP_AT = 0.28;
  * production flicker when zooming back out after About.
  */
 export function PortfolioExperience() {
+  const router = useRouter();
+  const pathname = usePathname() || "/";
+  const initialRoute = routeFromPath(pathname);
+
   const studyScrollRef = useRef<HTMLDivElement>(null);
   const aboutScrollRef = useRef<HTMLDivElement>(null);
   const coverFlowRef = useRef<CoverFlowHandle>(null);
-  const zoomOpenRef = useRef(false);
+  const zoomOpenRef = useRef(initialRoute.screen !== "hero");
+  const applyingPathRef = useRef(false);
   const isTouch = useIsTouchScreen();
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(initialRoute.projectIndex);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [screen, setScreen] = useState<Screen>("hero");
+  const [screen, setScreen] = useState<Screen>(initialRoute.screen);
   const [navOpen, setNavOpen] = useState(false);
-  const [zoomOpen, setZoomOpen] = useState(false);
+  const [zoomOpen, setZoomOpen] = useState(initialRoute.screen !== "hero");
   const [statusCompact, setStatusCompact] = useState(false);
   const [slideDirection, setSlideDirection] = useState(1);
+  const [projectsTitle, setProjectsTitle] = useState(
+    initialRoute.screen !== "hero",
+  );
+  const projectsTitleRef = useRef(initialRoute.screen !== "hero");
 
-  const zoomProgress = useMotionValue(0);
+  const zoomProgress = useMotionValue(initialRoute.screen === "hero" ? 0 : 1);
   const zoomRender = useSpring(zoomProgress, ZOOM_SPRING);
   const menuOverlayOpacity = useTransform(zoomRender, [0.08, 0.48], [1, 0]);
 
   const screenRef = useRef(screen);
+  const activeIndexRef = useRef(activeIndex);
   useEffect(() => {
     screenRef.current = screen;
   }, [screen]);
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  // Deep links / browser back-forward → restore screen without remounting.
+  useEffect(() => {
+    const next = routeFromPath(pathname);
+    const sameScreen = next.screen === screenRef.current;
+    const sameProject =
+      next.screen !== "reading" ||
+      next.projectIndex === activeIndexRef.current;
+    if (sameScreen && sameProject) return;
+
+    applyingPathRef.current = true;
+
+    if (next.screen === "hero") {
+      zoomProgress.set(0);
+      zoomOpenRef.current = false;
+      setZoomOpen(false);
+      setProjectsTitle(false);
+      projectsTitleRef.current = false;
+      setScreen("hero");
+      setNavOpen(false);
+    } else if (next.screen === "projects") {
+      zoomProgress.set(1);
+      zoomOpenRef.current = true;
+      setZoomOpen(true);
+      setProjectsTitle(true);
+      projectsTitleRef.current = true;
+      if (screenRef.current === "about") setSlideDirection(-1);
+      setScreen("projects");
+      setNavOpen(false);
+      requestAnimationFrame(() =>
+        coverFlowRef.current?.scrollToIndex(activeIndexRef.current),
+      );
+    } else if (next.screen === "about") {
+      zoomProgress.set(1);
+      zoomOpenRef.current = true;
+      setZoomOpen(true);
+      setProjectsTitle(true);
+      projectsTitleRef.current = true;
+      setSlideDirection(1);
+      setScreen("about");
+      setNavOpen(false);
+      requestAnimationFrame(() => aboutScrollRef.current?.scrollTo({ top: 0 }));
+    } else {
+      zoomProgress.set(1);
+      zoomOpenRef.current = true;
+      setZoomOpen(true);
+      setProjectsTitle(true);
+      projectsTitleRef.current = true;
+      setActiveIndex(next.projectIndex);
+      setScreen("reading");
+      setNavOpen(false);
+      requestAnimationFrame(() => studyScrollRef.current?.scrollTo({ top: 0 }));
+    }
+
+    const t = window.setTimeout(() => {
+      applyingPathRef.current = false;
+    }, 0);
+    return () => window.clearTimeout(t);
+  }, [pathname, zoomProgress]);
+
+  // Screen state → URL (Menu↔Works replaces; About/case studies push).
+  useEffect(() => {
+    if (applyingPathRef.current) return;
+    const desired = pathForRoute({
+      screen,
+      projectIndex: activeIndex,
+    });
+    if (desired === pathname) return;
+    if (shouldReplaceHistory(pathname, desired)) {
+      router.replace(desired);
+    } else {
+      router.push(desired);
+    }
+  }, [screen, activeIndex, pathname, router]);
 
   useEffect(() => {
     if (screen !== "reading") {
@@ -124,9 +218,6 @@ export function PortfolioExperience() {
   const activeProject = projects[activeIndex];
   const overlayOpen = screen === "about" || screen === "reading";
   const coversLive = screen === "projects" && zoomOpen;
-
-  const [projectsTitle, setProjectsTitle] = useState(false);
-  const projectsTitleRef = useRef(false);
 
   const glassStatusTitle = projectsTitle ? "Works" : "Menu";
 
@@ -429,7 +520,7 @@ export function PortfolioExperience() {
           >
             <HeroScreen
               touchMode={isTouch}
-              onEnterWorks={isTouch ? enterProjects : undefined}
+              onEnterWorks={enterProjects}
             />
           </motion.div>
         </div>

@@ -261,7 +261,9 @@ export function AboutScreen({
           </div>
 
           <p className="mt-[1.4cqi] pb-[0.5cqi] text-center text-[clamp(8px,1.9cqi,11px)] text-black/35">
-            Scroll up to return to works
+            {touchMode
+              ? "Swipe up to return to works"
+              : "Scroll up to return to works"}
           </p>
         </footer>
       </div>

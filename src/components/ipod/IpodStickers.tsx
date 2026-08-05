@@ -21,19 +21,20 @@ const STICKERS: Sticker[] = [
     src: "/assets/ipod/stickers/grizzlies-sticker.png",
     alt: "Memphis Grizzlies",
     // Left rail beside the click wheel — clear of the screen bezel.
+    // On narrow/portrait viewports the screen runs taller, so sit lower.
     className:
-      "left-[-5%] top-[58%] w-[22%] -rotate-[18deg] drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]",
+      "left-[-5%] top-[68%] w-[22%] -rotate-[18deg] drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)] min-[586px]:top-[58%]",
     foldClassName:
-      "left-[-12%] top-[57%] w-[13%] origin-right -rotate-[18deg] brightness-[0.45] contrast-125 saturate-75",
+      "left-[-12%] top-[67%] w-[13%] origin-right -rotate-[18deg] brightness-[0.45] contrast-125 saturate-75 min-[586px]:top-[57%]",
   },
   {
     src: "/assets/ipod/stickers/kfa-sticker.png",
     alt: "KFA",
     // Right rail beside the click wheel — clear of the screen bezel.
     className:
-      "right-[-4%] top-[56%] w-[16%] rotate-[12deg] drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]",
+      "right-[-4%] top-[66%] w-[16%] rotate-[12deg] drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)] min-[586px]:top-[56%]",
     foldClassName:
-      "right-[-10%] top-[55%] w-[10%] origin-left rotate-[12deg] brightness-[0.45] contrast-125 saturate-75",
+      "right-[-10%] top-[65%] w-[10%] origin-left rotate-[12deg] brightness-[0.45] contrast-125 saturate-75 min-[586px]:top-[55%]",
   },
   {
     src: "/assets/ipod/stickers/vandy-sticker.png",

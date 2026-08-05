@@ -17,7 +17,7 @@ export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps)
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.5 }}
-        className="text-[clamp(14px,4.8cqi,22px)] font-bold text-black"
+        className="pointer-events-none text-[clamp(14px,4.8cqi,22px)] font-bold text-black"
       >
         Joel Lim
       </motion.p>
@@ -25,7 +25,7 @@ export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps)
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.28, duration: 0.5 }}
-        className="mt-1 text-[clamp(10px,3.4cqi,13px)] text-black/50"
+        className="pointer-events-none mt-1 text-[clamp(10px,3.4cqi,13px)] text-black/50"
       >
         Product Designer Previously @UMG
       </motion.p>
@@ -34,16 +34,20 @@ export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps)
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.55, duration: 0.6 }}
-        className="absolute bottom-[12%] z-10 flex flex-col items-center"
+        className="absolute bottom-[12%] z-[100] flex flex-col items-center"
       >
         {touchMode && onEnterWorks ? (
           <button
             type="button"
-            onClick={(event) => {
+            aria-label="Tap to view works"
+            onPointerDown={(event) => {
+              // Fire on press — more reliable than click inside transformed
+              // chassis trees on mobile / in-app browsers.
+              event.preventDefault();
               event.stopPropagation();
               onEnterWorks();
             }}
-            className="relative z-10 -m-3 touch-manipulation px-3 py-3 text-[clamp(10px,3.2cqi,12px)] text-black outline-none active:opacity-60"
+            className="pointer-events-auto relative z-[100] -m-4 touch-manipulation px-4 py-4 text-[clamp(10px,3.2cqi,12px)] text-black outline-none active:opacity-60"
           >
             Tap to view works
           </button>
