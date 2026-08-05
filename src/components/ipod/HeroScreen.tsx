@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-export function HeroScreen() {
+type HeroScreenProps = {
+  /** Touch / tablet: tap the CTA (or screen) to zoom into Works. */
+  onEnterWorks?: () => void;
+  /** When true, copy reads "Tap…" and the CTA is a button. */
+  touchMode?: boolean;
+};
+
+export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps) {
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-white px-4 pb-[18%] text-center">
       <motion.p
@@ -29,22 +36,53 @@ export function HeroScreen() {
         transition={{ delay: 0.55, duration: 0.6 }}
         className="absolute bottom-[12%] flex flex-col items-center"
       >
-        <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
-          Scroll to view works
-        </p>
-        <motion.div
-          animate={{ y: [0, 4, 0] }}
-          transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
-          className="relative mt-1 size-4"
-        >
-          <Image
-            src="/assets/ipod/arrow-down.svg"
-            alt=""
-            fill
-            className="object-contain"
-            unoptimized
-          />
-        </motion.div>
+        {touchMode && onEnterWorks ? (
+          <button
+            type="button"
+            onClick={onEnterWorks}
+            className="flex flex-col items-center outline-none"
+          >
+            <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
+              Tap to view works
+            </p>
+            <motion.div
+              animate={{ y: [0, 4, 0] }}
+              transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+              className="relative mt-1 size-4"
+            >
+              <Image
+                src="/assets/ipod/arrow-down.svg"
+                alt=""
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </motion.div>
+          </button>
+        ) : (
+          <>
+            <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
+              Scroll to view works
+            </p>
+            <motion.div
+              animate={{ y: [0, 4, 0] }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.4,
+                ease: "easeInOut",
+              }}
+              className="relative mt-1 size-4"
+            >
+              <Image
+                src="/assets/ipod/arrow-down.svg"
+                alt=""
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            </motion.div>
+          </>
+        )}
       </motion.div>
     </div>
   );

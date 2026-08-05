@@ -25,9 +25,8 @@ import type { Project } from "@/data/projects";
 const STATUS_BAR_FRACTION = 0.085;
 
 // Adapted from ashishgogula/coverflow (MIT) — https://coverflow.ashishgogula.in/
-// Same spring-driven 3D carousel (covers fan out left/right, rotateY), but
-// navigated with vertical input: drag up/down and vertical wheel scroll
-// move through the horizontal stack instead of a left/right swipe.
+// Same spring-driven 3D carousel (covers fan out left/right, rotateY).
+// Desktop: vertical drag + wheel. Touch: horizontal swipe.
 
 export type CoverFlowHandle = {
   scrollToIndex: (index: number) => void;
@@ -56,6 +55,8 @@ type CoverFlowProps = {
   /** Fires once the container has a real measured size so the parent can
    * lift the blank curtain without a size-0 → full-size flicker. */
   onReady?: () => void;
+  /** Touch / tablet: swipe horizontally through covers. */
+  touchMode?: boolean;
 };
 
 const ITEM_SIZE = 200;
@@ -84,6 +85,7 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       zoomProgress,
       active = true,
       onReady,
+      touchMode = false,
     },
     ref,
   ) {
@@ -246,7 +248,9 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
     // accumulate deltaY and jump one cover at a time past the threshold.
     // Listen on window (not just the cover hit-area) so zoom-out / cover
     // navigation work with the cursor anywhere on the page.
+    // Touch devices use horizontal drag instead.
     useEffect(() => {
+      if (touchMode) return;
       let accumulator = 0;
       let lastTime = Date.now();
       let lastJump = 0;
@@ -353,21 +357,23 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
         window.removeEventListener("wheel", handleWheel);
         if (zoomRaf) cancelAnimationFrame(zoomRaf);
       };
-    }, [jumpToIndex, projects.length]);
+    }, [jumpToIndex, projects.length, touchMode]);
 
-    // Vertical drag moves through the horizontal stack: dragging up
-    // advances forward, dragging down goes back.
+    // Desktop: vertical drag through the horizontal stack.
+    // Touch: horizontal swipe (left = next, right = previous).
     const onDrag = useCallback(
       (_: unknown, info: PanInfo) => {
-        scrollX.set(scrollX.get() - info.delta.y / (centerGap * 0.8 || 1));
+        const delta = touchMode ? info.delta.x : info.delta.y;
+        scrollX.set(scrollX.get() - delta / (centerGap * 0.8 || 1));
       },
-      [centerGap, scrollX],
+      [centerGap, scrollX, touchMode],
     );
 
     const onDragEnd = useCallback(
       (_: unknown, info: PanInfo) => {
         setIsDragging(false);
-        const projected = scrollX.get() - info.velocity.y * 0.002;
+        const velocity = touchMode ? info.velocity.x : info.velocity.y;
+        const projected = scrollX.get() - velocity * 0.002;
         const clamped = clampIndex(Math.round(projected), projects.length);
         scrollX.set(clamped);
         onActiveIndexChange(clamped);
@@ -383,7 +389,7 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
           onReachStartRef.current?.(-ZOOM_SNAP_DELTA);
         }
       },
-      [projects.length, onActiveIndexChange, scrollX],
+      [projects.length, onActiveIndexChange, scrollX, touchMode],
     );
 
     const onKeyDown = useCallback(
@@ -414,7 +420,9 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
     return (
       <motion.div
         ref={containerRef}
-        className={`relative h-full w-full touch-pan-x select-none overflow-hidden focus:outline-none ${
+        className={`relative h-full w-full select-none overflow-hidden focus:outline-none ${
+          touchMode ? "touch-none" : "touch-pan-x"
+        } ${
           !active
             ? "cursor-default"
             : isDragging
@@ -426,8 +434,10 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
         aria-hidden={!active}
         tabIndex={active ? 0 : -1}
         onKeyDown={onKeyDown}
-        drag={active ? "y" : false}
-        dragConstraints={{ top: 0, bottom: 0 }}
+        drag={active ? (touchMode ? "x" : "y") : false}
+        dragConstraints={
+          touchMode ? { left: 0, right: 0 } : { top: 0, bottom: 0 }
+        }
         dragElastic={0}
         dragMomentum={false}
         onDragStart={() => setIsDragging(true)}

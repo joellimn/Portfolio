@@ -26,6 +26,7 @@ import {
 } from "@/components/ipod/NavigationDrawer";
 import { StatusBar } from "@/components/ipod/StatusBar";
 import { projects } from "@/data/projects";
+import { useIsTouchScreen } from "@/hooks/useIsTouchScreen";
 
 type Screen = "hero" | "projects" | "about" | "reading";
 
@@ -66,6 +67,7 @@ export function PortfolioExperience() {
   const aboutScrollRef = useRef<HTMLDivElement>(null);
   const coverFlowRef = useRef<CoverFlowHandle>(null);
   const zoomOpenRef = useRef(false);
+  const isTouch = useIsTouchScreen();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -168,7 +170,8 @@ export function PortfolioExperience() {
   });
 
   useEffect(() => {
-    if (screen !== "hero") return;
+    // Touch: Menu → Works is tap-driven (Hero CTA / click-wheel select).
+    if (isTouch || screen !== "hero") return;
 
     let pendingDelta = 0;
     let raf = 0;
@@ -201,10 +204,11 @@ export function PortfolioExperience() {
       window.removeEventListener("wheel", handleWheel);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [screen, zoomProgress]);
+  }, [screen, zoomProgress, isTouch]);
 
   useEffect(() => {
-    if (screen !== "projects") return;
+    // Touch devices leave Works via Cover Flow overshoot / chrome, not wheel.
+    if (isTouch || screen !== "projects") return;
 
     let pendingDelta = 0;
     let raf = 0;
@@ -240,7 +244,17 @@ export function PortfolioExperience() {
       window.removeEventListener("wheel", handleWheel);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [screen, zoomProgress]);
+  }, [screen, zoomProgress, isTouch]);
+
+  // Stop the document from rubber-banding under Cover Flow swipes on touch.
+  useEffect(() => {
+    if (!isTouch || !coversLive) return;
+    const prev = document.documentElement.style.overscrollBehavior;
+    document.documentElement.style.overscrollBehavior = "none";
+    return () => {
+      document.documentElement.style.overscrollBehavior = prev;
+    };
+  }, [isTouch, coversLive]);
 
   const handleReachStart = useCallback(
     (deltaY: number) => {
@@ -401,6 +415,7 @@ export function PortfolioExperience() {
               onReachStart={handleReachStart}
               zoomProgress={zoomProgress}
               active={coversLive}
+              touchMode={isTouch}
             />
           </div>
 
@@ -412,7 +427,10 @@ export function PortfolioExperience() {
             }}
             aria-hidden={screen !== "hero"}
           >
-            <HeroScreen />
+            <HeroScreen
+              touchMode={isTouch}
+              onEnterWorks={isTouch ? enterProjects : undefined}
+            />
           </motion.div>
         </div>
       </IpodDevice>
@@ -453,6 +471,7 @@ export function PortfolioExperience() {
               <AboutScreen
                 scrollRef={aboutScrollRef}
                 onScrollBack={goPrev}
+                touchMode={isTouch}
               />
             </div>
             {drawer}

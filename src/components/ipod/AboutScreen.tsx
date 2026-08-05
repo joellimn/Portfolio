@@ -13,6 +13,8 @@ type AboutScreenProps = {
   /** Fired when the user keeps scrolling up while already at the top —
    * carries the gesture back into the Cover Flow. */
   onScrollBack?: () => void;
+  /** Touch / tablet: swipe down at the top returns to Works. */
+  touchMode?: boolean;
 };
 
 const EMAIL = "joel.c.lim@vanderbilt.edu";
@@ -37,7 +39,11 @@ const CONTACT_LINKS: ContactLink[] = [
   },
 ];
 
-export function AboutScreen({ scrollRef, onScrollBack }: AboutScreenProps) {
+export function AboutScreen({
+  scrollRef,
+  onScrollBack,
+  touchMode = false,
+}: AboutScreenProps) {
   const elRef = useRef<HTMLDivElement | null>(null);
   const [emailCopied, setEmailCopied] = useState(false);
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -96,6 +102,55 @@ export function AboutScreen({ scrollRef, onScrollBack }: AboutScreenProps) {
     el.addEventListener("wheel", handleWheel, { passive: false });
     return () => el.removeEventListener("wheel", handleWheel);
   }, []);
+
+  // Touch: swipe down while already at the top returns to Works.
+  useEffect(() => {
+    if (!touchMode) return;
+    const el = elRef.current;
+    if (!el) return;
+
+    let startY = 0;
+    let tracking = false;
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (el.scrollTop > 1) {
+        tracking = false;
+        return;
+      }
+      startY = event.touches[0]?.clientY ?? 0;
+      tracking = true;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (!tracking) return;
+      if (el.scrollTop > 1) {
+        tracking = false;
+        return;
+      }
+      const y = event.touches[0]?.clientY ?? startY;
+      const dy = y - startY;
+      // Pulling down at the top — stop the page from rubber-banding away.
+      if (dy > 8) event.preventDefault();
+    };
+
+    const onTouchEnd = (event: TouchEvent) => {
+      if (!tracking) return;
+      tracking = false;
+      if (el.scrollTop > 1) return;
+      const y = event.changedTouches[0]?.clientY ?? startY;
+      const dy = y - startY;
+      if (dy > 72) onScrollBackRef.current?.();
+    };
+
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: false });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [touchMode]);
 
   const copyEmail = async (value: string) => {
     try {
