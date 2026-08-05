@@ -4,7 +4,6 @@ import {
   startTransition,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -25,6 +24,7 @@ import {
   NavigationDrawer,
   type NavTarget,
 } from "@/components/ipod/NavigationDrawer";
+import { StatusBar } from "@/components/ipod/StatusBar";
 import { projects } from "@/data/projects";
 
 type Screen = "hero" | "projects" | "about" | "reading";
@@ -54,12 +54,10 @@ const ZOOM_SPRING = { stiffness: 280, damping: 36, mass: 0.85 };
 const TITLE_SWAP_AT = 0.28;
 
 /**
- * Menu = zoomed-out frame of Works:
- * - Cover Flow is always the glass content (the zoomed-in destination).
- * - Opaque Menu overlay sits on top at rest so the two never stack visually.
- * - Whole iPod body scales in with the screen — no full-bleed layout swap
- *   on Menu→Works (that was the end-of-zoom "reload"). Stage only for
- *   About / case study, which need a real full-page scroll surface.
+ * Menu = zoomed-out frame of Works. Cover Flow stays mounted under the glass
+ * for the whole session. About / case study are full-viewport overlays on top
+ * — they never flip IpodDevice into stageMode, which was causing the
+ * production flicker when zooming back out after About.
  */
 export function PortfolioExperience() {
   const studyScrollRef = useRef<HTMLDivElement>(null);
@@ -73,14 +71,10 @@ export function PortfolioExperience() {
   const [navOpen, setNavOpen] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(false);
   const [statusCompact, setStatusCompact] = useState(false);
-  // Shared by AnimatePresence so About ↔ Works slide the matching way.
   const [slideDirection, setSlideDirection] = useState(1);
 
   const zoomProgress = useMotionValue(0);
   const zoomRender = useSpring(zoomProgress, ZOOM_SPRING);
-
-  // Menu lifts off the glass as the body zooms in — Cover Flow was always
-  // underneath (opacity 1), just fully covered by opaque white Menu.
   const menuOverlayOpacity = useTransform(zoomRender, [0.08, 0.48], [1, 0]);
 
   const screenRef = useRef(screen);
@@ -88,7 +82,6 @@ export function PortfolioExperience() {
     screenRef.current = screen;
   }, [screen]);
 
-  // Slim the LCD status bar once a case study is scrolled past the top.
   useEffect(() => {
     if (screen !== "reading") {
       setStatusCompact(false);
@@ -107,7 +100,6 @@ export function PortfolioExperience() {
       }
       const onScroll = () => {
         const y = el.scrollTop;
-        // Hysteresis so tiny scroll jitter doesn't thrash the slim animation.
         setStatusCompact((prev) => {
           if (prev) return y > 6;
           return y > 28;
@@ -126,18 +118,13 @@ export function PortfolioExperience() {
   }, [screen, activeIndex]);
 
   const activeProject = projects[activeIndex];
-  const onGlass = screen === "hero" || screen === "projects";
+  const overlayOpen = screen === "about" || screen === "reading";
   const coversLive = screen === "projects" && zoomOpen;
 
   const [projectsTitle, setProjectsTitle] = useState(false);
   const projectsTitleRef = useRef(false);
 
-  const statusTitle = useMemo(() => {
-    if (screen === "reading") return "Now Playing";
-    if (screen === "about") return "About";
-    if (projectsTitle) return "Works";
-    return "Menu";
-  }, [screen, projectsTitle]);
+  const glassStatusTitle = projectsTitle ? "Works" : "Menu";
 
   const enterProjects = useCallback(() => {
     zoomProgress.set(1);
@@ -151,6 +138,10 @@ export function PortfolioExperience() {
   const goAbout = useCallback(() => {
     setSlideDirection(1);
     zoomProgress.set(1);
+    setZoomOpen(true);
+    zoomOpenRef.current = true;
+    setProjectsTitle(true);
+    projectsTitleRef.current = true;
     setScreen("about");
     requestAnimationFrame(() => aboutScrollRef.current?.scrollTo({ top: 0 }));
   }, [zoomProgress]);
@@ -343,39 +334,48 @@ export function PortfolioExperience() {
     [goAbout, enterProjects],
   );
 
-  const handleBack =
+  const glassBack =
+    navOpen
+      ? undefined
+      : projectsTitle
+        ? toggleNav
+        : undefined;
+
+  const overlayBack =
     navOpen
       ? undefined
       : screen === "reading"
         ? backToCoverFlow
-        : screen === "about" || projectsTitle
+        : screen === "about"
           ? toggleNav
           : undefined;
+
+  const drawer = (
+    <NavigationDrawer
+      open={navOpen}
+      active={navActive}
+      onNavigate={handleNavigate}
+      onClose={() => setNavOpen(false)}
+    />
+  );
 
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-white">
       <IpodDevice
         zoomProgress={zoomProgress}
-        forceStage={screen === "about" || screen === "reading"}
+        forceStage={false}
         onStageModeChange={handleStageModeChange}
-        statusTitle={statusTitle}
-        showPlaying={screen === "reading" && isPlaying}
-        onBack={handleBack}
-        statusCompact={statusCompact}
-        overlay={
-          <NavigationDrawer
-            open={navOpen}
-            active={navActive}
-            onNavigate={handleNavigate}
-            onClose={() => setNavOpen(false)}
-          />
-        }
-        onMenu={toggleNav}
-        onPrev={navOpen || !coversLive ? undefined : goPrev}
-        onNext={navOpen || !coversLive ? undefined : goNext}
-        onPlay={navOpen ? undefined : togglePlay}
+        statusTitle={glassStatusTitle}
+        showPlaying={false}
+        onBack={overlayOpen ? undefined : glassBack}
+        statusCompact={false}
+        overlay={overlayOpen ? undefined : drawer}
+        onMenu={overlayOpen ? undefined : toggleNav}
+        onPrev={navOpen || !coversLive || overlayOpen ? undefined : goPrev}
+        onNext={navOpen || !coversLive || overlayOpen ? undefined : goNext}
+        onPlay={navOpen || overlayOpen ? undefined : togglePlay}
         onSelect={
-          navOpen
+          navOpen || overlayOpen
             ? undefined
             : () => {
                 if (screen === "hero") enterProjects();
@@ -385,76 +385,96 @@ export function PortfolioExperience() {
               }
         }
       >
-        <AnimatePresence initial={false} custom={slideDirection}>
-          {onGlass ? (
-            <motion.div
-              key="glass"
-              custom={slideDirection}
-              variants={screenVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.45, ease: SCREEN_EASE }}
-              className="absolute inset-0 bg-white"
-            >
-              {/* Destination frame — always here; Menu covers it at rest */}
-              <div className="absolute inset-0">
-                <CoverFlow
-                  ref={coverFlowRef}
-                  projects={projects}
-                  activeIndex={activeIndex}
-                  onActiveIndexChange={setActiveIndex}
-                  onSelect={openCaseStudy}
-                  onReachEnd={goAbout}
-                  onReachStart={handleReachStart}
-                  zoomProgress={zoomProgress}
-                  active={coversLive}
-                />
-              </div>
+        {/* Cover Flow stays mounted forever — About/Reading never remount it. */}
+        <div className="absolute inset-0 bg-white">
+          <div className="absolute inset-0">
+            <CoverFlow
+              ref={coverFlowRef}
+              projects={projects}
+              activeIndex={activeIndex}
+              onActiveIndexChange={setActiveIndex}
+              onSelect={openCaseStudy}
+              onReachEnd={goAbout}
+              onReachStart={handleReachStart}
+              zoomProgress={zoomProgress}
+              active={coversLive}
+            />
+          </div>
 
-              {/* Opaque Menu card — only surface you see when zoomed out */}
-              <motion.div
-                className="absolute inset-0 z-[1] bg-white"
-                style={{
-                  opacity: menuOverlayOpacity,
-                  pointerEvents: screen === "hero" ? "auto" : "none",
-                }}
-                aria-hidden={screen !== "hero"}
-              >
-                <HeroScreen />
-              </motion.div>
-            </motion.div>
-          ) : screen === "about" ? (
-            <motion.div
-              key="about"
-              custom={slideDirection}
-              variants={screenVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.45, ease: SCREEN_EASE }}
-              className="absolute inset-0 bg-white"
+          <motion.div
+            className="absolute inset-0 z-[1] bg-white"
+            style={{
+              opacity: menuOverlayOpacity,
+              pointerEvents: screen === "hero" ? "auto" : "none",
+            }}
+            aria-hidden={screen !== "hero"}
+          >
+            <HeroScreen />
+          </motion.div>
+        </div>
+      </IpodDevice>
+
+      <AnimatePresence initial={false} custom={slideDirection}>
+        {screen === "about" ? (
+          <motion.div
+            key="about"
+            custom={slideDirection}
+            variants={screenVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.45, ease: SCREEN_EASE }}
+            className="fixed inset-0 z-20 bg-white [container-type:size]"
+            style={{
+              ["--status-bar-h" as string]: "8.5cqi",
+            }}
+          >
+            <StatusBar title="About" onBack={overlayBack} />
+            <div
+              className="absolute inset-x-0 bottom-0 overflow-hidden"
+              style={{ top: "var(--status-bar-h)" }}
             >
-              <AboutScreen scrollRef={aboutScrollRef} onScrollBack={goPrev} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="reading"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0"
+              <AboutScreen
+                scrollRef={aboutScrollRef}
+                onScrollBack={goPrev}
+              />
+              {drawer}
+            </div>
+          </motion.div>
+        ) : null}
+
+        {screen === "reading" ? (
+          <motion.div
+            key="reading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-20 bg-white [container-type:size]"
+            style={{
+              ["--status-bar-h" as string]: statusCompact ? "5.2cqi" : "8.5cqi",
+            }}
+          >
+            <StatusBar
+              title="Now Playing"
+              showPlaying={isPlaying}
+              onBack={overlayBack}
+              compact={statusCompact}
+            />
+            <div
+              className="absolute inset-x-0 bottom-0 overflow-hidden"
+              style={{ top: statusCompact ? "5.2cqi" : "8.5cqi" }}
             >
               <CaseStudyView
                 project={activeProject}
                 scrollRef={studyScrollRef}
                 onReturn={backToCoverFlow}
               />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </IpodDevice>
+              {drawer}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }
