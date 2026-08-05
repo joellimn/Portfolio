@@ -1,30 +1,15 @@
 import Image from "next/image";
 import type { CaseStudyBlock } from "@/data/projects";
 
-const TONE_STYLES: Record<
-  "blue" | "pink" | "yellow",
-  { bg: string; border: string; text: string }
-> = {
-  blue: {
-    bg: "bg-[#e4f6fd]",
-    border: "border-[#bce7f6]",
-    text: "text-[#1f4d63]",
-  },
-  pink: {
-    bg: "bg-[#fde3e3]",
-    border: "border-[#f6c3c3]",
-    text: "text-[#7a3030]",
-  },
-  yellow: {
-    bg: "bg-[#fdf1d6]",
-    border: "border-[#f2dda0]",
-    text: "text-[#6b4f16]",
-  },
+const TONE_CLASS: Record<"blue" | "pink" | "yellow", string> = {
+  blue: "ipod-callout-blue",
+  pink: "ipod-callout-pink",
+  yellow: "ipod-callout-yellow",
 };
 
 function SectionLabel({ children }: { children: string }) {
   return (
-    <p className="text-[clamp(8.5px,2.1cqi,11px)] font-semibold uppercase tracking-[0.18em] text-accent-blue/90">
+    <p className="ipod-section-label text-[clamp(8px,1.95cqi,14px)] font-semibold uppercase">
       {children}
     </p>
   );
@@ -37,39 +22,64 @@ function Callout({
   tone: "blue" | "pink" | "yellow";
   body: string;
 }) {
-  const styles = TONE_STYLES[tone];
   return (
     <div
-      className={`border ${styles.border} ${styles.bg} ${styles.text} px-[3.2cqi] py-[2.6cqi] text-[clamp(10px,2.6cqi,14px)] font-medium leading-relaxed`}
+      className={`${TONE_CLASS[tone]} px-[2.8cqi] py-[2.2cqi] text-[clamp(10.5px,2.55cqi,19px)] leading-[1.5]`}
     >
       {body}
     </div>
   );
 }
 
+function isVideoSrc(src: string) {
+  return /\.(mp4|webm|mov)(\?|$)/i.test(src);
+}
+
 function Media({
   src,
   alt,
   caption,
+  size = "default",
 }: {
   src: string;
   alt: string;
   caption?: string;
+  /** Full-bleed screenshots read better slightly inset for recruiter scan. */
+  size?: "default" | "inset";
 }) {
+  const video = isVideoSrc(src);
+
   return (
-    <figure className="flex w-full flex-col gap-[1.2cqi]">
-      <div className="relative w-full overflow-hidden border border-black/15">
-        <Image
-          src={src}
-          alt={alt}
-          width={1200}
-          height={900}
-          className="h-auto w-full object-cover"
-          unoptimized
-        />
+    <figure
+      className={`flex flex-col gap-[1.1cqi] ${
+        size === "inset" ? "mx-auto w-[64%]" : "w-full"
+      }`}
+    >
+      <div className="relative w-full border border-black/10">
+        {video ? (
+          <video
+            src={src}
+            className="h-auto w-full"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={alt}
+          />
+        ) : (
+          <Image
+            src={src}
+            alt={alt}
+            width={1200}
+            height={900}
+            className="h-auto w-full"
+            unoptimized
+          />
+        )}
       </div>
       {caption ? (
-        <figcaption className="text-center text-[clamp(9px,2.1cqi,12px)] text-black/45">
+        <figcaption className="text-center text-[clamp(9px,2.05cqi,15px)] leading-snug text-black/42">
           {caption}
         </figcaption>
       ) : null}
@@ -83,12 +93,12 @@ function SplitBlock({
   block: Extract<CaseStudyBlock, { type: "split" }>;
 }) {
   const text = (
-    <div className="flex flex-1 flex-col gap-[1.2cqi]">
+    <div className="flex flex-1 flex-col gap-[1.15cqi]">
       {block.label ? <SectionLabel>{block.label}</SectionLabel> : null}
-      <h3 className="text-[clamp(10px,2.7cqi,14px)] font-semibold text-black">
+      <h3 className="text-[clamp(12px,2.95cqi,20px)] font-semibold leading-snug text-black">
         {block.heading}
       </h3>
-      <p className="text-[clamp(8.5px,2.1cqi,12px)] leading-relaxed text-black/70">
+      <p className="text-[clamp(10px,2.35cqi,17px)] leading-[1.55] text-black/70">
         {block.body}
       </p>
       {block.note ? <Callout tone={block.note.tone} body={block.note.body} /> : null}
@@ -96,14 +106,26 @@ function SplitBlock({
   );
 
   const media = (
-    <div className={block.mediaPosition === "bottom" ? "w-full" : "w-[42%] shrink-0"}>
-      <Media src={block.media.src} alt={block.media.alt} />
+    <div
+      className={
+        block.mediaPosition === "bottom"
+          ? "w-full"
+          : block.mediaWidth === "narrow"
+            ? "w-[30%] shrink-0"
+            : "w-[40%] shrink-0"
+      }
+    >
+      <Media
+        src={block.media.src}
+        alt={block.media.alt}
+        size={block.mediaPosition === "bottom" ? "inset" : "default"}
+      />
     </div>
   );
 
   if (block.mediaPosition === "bottom") {
     return (
-      <div className="flex w-full flex-col gap-[2.4cqi]">
+      <div className="flex w-full flex-col gap-[2.2cqi]">
         {text}
         {media}
       </div>
@@ -111,7 +133,7 @@ function SplitBlock({
   }
 
   return (
-    <div className="flex w-full items-start gap-[3cqi]">
+    <div className="flex w-full items-start gap-[3.2cqi]">
       {block.mediaPosition === "start" ? media : null}
       {text}
       {block.mediaPosition === "end" ? media : null}
@@ -124,42 +146,73 @@ function InsightGrid({
 }: {
   block: Extract<CaseStudyBlock, { type: "insightGrid" }>;
 }) {
+  const columns =
+    block.items.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2";
+
   return (
     <div className="flex w-full flex-col gap-[2cqi]">
-      <SectionLabel>{block.label}</SectionLabel>
-      <h3 className="text-[clamp(10px,2.7cqi,14px)] font-semibold text-black">
-        {block.heading}
-      </h3>
-      <div className="flex w-full items-start gap-[3cqi]">
-        <div className="flex flex-1 flex-col gap-[1.6cqi]">
-          <div className="flex flex-col gap-[0.8cqi]">
-            <h4 className="text-[clamp(9px,2.3cqi,12px)] font-semibold text-black">
+      <div className="flex flex-col gap-[0.9cqi]">
+        <SectionLabel>{block.label}</SectionLabel>
+        <h3 className="text-[clamp(12px,2.95cqi,20px)] font-semibold leading-snug text-black">
+          {block.heading}
+        </h3>
+      </div>
+      <div className="flex w-full items-start gap-[3.2cqi]">
+        <div className="flex min-w-0 flex-1 flex-col gap-[2cqi]">
+          <div className="flex flex-col gap-[0.7cqi]">
+            <h4 className="text-[clamp(10.5px,2.4cqi,17px)] font-semibold text-black">
               {block.subheading}
             </h4>
-            <p className="text-[clamp(8px,2cqi,11px)] leading-relaxed text-black/70">
+            <p className="text-[clamp(10px,2.3cqi,17px)] leading-[1.55] text-black/70">
               {block.body}
             </p>
           </div>
-          <div className="grid w-full grid-cols-3 gap-[0.8cqi]">
+          <div className={`grid w-full grid-cols-1 gap-[1.4cqi] ${columns}`}>
             {block.items.map((item) => (
-              <div
-                key={item.heading}
-                className="border border-accent-blue/30 px-[1.2cqi] py-[1cqi]"
-              >
-                <p className="text-[clamp(6px,1.7cqi,9px)] font-semibold text-black">
+              <div key={item.heading} className="ipod-insight-cell pt-[1.2cqi]">
+                <p className="text-[clamp(8.5px,2cqi,15px)] font-semibold leading-snug text-black">
                   {item.heading}
                 </p>
-                <p className="mt-[0.4cqi] text-[clamp(5.5px,1.5cqi,8px)] italic leading-snug text-black/55">
-                  &ldquo;{item.quote}&rdquo;
+                <p className="mt-[0.55cqi] text-[clamp(8px,1.9cqi,14px)] leading-[1.45] text-black/58">
+                  {block.itemStyle === "finding"
+                    ? item.quote
+                    : `\u201C${item.quote}\u201D`}
                 </p>
               </div>
             ))}
           </div>
         </div>
-        <div className="w-[42%] shrink-0">
-          <Media src={block.media.src} alt={block.media.alt} />
-        </div>
+        {block.media ? (
+          <div className="hidden w-[38%] shrink-0 sm:block">
+            <Media src={block.media.src} alt={block.media.alt} />
+          </div>
+        ) : null}
       </div>
+    </div>
+  );
+}
+
+function MediaPair({
+  block,
+}: {
+  block: Extract<CaseStudyBlock, { type: "mediaPair" }>;
+}) {
+  return (
+    <div className="grid w-full grid-cols-1 gap-[2cqi] sm:grid-cols-2 sm:items-start">
+      {[block.left, block.right].map((item) => (
+        <figure key={item.src} className="flex w-full flex-col">
+          <div className="relative w-full border border-black/10">
+            <Image
+              src={item.src}
+              alt={item.alt}
+              width={1200}
+              height={900}
+              className="h-auto w-full"
+              unoptimized
+            />
+          </div>
+        </figure>
+      ))}
     </div>
   );
 }
@@ -173,62 +226,91 @@ function CalloutList({
     <div className="flex w-full flex-col gap-[1.8cqi]">
       <div className="flex flex-col gap-[0.8cqi]">
         <SectionLabel>{block.label}</SectionLabel>
-        <p className="text-[clamp(10px,2.5cqi,14px)] text-black/70">
+        <p className="text-[clamp(10.5px,2.45cqi,18px)] leading-[1.5] text-black/70">
           {block.intro}
         </p>
       </div>
-      <div className="flex flex-col gap-[1.2cqi]">
-        {block.items.map((item) => (
-          <Callout key={item} tone={block.tone} body={item} />
+      <ol className="flex flex-col gap-[1cqi]">
+        {block.items.map((item, index) => (
+          <li
+            key={item}
+            className={`${TONE_CLASS[block.tone]} flex gap-[1.6cqi] px-[2.4cqi] py-[1.8cqi]`}
+          >
+            <span className="shrink-0 text-[clamp(9.5px,2.2cqi,16px)] font-semibold tabular-nums text-black/35">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="text-[clamp(10px,2.4cqi,17px)] leading-[1.5]">
+              {item}
+            </span>
+          </li>
         ))}
-      </div>
+      </ol>
     </div>
   );
 }
 
+function hasSectionLabel(block: CaseStudyBlock): boolean {
+  return "label" in block && Boolean(block.label);
+}
+
 export function CaseStudyBlocks({ blocks }: { blocks: CaseStudyBlock[] }) {
   return (
-    <div className="flex w-full flex-col gap-[4.5cqi]">
+    <div className="flex w-full flex-col gap-[4.2cqi]">
       {blocks.map((block, index) => {
-        switch (block.type) {
-          case "text":
-            return (
-              <div key={index} className="flex w-full flex-col gap-[1.2cqi]">
-                {block.label ? <SectionLabel>{block.label}</SectionLabel> : null}
-                {block.heading ? (
-                  <h3 className="text-[clamp(11.5px,3.1cqi,16px)] font-semibold text-black">
-                    {block.heading}
-                  </h3>
-                ) : null}
-                {block.body ? (
-                  <p className="text-[clamp(10px,2.5cqi,14px)] leading-relaxed text-black/70">
-                    {block.body}
-                  </p>
-                ) : null}
-              </div>
-            );
-          case "callout":
-            return (
-              <Callout key={index} tone={block.tone} body={block.body} />
-            );
-          case "media":
-            return (
-              <Media
-                key={index}
-                src={block.src}
-                alt={block.alt}
-                caption={block.caption}
-              />
-            );
-          case "split":
-            return <SplitBlock key={index} block={block} />;
-          case "insightGrid":
-            return <InsightGrid key={index} block={block} />;
-          case "calloutList":
-            return <CalloutList key={index} block={block} />;
-          default:
-            return null;
-        }
+        const sectionBreak =
+          index > 0 && hasSectionLabel(block)
+            ? "mt-[1.4cqi] border-t border-black/[0.07] pt-[4.2cqi]"
+            : undefined;
+
+        const node = (() => {
+          switch (block.type) {
+            case "text":
+              return (
+                <div className="flex w-full flex-col gap-[1.1cqi]">
+                  {block.label ? <SectionLabel>{block.label}</SectionLabel> : null}
+                  {block.heading ? (
+                    <h3 className="text-[clamp(13px,3.2cqi,22px)] font-semibold leading-snug text-black">
+                      {block.heading}
+                    </h3>
+                  ) : null}
+                  {block.body ? (
+                    <p className="text-[clamp(11px,2.6cqi,19px)] leading-[1.55] text-black/72">
+                      {block.body}
+                    </p>
+                  ) : null}
+                </div>
+              );
+            case "callout":
+              return <Callout tone={block.tone} body={block.body} />;
+            case "media":
+              return (
+                <Media
+                  src={block.src}
+                  alt={block.alt}
+                  caption={block.caption}
+                  size="inset"
+                />
+              );
+            case "mediaPair":
+              return <MediaPair block={block} />;
+            case "split":
+              return <SplitBlock block={block} />;
+            case "insightGrid":
+              return <InsightGrid block={block} />;
+            case "calloutList":
+              return <CalloutList block={block} />;
+            default:
+              return null;
+          }
+        })();
+
+        if (!node) return null;
+
+        return (
+          <div key={index} className={sectionBreak}>
+            {node}
+          </div>
+        );
       })}
     </div>
   );

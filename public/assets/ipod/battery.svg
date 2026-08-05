@@ -1,12 +1,32 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="13.6432" height="13.6432" viewBox="0 0 13.6432 13.6432" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="battery_full-24px 1" clip-path="url(#clip0_0_15)">
-<g id="Vector">
-</g>
-<path id="Vector_2" d="M7.86128 1.23458V2.3713H9.56636V12.4084H4.0771V2.3713H5.78218V1.23458H7.86128Z" fill="#469561" stroke="#333333" stroke-width="0.194902"/>
-</g>
-<defs>
-<clipPath id="clip0_0_15">
-<rect width="13.6432" height="13.6432" fill="white"/>
-</clipPath>
-</defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 13" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="ipodBattFill" x1="14" y1="2.4" x2="14" y2="10.6" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#C5F8D6"/>
+      <stop offset="32%" stop-color="#5FE090"/>
+      <stop offset="48%" stop-color="#34C759"/>
+      <stop offset="52%" stop-color="#28B04D"/>
+      <stop offset="100%" stop-color="#178A3C"/>
+    </linearGradient>
+    <linearGradient id="ipodBattGloss" x1="14" y1="2.4" x2="14" y2="7" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.95"/>
+      <stop offset="40%" stop-color="#fff" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ipodBattShell" x1="12" y1="0.8" x2="12" y2="12.2" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#C8D6E8"/>
+    </linearGradient>
+    <linearGradient id="ipodBattShine" x1="3" y1="4" x2="24" y2="4" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="35%" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="65%" stop-color="#fff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.1" y="3.4" width="3.35" height="6.2" rx="1" fill="#2C3E58"/>
+  <rect x="24.35" y="3.75" width="2.2" height="2.15" rx="0.5" fill="#fff" fill-opacity="0.35"/>
+  <rect x="0.7" y="0.7" width="23.8" height="11.6" rx="2" fill="url(#ipodBattShell)" stroke="#2C3E58" stroke-width="1.4"/>
+  <rect x="2.35" y="2.35" width="20.5" height="8.3" rx="1.1" fill="url(#ipodBattFill)"/>
+  <rect x="2.35" y="2.35" width="20.5" height="4.2" rx="1.1" fill="url(#ipodBattGloss)"/>
+  <rect x="3.4" y="3.15" width="18.3" height="1.15" rx="0.55" fill="url(#ipodBattShine)"/>
 </svg>

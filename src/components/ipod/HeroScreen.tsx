@@ -3,13 +3,9 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
-type HeroScreenProps = {
-  onEnter?: () => void;
-};
-
-export function HeroScreen({ onEnter }: HeroScreenProps) {
+export function HeroScreen() {
   return (
-    <div className="relative flex h-full flex-col items-center justify-center px-4 text-center">
+    <div className="relative flex h-full w-full flex-col items-center justify-center bg-white px-4 pb-[18%] text-center">
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -24,19 +20,17 @@ export function HeroScreen({ onEnter }: HeroScreenProps) {
         transition={{ delay: 0.28, duration: 0.5 }}
         className="mt-1 text-[clamp(10px,3.4cqi,13px)] text-black/50"
       >
-        Product Designer Prev @UMG
+        Product Designer Previously @UMG
       </motion.p>
 
-      <motion.button
-        type="button"
-        onClick={onEnter}
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.55, duration: 0.6 }}
         className="absolute bottom-[12%] flex flex-col items-center"
       >
         <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
-          Click to view works
+          Scroll to view works
         </p>
         <motion.div
           animate={{ y: [0, 4, 0] }}
@@ -51,7 +45,7 @@ export function HeroScreen({ onEnter }: HeroScreenProps) {
             unoptimized
           />
         </motion.div>
-      </motion.button>
+      </motion.div>
     </div>
   );
 }
