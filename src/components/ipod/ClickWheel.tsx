@@ -13,7 +13,7 @@ type ClickWheelProps = {
 };
 
 const WHEEL_LABEL =
-  "absolute z-10 font-bold tracking-[0.06em] text-wheel-label outline-none transition-[filter] [text-shadow:0_1px_0_rgba(255,255,255,0.85)] hover:brightness-95 active:brightness-90";
+  "absolute z-10 font-bold tracking-[0.06em] text-wheel-label outline-none transition-[filter] [text-shadow:0_1px_0_rgba(35,10,60,0.4)] hover:brightness-95 active:brightness-90";
 
 export function ClickWheel({
   opacity,
@@ -29,23 +29,23 @@ export function ClickWheel({
       className="relative mx-auto aspect-square w-full select-none"
       aria-label="iPod click wheel"
     >
-      {/* Radial gel disc — Aqua click-wheel recipe */}
+      {/* Radial gel disc — darker purple wheel, closer to the body (Classic mini) */}
       <div
-        className="absolute inset-0 overflow-hidden rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-3px_6px_rgba(20,30,50,0.12),0_1px_2px_rgba(20,30,50,0.1)]"
+        className="absolute inset-0 overflow-hidden rounded-full shadow-[inset_0_2px_4px_rgba(230,210,255,0.28),inset_0_-3px_8px_rgba(25,8,50,0.35),0_1px_2px_rgba(30,10,55,0.22)]"
         style={{
           background:
-            "radial-gradient(circle at 50% 32%, #fcfdfe, #e2e5ea 62%, #d0d4db 100%)",
+            "radial-gradient(circle at 50% 32%, #9a6bb8, #7a4898 55%, #5c3478 100%)",
         }}
       >
         <Image
           src="/assets/ipod/wheel.svg"
           alt=""
           fill
-          className="object-cover opacity-40 mix-blend-multiply"
+          className="object-cover opacity-25 mix-blend-multiply"
           unoptimized
         />
         <div
-          className="pointer-events-none absolute inset-0 rounded-full opacity-25 mix-blend-soft-light"
+          className="pointer-events-none absolute inset-0 rounded-full opacity-20 mix-blend-soft-light"
           style={{
             backgroundImage: "url(/assets/ipod/noise-center.png)",
             backgroundSize: "cover",
@@ -72,7 +72,7 @@ export function ClickWheel({
           src="/assets/ipod/prev.svg"
           alt=""
           fill
-          className="object-contain opacity-70 -scale-x-100"
+          className="object-contain opacity-80 brightness-0 invert -scale-x-100"
           unoptimized
         />
       </button>
@@ -87,7 +87,7 @@ export function ClickWheel({
           src="/assets/ipod/next.svg"
           alt=""
           fill
-          className="object-contain opacity-70"
+          className="object-contain opacity-80 brightness-0 invert"
           unoptimized
         />
       </button>
@@ -102,7 +102,7 @@ export function ClickWheel({
           src="/assets/ipod/play.svg"
           alt=""
           fill
-          className="object-contain opacity-70"
+          className="object-contain opacity-80 brightness-0 invert"
           unoptimized
         />
       </button>
@@ -114,21 +114,22 @@ export function ClickWheel({
         aria-label="Select"
       >
         <span
-          className="absolute inset-0 overflow-hidden rounded-full shadow-[inset_0_2px_5px_rgba(20,30,50,0.18),0_1px_0_rgba(255,255,255,0.9)]"
+          className="absolute inset-0 overflow-hidden rounded-full shadow-[inset_0_2px_5px_rgba(30,10,55,0.28),0_1px_0_rgba(230,215,250,0.35)]"
           style={{
+            // Match chassis mid/dark purple so the select disc reads as body color.
             background:
-              "radial-gradient(circle at 50% 35%, #f7f8fa, #dcdfe5 70%, #ced2d9 100%)",
+              "radial-gradient(circle at 50% 35%, #b888d9, #8a55b8 62%, #6b3a98 100%)",
           }}
         >
           <Image
             src="/assets/ipod/center.svg"
             alt=""
             fill
-            className="object-cover opacity-35 mix-blend-multiply"
+            className="object-cover opacity-20 mix-blend-multiply"
             unoptimized
           />
           <span
-            className="absolute inset-0 rounded-full opacity-20 mix-blend-soft-light"
+            className="absolute inset-0 rounded-full opacity-15 mix-blend-soft-light"
             style={{
               backgroundImage: "url(/assets/ipod/noise-center.png)",
               backgroundSize: "cover",

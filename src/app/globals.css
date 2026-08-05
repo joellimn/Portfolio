@@ -4,13 +4,13 @@
   --background: #ffffff;
   --foreground: #1a1a1a;
 
-  /* Chassis metal — cooler, more Classic aluminum than flat gray */
-  --aluminum-light: #f7f8fa;
-  --aluminum-mid: #e2e5ea;
-  --aluminum-dark: #c8ccd3;
+  /* Chassis metal — Classic purple (violet, less pink) */
+  --aluminum-light: #ebe0f5;
+  --aluminum-mid: #9b6bc4;
+  --aluminum-dark: #6a3d96;
 
   --bezel: #23262c;
-  --wheel-label: #9aa0aa;
+  --wheel-label: #f4eefb;
 
   /* Classic LCD status bar (glass, not flat gray) */
   --status-bar-top: #fdfefe;
@@ -115,15 +115,21 @@ body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Chassis shell — cooler metal + inset rim lighting (Aqua iPod recipe) */
+/* Chassis shell — Classic purple metal with soft inset rim light */
 .ipod-chassis {
-  background: linear-gradient(160deg, #ffffff 0%, #eceef2 55%, #d8dbe1 100%);
+  background: linear-gradient(
+    160deg,
+    #efe6f8 0%,
+    #b888d9 42%,
+    #8a55b8 72%,
+    #6b3a98 100%
+  );
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -4px 10px rgba(20, 30, 50, 0.08),
-    0 0 0 1px rgba(20, 30, 50, 0.12),
-    0 26px 55px rgba(20, 30, 50, 0.22),
-    0 4px 10px rgba(20, 30, 50, 0.1);
+    inset 0 2px 0 rgba(245, 238, 255, 0.7),
+    inset 0 -4px 12px rgba(40, 15, 70, 0.2),
+    0 0 0 1px rgba(45, 20, 75, 0.24),
+    0 26px 55px rgba(45, 20, 75, 0.28),
+    0 4px 10px rgba(45, 20, 75, 0.14);
 }
 
 /* Dark LCD bezel around the screen glass */

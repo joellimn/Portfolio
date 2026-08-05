@@ -10,6 +10,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { ClickWheel } from "@/components/ipod/ClickWheel";
+import { IpodStickers } from "@/components/ipod/IpodStickers";
 import { StatusBar } from "@/components/ipod/StatusBar";
 import { useIpodChassisSize } from "@/hooks/useIpodChassisSize";
 
@@ -230,6 +231,7 @@ export function IpodDevice({
                 backgroundSize: "cover",
               }}
             />
+            <IpodStickers />
             <div className="absolute inset-x-[8%] top-0 h-[3%] rounded-full bg-gradient-to-b from-black/40 to-transparent blur-md" />
             <div className="absolute inset-x-0 bottom-0 h-[12%] rounded-full bg-gradient-to-t from-black/55 to-transparent blur-md" />
             <div
@@ -253,7 +255,7 @@ export function IpodDevice({
           className={
             stageMode
               ? "relative flex min-h-0 flex-1 flex-col"
-              : "relative px-[8%] pb-[10%] pt-[6.5%]"
+              : "relative z-[2] px-[8%] pb-[10%] pt-[6.5%]"
           }
         >
           <motion.div
