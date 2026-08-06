@@ -85,6 +85,10 @@ export function PortfolioExperience() {
   const [screen, setScreen] = useState<Screen>(initialRoute.screen);
   const [navOpen, setNavOpen] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(initialRoute.screen !== "hero");
+  // Cover videos wait until the chassis zoom spring has fully settled.
+  const [zoomSettled, setZoomSettled] = useState(
+    initialRoute.screen !== "hero",
+  );
   const [slideDirection, setSlideDirection] = useState(1);
   const [projectsTitle, setProjectsTitle] = useState(
     initialRoute.screen !== "hero",
@@ -181,6 +185,7 @@ export function PortfolioExperience() {
   const activeProject = projects[activeIndex];
   const overlayOpen = screen === "about" || screen === "reading";
   const coversLive = screen === "projects" && zoomOpen;
+  const coverVideoReady = coversLive && zoomSettled;
   // Menu glass keeps classic device chrome; zoomed Works / About / case study
   // share the slimmer stage density (fixed — never animates mid-zoom).
   const chromeDensity =
@@ -221,6 +226,7 @@ export function PortfolioExperience() {
       zoomOpenRef.current = open;
       setZoomOpen(open);
     }
+    setZoomSettled(value >= 0.995);
     const titled = value >= TITLE_SWAP_AT;
     if (titled !== projectsTitleRef.current) {
       projectsTitleRef.current = titled;
@@ -474,6 +480,7 @@ export function PortfolioExperience() {
               onReachStart={handleReachStart}
               zoomProgress={zoomProgress}
               active={coversLive}
+              videoReady={coverVideoReady}
               touchMode={isTouch}
             />
           </div>

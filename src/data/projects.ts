@@ -68,9 +68,20 @@ export type Project = {
   title: string;
   subtitle: string;
   coverSrc: string;
+  /**
+   * Optional Cover Flow reveal shown while this cover is centered.
+   * Videos (mp4) use the framed phone/window layout; stills (png/jpg)
+   * full-bleed crossfade over the static cover.
+   */
+  coverVideoSrc?: string;
   /** Square "album art" style image shown beside the title on the case
    * study's Now Playing hero. */
   heroArt?: { src: string; alt: string };
+  /**
+   * Full-width case-study banner. When set, the case study uses a
+   * traditional banner hero instead of the Cover Flow album art.
+   */
+  heroBanner?: { src: string; alt: string };
   meta?: CaseStudyMetaItem[];
   /** Rich, block-based case study content. Falls back to `sections` when
    * omitted so simpler projects can stay lightweight. */
@@ -91,9 +102,14 @@ export const projects: Project[] = [
     subtitle:
       "Dashboard Design & User Research: Streamlining Special Ops Candidate Evaluations",
     coverSrc: "/assets/covers/soar.png",
+    coverVideoSrc: "/assets/covers/soar-cover.mp4",
     heroArt: {
       src: soarAsset("hero-art.jpg"),
       alt: "SOAR project cover mark",
+    },
+    heroBanner: {
+      src: soarAsset("hero-banner.png"),
+      alt: "160th SOAR assessment dashboard on desktop and mobile",
     },
     meta: [
       { label: "Role", lines: ["Product Designer"] },
@@ -291,6 +307,10 @@ export const projects: Project[] = [
       src: umgAsset("hero-art.jpg"),
       alt: "Universal Music Group mark",
     },
+    heroBanner: {
+      src: umgAsset("hero-banner.png"),
+      alt: "Universal Music Group mark on teal",
+    },
     meta: [
       { label: "Role", lines: ["User Experience Intern"] },
       { label: "Timeline", lines: ["June 2026 –", "August 2026"] },
@@ -356,9 +376,14 @@ export const projects: Project[] = [
     subtitle:
       "Design System: Building Scalable Component Systems for Smart Wardrobes",
     coverSrc: "/assets/covers/wearitt.png",
+    coverVideoSrc: "/assets/covers/wearitt-cover.png",
     heroArt: {
       src: wearittAsset("hero-art.jpg"),
       alt: "Wearitt logo mark",
+    },
+    heroBanner: {
+      src: wearittAsset("hero-banner.png"),
+      alt: "Wearitt design system — wardrobe app screens and component library on phone mockups",
     },
     meta: [
       { label: "Role", lines: ["UX Design Intern"] },
@@ -515,9 +540,14 @@ export const projects: Project[] = [
     subtitle:
       "End-to-End Design: Mobile Platform for Emergency Relief Services",
     coverSrc: "/assets/covers/wttin.png",
+    coverVideoSrc: "/assets/covers/wttin-cover.mp4",
     heroArt: {
       src: wttinAsset("hero-art.jpg"),
       alt: "Where to Turn in Nashville logo mark",
+    },
+    heroBanner: {
+      src: wttinAsset("hero-banner.png"),
+      alt: "Where to Turn in Nashville app — map and AI chat on phone mockups",
     },
     meta: [
       { label: "Role", lines: ["Lead UX Designer"] },

@@ -50,6 +50,11 @@ type CoverFlowProps = {
   /** When false, Cover Flow stays mounted (for layout/preload) but ignores
    * wheel/drag/keyboard — used while the blank stage curtain is up. */
   active?: boolean;
+  /**
+   * When false, cover videos stay on their static art (used until the
+   * Menu→Works zoom spring has fully settled).
+   */
+  videoReady?: boolean;
   /** Fires once the container has a real measured size so the parent can
    * lift the blank curtain without a size-0 → full-size flicker. */
   onReady?: () => void;
@@ -82,6 +87,7 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       onReachStart,
       zoomProgress,
       active = true,
+      videoReady = true,
       onReady,
       touchMode = false,
     },
@@ -482,6 +488,7 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
                       centerGap={centerGap}
                       rotation={ROTATION}
                       isActive={index === activeIndex}
+                      playing={index === activeIndex && videoReady}
                       onCardClick={() => {
                         if (!activeRef.current) return;
                         if (index === activeIndex) {
@@ -632,6 +639,8 @@ type CardProps = {
   centerGap: number;
   rotation: number;
   isActive: boolean;
+  /** Start cover-video reveal (center cover + zoom settled). */
+  playing: boolean;
   onCardClick: () => void;
 };
 
@@ -645,6 +654,7 @@ const CoverFlowCard = memo(function CoverFlowCard({
   centerGap,
   rotation,
   isActive,
+  playing,
   onCardClick,
 }: CardProps) {
   const rotateY = useTransform(scrollX, (value) => {
@@ -706,6 +716,7 @@ const CoverFlowCard = memo(function CoverFlowCard({
           project={project}
           className="size-full"
           priority={isActive}
+          playing={playing}
         />
         <motion.div
           aria-hidden
@@ -742,7 +753,11 @@ const CoverFlowCard = memo(function CoverFlowCard({
               opacity: 0.5,
             }}
           >
-            <CoverArt project={project} className="size-full" />
+            <CoverArt
+              project={project}
+              className="size-full"
+              playing={playing}
+            />
             <motion.div
               className="absolute inset-0 bg-black"
               style={{ opacity: dimOpacity }}
