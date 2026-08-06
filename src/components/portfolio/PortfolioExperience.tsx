@@ -28,6 +28,7 @@ import {
 import { StatusBar } from "@/components/ipod/StatusBar";
 import { projects } from "@/data/projects";
 import { useIsTouchScreen } from "@/hooks/useIsTouchScreen";
+import { statusBarHeightCqi } from "@/lib/chromeDensity";
 import {
   pathForRoute,
   routeFromPath,
@@ -38,9 +39,7 @@ import {
 type Screen = PortfolioScreen;
 
 // 1 = scroll forward into About, -1 = scroll back to Works.
-// Enter and exit both travel through the same offset for a given
-// direction so scroll-in and scroll-out feel like one continuous motion.
-const screenVariants = {
+const aboutContentVariants = {
   enter: (direction: number) => ({
     opacity: 0,
     y: direction * 28,
@@ -86,7 +85,6 @@ export function PortfolioExperience() {
   const [screen, setScreen] = useState<Screen>(initialRoute.screen);
   const [navOpen, setNavOpen] = useState(false);
   const [zoomOpen, setZoomOpen] = useState(initialRoute.screen !== "hero");
-  const [statusCompact, setStatusCompact] = useState(false);
   const [slideDirection, setSlideDirection] = useState(1);
   const [projectsTitle, setProjectsTitle] = useState(
     initialRoute.screen !== "hero",
@@ -180,44 +178,14 @@ export function PortfolioExperience() {
     }
   }, [screen, activeIndex, pathname, router]);
 
-  useEffect(() => {
-    if (screen !== "reading") {
-      setStatusCompact(false);
-      return;
-    }
-
-    let cancelled = false;
-    let detach: (() => void) | undefined;
-
-    const attach = () => {
-      if (cancelled) return;
-      const el = studyScrollRef.current;
-      if (!el) {
-        requestAnimationFrame(attach);
-        return;
-      }
-      const onScroll = () => {
-        const y = el.scrollTop;
-        setStatusCompact((prev) => {
-          if (prev) return y > 6;
-          return y > 28;
-        });
-      };
-      onScroll();
-      el.addEventListener("scroll", onScroll, { passive: true });
-      detach = () => el.removeEventListener("scroll", onScroll);
-    };
-    attach();
-
-    return () => {
-      cancelled = true;
-      detach?.();
-    };
-  }, [screen, activeIndex]);
-
   const activeProject = projects[activeIndex];
   const overlayOpen = screen === "about" || screen === "reading";
   const coversLive = screen === "projects" && zoomOpen;
+  // Menu glass keeps classic device chrome; zoomed Works / About / case study
+  // share the slimmer stage density (fixed — never animates mid-zoom).
+  const chromeDensity =
+    screen === "hero" && !zoomOpen ? "device" : "stage";
+  const stageStatusBarH = statusBarHeightCqi("stage");
 
   const glassStatusTitle = projectsTitle ? "Works" : "Menu";
 
@@ -463,6 +431,7 @@ export function PortfolioExperience() {
       active={navActive}
       onNavigate={handleNavigate}
       onClose={() => setNavOpen(false)}
+      density={chromeDensity}
     />
   );
 
@@ -476,7 +445,6 @@ export function PortfolioExperience() {
         statusTitle={glassStatusTitle}
         showPlaying={false}
         onBack={overlayOpen ? undefined : glassBack}
-        statusCompact={false}
         overlay={overlayOpen ? undefined : drawer}
         onMenu={overlayOpen ? undefined : toggleNav}
         onPrev={navOpen || !coversLive || overlayOpen ? undefined : goPrev}
@@ -530,32 +498,31 @@ export function PortfolioExperience() {
         {screen === "about" ? (
           <motion.div
             key="about"
-            custom={slideDirection}
-            variants={screenVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
+            // Shell stays fully opaque so the status bar never fades/slides;
+            // duration matches content exit so AnimatePresence keeps it mounted.
+            initial={false}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 1 }}
             transition={{ duration: 0.45, ease: SCREEN_EASE }}
             className="fixed inset-0 z-20 bg-white [container-type:size]"
             style={{
-              ["--status-bar-h" as string]: "8.5cqi",
+              ["--status-bar-h" as string]: stageStatusBarH,
             }}
           >
-            {/* Status bar is painted in a counter-moving layer so it stays
-                visually fixed while the page slides — same enter and exit. */}
+            <div className="relative z-20">
+              <StatusBar
+                title="About"
+                onBack={overlayBack}
+                density="stage"
+              />
+            </div>
             <motion.div
               custom={slideDirection}
-              variants={{
-                enter: (direction: number) => ({ y: direction * -28 }),
-                center: { y: 0 },
-                exit: (direction: number) => ({ y: direction * 28 }),
-              }}
+              variants={aboutContentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
               transition={{ duration: 0.45, ease: SCREEN_EASE }}
-              className="relative z-20"
-            >
-              <StatusBar title="About" onBack={overlayBack} />
-            </motion.div>
-            <div
               className="absolute inset-x-0 bottom-0 overflow-hidden"
               style={{ top: "var(--status-bar-h)" }}
             >
@@ -564,7 +531,7 @@ export function PortfolioExperience() {
                 onScrollBack={goPrev}
                 touchMode={isTouch}
               />
-            </div>
+            </motion.div>
             {drawer}
           </motion.div>
         ) : null}
@@ -578,18 +545,18 @@ export function PortfolioExperience() {
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-20 bg-white [container-type:size]"
             style={{
-              ["--status-bar-h" as string]: statusCompact ? "5.2cqi" : "8.5cqi",
+              ["--status-bar-h" as string]: stageStatusBarH,
             }}
           >
             <StatusBar
               title="Now Playing"
               showPlaying={isPlaying}
               onBack={overlayBack}
-              compact={statusCompact}
+              density="stage"
             />
             <div
               className="absolute inset-x-0 bottom-0 overflow-hidden"
-              style={{ top: statusCompact ? "5.2cqi" : "8.5cqi" }}
+              style={{ top: "var(--status-bar-h)" }}
             >
               <CaseStudyView
                 project={activeProject}

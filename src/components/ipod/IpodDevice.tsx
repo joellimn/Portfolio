@@ -3,6 +3,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -22,6 +23,7 @@ import {
   computeRestZoomGeometry,
   useIpodChassisSize,
 } from "@/hooks/useIpodChassisSize";
+import { statusBarHeightCqi } from "@/lib/chromeDensity";
 
 type IpodDeviceProps = {
   /** 0 = resting (full chassis visible), 1 = fully zoomed in so the screen
@@ -34,8 +36,6 @@ type IpodDeviceProps = {
   statusTitle: string;
   showPlaying?: boolean;
   onBack?: () => void;
-  /** Shrink the LCD status bar while reading a scrolled case study. */
-  statusCompact?: boolean;
   /** Hide the viewport-native sharp chrome (About / reading cover it). */
   suppressSharpChrome?: boolean;
   overlay?: React.ReactNode;
@@ -74,7 +74,6 @@ export function IpodDevice({
   statusTitle,
   showPlaying = false,
   onBack,
-  statusCompact = false,
   suppressSharpChrome = false,
   overlay,
   children,
@@ -89,6 +88,9 @@ export function IpodDevice({
   const screenContentRef = useRef<HTMLDivElement>(null);
   const glassRef = useRef<HTMLDivElement>(null);
   const geometryRef = useRef<ZoomGeometry>(REST_GEOMETRY);
+  // Bumped whenever geometryRef changes so chassis transforms re-read it
+  // even if zoomProgress is already settled (deep link / refresh on /works).
+  const geometryTick = useMotionValue(0);
   const [transformOrigin, setTransformOrigin] = useState(
     `${REST_GEOMETRY.originX}px ${REST_GEOMETRY.originY}px`,
   );
@@ -118,17 +120,23 @@ export function IpodDevice({
     setPortalReady(true);
   }, []);
 
-  const seedExitGeometry = useCallback(() => {
-    const { widthPx: w, screenAspect: aspect } = sizeRef.current;
-    const next = computeRestZoomGeometry(
-      w,
-      aspect,
-      window.innerWidth,
-      window.innerHeight,
-    );
+  const applyGeometry = useCallback((next: ZoomGeometry) => {
     geometryRef.current = next;
     setTransformOrigin(`${next.originX}px ${next.originY}px`);
-  }, []);
+    geometryTick.set(geometryTick.get() + 1);
+  }, [geometryTick]);
+
+  const seedExitGeometry = useCallback(() => {
+    const { widthPx: w, screenAspect: aspect } = sizeRef.current;
+    applyGeometry(
+      computeRestZoomGeometry(
+        w,
+        aspect,
+        window.innerWidth,
+        window.innerHeight,
+      ),
+    );
+  }, [applyGeometry]);
 
   const syncStage = useCallback(() => {
     const open = zoomProgress.get() >= 1;
@@ -155,35 +163,55 @@ export function IpodDevice({
     syncStage();
   }, [forceStage, syncStage]);
 
-  useEffect(() => {
+  // Deep links / refresh can land with zoom already at 1. DOM measure while
+  // transformed is wrong, and skipping measure leaves scale=1 (zoomed out).
+  // Always seed from layout math; refine with getBoundingClientRect only at rest.
+  useLayoutEffect(() => {
     if (stageMode) return;
+
+    const seedComputed = () => {
+      applyGeometry(
+        computeRestZoomGeometry(
+          widthPx,
+          screenAspect,
+          window.innerWidth,
+          window.innerHeight,
+        ),
+      );
+    };
 
     const measure = () => {
       const chassis = chassisRef.current;
-      // Zoom to the white glass (inside the dark bezel), so the bezel
-      // scales off-screen by the time the screen fills the viewport.
       const glassEl = glassRef.current ?? screenContentRef.current;
-      if (!chassis || !glassEl) return;
-      if (zoomProgress.get() > 0.001 || zoomRender.get() > 0.001) return;
+      if (!chassis || !glassEl) {
+        seedComputed();
+        return;
+      }
+
+      if (zoomProgress.get() > 0.001 || zoomRender.get() > 0.001) {
+        seedComputed();
+        return;
+      }
 
       const chassisRect = chassis.getBoundingClientRect();
       const glassRect = glassEl.getBoundingClientRect();
+      if (glassRect.width < 1 || glassRect.height < 1) {
+        seedComputed();
+        return;
+      }
+
       const glassCenterX = glassRect.left + glassRect.width / 2;
       const glassCenterY = glassRect.top + glassRect.height / 2;
-      const scale = Math.max(
-        window.innerWidth / glassRect.width,
-        window.innerHeight / glassRect.height,
-      );
-      geometryRef.current = {
+      applyGeometry({
         originX: glassCenterX - chassisRect.left,
         originY: glassCenterY - chassisRect.top,
         tx: window.innerWidth / 2 - glassCenterX,
         ty: window.innerHeight / 2 - glassCenterY,
-        scale,
-      };
-      setTransformOrigin(
-        `${geometryRef.current.originX}px ${geometryRef.current.originY}px`,
-      );
+        scale: Math.max(
+          window.innerWidth / glassRect.width,
+          window.innerHeight / glassRect.height,
+        ),
+      });
     };
 
     measure();
@@ -193,22 +221,38 @@ export function IpodDevice({
       window.removeEventListener("resize", measure);
       window.removeEventListener("orientationchange", measure);
     };
-  }, [widthPx, screenAspect, zoomProgress, zoomRender, stageMode]);
+  }, [
+    widthPx,
+    screenAspect,
+    zoomProgress,
+    zoomRender,
+    stageMode,
+    applyGeometry,
+  ]);
 
-  const chassisX = useTransform([zoomRender, stageBlend], (latest) => {
-    const [progress, staged] = latest as [number, number];
-    return staged ? 0 : geometryRef.current.tx * progress;
-  });
-  const chassisY = useTransform([zoomRender, stageBlend], (latest) => {
-    const [progress, staged] = latest as [number, number];
-    return staged ? 0 : geometryRef.current.ty * progress;
-  });
-  const chassisScale = useTransform([zoomRender, stageBlend], (latest) => {
-    const [progress, staged] = latest as [number, number];
-    if (staged) return 1;
-    const target = geometryRef.current.scale * SCALE_OVERSHOOT;
-    return 1 + (target - 1) * progress;
-  });
+  const chassisX = useTransform(
+    [zoomRender, stageBlend, geometryTick],
+    (latest) => {
+      const [progress, staged] = latest as [number, number, number];
+      return staged ? 0 : geometryRef.current.tx * progress;
+    },
+  );
+  const chassisY = useTransform(
+    [zoomRender, stageBlend, geometryTick],
+    (latest) => {
+      const [progress, staged] = latest as [number, number, number];
+      return staged ? 0 : geometryRef.current.ty * progress;
+    },
+  );
+  const chassisScale = useTransform(
+    [zoomRender, stageBlend, geometryTick],
+    (latest) => {
+      const [progress, staged] = latest as [number, number, number];
+      if (staged) return 1;
+      const target = geometryRef.current.scale * SCALE_OVERSHOOT;
+      return 1 + (target - 1) * progress;
+    },
+  );
 
   const screenBorderRadius = useTransform(zoomRender, [0, 0.88], [8, 0]);
   const chassisRadius = useTransform(zoomRender, [0, 0.8], [38, 0]);
@@ -246,7 +290,7 @@ export function IpodDevice({
     setSharpChrome(zoomRender.get() >= 0.97);
   }, [stageMode, zoomRender]);
 
-  const statusBarCqi = statusCompact ? "5.2cqi" : "8.5cqi";
+  const statusBarCqi = statusBarHeightCqi("device");
   const showSharpPortal =
     portalReady && sharpChrome && !suppressSharpChrome;
 
@@ -359,7 +403,7 @@ export function IpodDevice({
                   title={statusTitle}
                   showPlaying={showPlaying}
                   onBack={onBack}
-                  compact={statusCompact}
+                  density="device"
                 />
               </motion.div>
               <div
@@ -406,7 +450,7 @@ export function IpodDevice({
                   title={statusTitle}
                   showPlaying={showPlaying}
                   onBack={onBack}
-                  compact={statusCompact}
+                  density="stage"
                 />
               </div>
               {overlay}

@@ -19,10 +19,8 @@ import {
   type PanInfo,
 } from "framer-motion";
 import { CoverArt } from "@/components/ipod/CoverArt";
+import { STATUS_BAR_FRACTION } from "@/lib/chromeDensity";
 import type { Project } from "@/data/projects";
-
-// Match StatusBar non-compact height (8.5cqi of glass / viewport width).
-const STATUS_BAR_FRACTION = 0.085;
 
 // Adapted from ashishgogula/coverflow (MIT) — https://coverflow.ashishgogula.in/
 // Same spring-driven 3D carousel (covers fan out left/right, rotateY).
@@ -120,7 +118,8 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       mass: 0.8,
     });
 
-    // Match StatusBar's non-compact height so the destination frame equals
+    // Match zoomed (stage) StatusBar height so the destination frame equals
+    // the full-bleed Works layout under the slim chrome.
     // the Cover Flow content box below the status bar.
     const measureContainer = useCallback(() => {
       const container = containerRef.current;

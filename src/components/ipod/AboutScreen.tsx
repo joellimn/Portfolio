@@ -35,7 +35,7 @@ const CONTACT_LINKS: ContactLink[] = [
   {
     label: "Resume",
     action: "external",
-    href: "https://drive.google.com/file/d/1P24MR7nEEZTLqnmhrntTwrwoh5J873Je/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1EpfISujvPV3touQihCY63IkajsmWT4KS/view?usp=sharing",
   },
 ];
 

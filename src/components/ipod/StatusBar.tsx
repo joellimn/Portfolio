@@ -1,5 +1,9 @@
 import { ChevronLeft } from "lucide-react";
 import { BatteryIcon } from "@/components/ipod/BatteryIcon";
+import {
+  statusBarHeightCqi,
+  type ChromeDensity,
+} from "@/lib/chromeDensity";
 
 type StatusBarProps = {
   title: string;
@@ -7,38 +11,52 @@ type StatusBarProps = {
   /** When provided, shows a back chevron before the title for a quick,
    * one-step back navigation (mirrors the physical MENU action). */
   onBack?: () => void;
-  /** Slimmer bar while a case study is scrolled — frees vertical space. */
-  compact?: boolean;
+  /**
+   * "device" = classic on-iPod LCD bar.
+   * "stage" = slimmer full-bleed bar once zoomed into Works / About / case study.
+   */
+  density?: ChromeDensity;
 };
 
 export function StatusBar({
   title,
   showPlaying = false,
   onBack,
-  compact = false,
+  density = "device",
 }: StatusBarProps) {
-  // Classic LCD title bar: glassy gradient, etched type, blue play pip.
-  // No height transitions — cqi jumps on stage swap (e.g. Works → About)
-  // would otherwise ease and read as a top-tab animation.
+  const stage = density === "stage";
+
+  // No height transitions — density is fixed per surface so Menu→Works zoom
+  // never animates the bar height mid-flight.
   return (
     <div
-      className={`ipod-status-bar relative z-20 flex w-full items-center justify-between px-[3.2cqi] ${
-        compact ? "min-h-[14px]" : "min-h-[16px]"
+      className={`ipod-status-bar relative z-20 flex w-full items-center justify-between ${
+        stage
+          ? "min-h-[14px] px-[max(12px,2.2cqi)]"
+          : "min-h-[16px] px-[3.2cqi]"
       }`}
-      style={{ height: compact ? "5.2cqi" : "8.5cqi" }}
+      style={{ height: statusBarHeightCqi(density) }}
     >
-      <div className="relative z-[1] flex min-w-0 items-center gap-[0.6cqi]">
+      <div
+        className={`relative z-[1] flex min-w-0 items-center ${
+          stage ? "gap-[0.45cqi]" : "gap-[0.6cqi]"
+        }`}
+      >
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
             aria-label="Back"
-            className="-ml-[0.8cqi] flex shrink-0 items-center justify-center p-[0.8cqi] text-status-bar-text/80 transition hover:text-status-bar-text"
+            className={`flex shrink-0 items-center justify-center text-status-bar-text/80 transition hover:text-status-bar-text ${
+              stage
+                ? "-ml-[0.4cqi] p-[0.55cqi]"
+                : "-ml-[0.8cqi] p-[0.8cqi]"
+            }`}
           >
             <ChevronLeft
               className={
-                compact
-                  ? "size-[max(9px,3.4cqi)]"
+                stage
+                  ? "size-[max(9px,2.8cqi)]"
                   : "size-[max(10px,4.2cqi)]"
               }
               strokeWidth={2.5}
@@ -47,20 +65,24 @@ export function StatusBar({
         ) : null}
         <p
           className={`truncate font-bold tracking-tight text-status-bar-text ${
-            compact
-              ? "text-[max(7px,2.9cqi)]"
+            stage
+              ? "text-[max(11px,2.35cqi)]"
               : "text-[max(8px,3.6cqi)]"
           }`}
         >
           {title}
         </p>
       </div>
-      <div className="relative z-[1] flex shrink-0 items-center gap-[1.4cqi]">
+      <div
+        className={`relative z-[1] flex shrink-0 items-center ${
+          stage ? "gap-[1cqi]" : "gap-[1.4cqi]"
+        }`}
+      >
         {showPlaying ? (
           <span
             className={`inline-block text-aqua-accent drop-shadow-[0_1px_0_rgba(255,255,255,0.6)] ${
-              compact
-                ? "text-[max(6px,2.2cqi)]"
+              stage
+                ? "text-[max(8px,1.9cqi)]"
                 : "text-[max(7px,2.8cqi)]"
             }`}
             aria-hidden
@@ -70,8 +92,8 @@ export function StatusBar({
         ) : null}
         <BatteryIcon
           className={`shrink-0 drop-shadow-[0_0.5px_0_rgba(255,255,255,0.75)] ${
-            compact
-              ? "h-[max(8px,3.2cqi)] w-[max(17px,7cqi)]"
+            stage
+              ? "h-[max(9px,2.6cqi)] w-[max(18px,5.6cqi)]"
               : "h-[max(9px,3.8cqi)] w-[max(20px,8.4cqi)]"
           }`}
         />
