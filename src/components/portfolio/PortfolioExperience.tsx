@@ -486,11 +486,10 @@ export function PortfolioExperience() {
           </div>
 
           <motion.div
-            className="absolute inset-0 z-[1] bg-white"
-            style={{
-              opacity: menuOverlayOpacity,
-              pointerEvents: screen === "hero" ? "auto" : "none",
-            }}
+            className={`absolute inset-0 z-20 bg-white ${
+              screen === "hero" ? "pointer-events-auto" : "pointer-events-none"
+            }`}
+            style={{ opacity: menuOverlayOpacity }}
             aria-hidden={screen !== "hero"}
           >
             <HeroScreen

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
@@ -11,6 +12,17 @@ type HeroScreenProps = {
 };
 
 export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps) {
+  // Debounce so pointerup + click (or touchend + click) don't double-fire.
+  const lastFireRef = useRef(0);
+
+  const triggerEnter = () => {
+    if (!onEnterWorks) return;
+    const now = performance.now();
+    if (now - lastFireRef.current < 400) return;
+    lastFireRef.current = now;
+    onEnterWorks();
+  };
+
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-white px-4 pb-[18%] text-center">
       <motion.p
@@ -34,20 +46,25 @@ export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps)
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.55, duration: 0.6 }}
-        className="absolute bottom-[12%] z-[100] flex flex-col items-center"
+        className="absolute bottom-[12%] z-[200] flex flex-col items-center"
       >
         {touchMode && onEnterWorks ? (
           <button
             type="button"
             aria-label="Tap to view works"
-            onPointerDown={(event) => {
-              // Fire on press — more reliable than click inside transformed
-              // chassis trees on mobile / in-app browsers.
+            // pointerup + click: transformed chassis trees often drop one or
+            // the other on mobile; either path is enough to enter Works.
+            onPointerUp={(event) => {
               event.preventDefault();
               event.stopPropagation();
-              onEnterWorks();
+              triggerEnter();
             }}
-            className="pointer-events-auto relative z-[100] -m-4 touch-manipulation px-4 py-4 text-[clamp(10px,3.2cqi,12px)] text-black outline-none active:opacity-60"
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              triggerEnter();
+            }}
+            className="pointer-events-auto relative z-[200] -m-5 touch-manipulation px-5 py-5 text-[clamp(10px,3.2cqi,12px)] text-black outline-none active:opacity-60"
           >
             Tap to view works
           </button>

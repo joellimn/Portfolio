@@ -426,13 +426,13 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       <motion.div
         ref={containerRef}
         className={`relative h-full w-full select-none overflow-hidden focus:outline-none ${
-          touchMode ? "touch-none" : "touch-pan-x"
-        } ${
+          // Menu overlay sits above Cover Flow; keep it from stealing taps
+          // while inactive (cards use pointer-events: auto + high z-index).
           !active
-            ? "cursor-default"
-            : isDragging
-              ? "cursor-grabbing"
-              : "cursor-grab"
+            ? "pointer-events-none cursor-default"
+            : `${touchMode ? "touch-none" : "touch-pan-x"} ${
+                isDragging ? "cursor-grabbing" : "cursor-grab"
+              }`
         }`}
         role="region"
         aria-label="Cover Flow"
@@ -488,6 +488,7 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
                       centerGap={centerGap}
                       rotation={ROTATION}
                       isActive={index === activeIndex}
+                      interactive={active}
                       playing={index === activeIndex && videoReady}
                       onCardClick={() => {
                         if (!activeRef.current) return;
@@ -639,6 +640,8 @@ type CardProps = {
   centerGap: number;
   rotation: number;
   isActive: boolean;
+  /** When false (Menu / zooming), cards must not intercept taps. */
+  interactive: boolean;
   /** Start cover-video reveal (center cover + zoom settled). */
   playing: boolean;
   onCardClick: () => void;
@@ -654,6 +657,7 @@ const CoverFlowCard = memo(function CoverFlowCard({
   centerGap,
   rotation,
   isActive,
+  interactive,
   playing,
   onCardClick,
 }: CardProps) {
@@ -705,11 +709,11 @@ const CoverFlowCard = memo(function CoverFlowCard({
         z,
         rotateY,
         zIndex,
-        pointerEvents: "auto",
+        pointerEvents: interactive ? "auto" : "none",
         transformStyle: "preserve-3d",
         willChange: "transform",
       }}
-      onClick={onCardClick}
+      onClick={interactive ? onCardClick : undefined}
     >
       <div className="relative size-full overflow-hidden border border-black/10 shadow-[0_10px_24px_rgba(0,0,0,0.22)]">
         <CoverArt
