@@ -1,18 +1,18 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type KeyboardEvent, type MouseEvent, type PointerEvent } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
 type HeroScreenProps = {
-  /** Touch / tablet: tap the CTA text to zoom into Works. */
+  /** Touch / tablet: tap anywhere on the Menu screen to zoom into Works. */
   onEnterWorks?: () => void;
-  /** When true, copy reads "Tap…" (no arrow) and the text is the trigger. */
+  /** When true, copy reads "Tap…" and the whole screen is the trigger. */
   touchMode?: boolean;
 };
 
 export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps) {
-  // Debounce so pointerup + click (or touchend + click) don't double-fire.
+  // Debounce so pointerup + click don't double-fire the zoom.
   const lastFireRef = useRef(0);
 
   const triggerEnter = () => {
@@ -23,8 +23,36 @@ export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps)
     onEnterWorks();
   };
 
+  const touchEnterProps =
+    touchMode && onEnterWorks
+      ? {
+          role: "button" as const,
+          tabIndex: 0,
+          "aria-label": "Tap to view works",
+          onPointerUp: (event: PointerEvent<HTMLDivElement>) => {
+            event.preventDefault();
+            triggerEnter();
+          },
+          onClick: (event: MouseEvent<HTMLDivElement>) => {
+            event.preventDefault();
+            triggerEnter();
+          },
+          onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              triggerEnter();
+            }
+          },
+        }
+      : undefined;
+
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center bg-white px-4 pb-[18%] text-center">
+    <div
+      className={`relative flex h-full w-full flex-col items-center justify-center bg-white px-4 pb-[18%] text-center ${
+        touchMode && onEnterWorks ? "cursor-pointer touch-manipulation" : ""
+      }`}
+      {...touchEnterProps}
+    >
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -46,28 +74,12 @@ export function HeroScreen({ onEnterWorks, touchMode = false }: HeroScreenProps)
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.55, duration: 0.6 }}
-        className="absolute bottom-[12%] z-[200] flex flex-col items-center"
+        className="pointer-events-none absolute bottom-[12%] flex flex-col items-center"
       >
-        {touchMode && onEnterWorks ? (
-          <button
-            type="button"
-            aria-label="Tap to view works"
-            // pointerup + click: transformed chassis trees often drop one or
-            // the other on mobile; either path is enough to enter Works.
-            onPointerUp={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              triggerEnter();
-            }}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              triggerEnter();
-            }}
-            className="pointer-events-auto relative z-[200] -m-5 touch-manipulation px-5 py-5 text-[clamp(10px,3.2cqi,12px)] text-black outline-none active:opacity-60"
-          >
+        {touchMode ? (
+          <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
             Tap to view works
-          </button>
+          </p>
         ) : (
           <>
             <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
