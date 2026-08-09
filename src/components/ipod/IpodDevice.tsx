@@ -341,10 +341,18 @@ export function IpodDevice({
         className={
           stageMode
             ? "relative flex h-full w-full flex-col overflow-hidden bg-white"
-            : "ipod-chassis relative overflow-hidden"
+            : "ipod-chassis-shadow relative"
         }
         style={stageMode ? undefined : { borderRadius: chassisRadius }}
       >
+        <motion.div
+          className={
+            stageMode
+              ? "relative flex h-full w-full flex-1 flex-col overflow-hidden bg-white"
+              : "ipod-chassis relative overflow-hidden"
+          }
+          style={stageMode ? undefined : { borderRadius: chassisRadius }}
+        >
         {!stageMode ? (
           <motion.div
             className="pointer-events-none absolute inset-0"
@@ -364,17 +372,18 @@ export function IpodDevice({
               }}
             />
             <IpodStickers />
-            <div className="absolute inset-x-[8%] top-0 h-[3%] rounded-full bg-gradient-to-b from-black/35 to-transparent blur-md" />
-            <div className="absolute inset-x-0 bottom-0 h-[12%] rounded-full bg-gradient-to-t from-black/45 to-transparent blur-md" />
+            {/* Edge vignettes inset so blur doesn’t clip into square corner dirt */}
+            <div className="absolute inset-x-[10%] top-0 h-[2.5%] rounded-full bg-gradient-to-b from-black/28 to-transparent blur-sm" />
+            <div className="absolute inset-x-[6%] bottom-0 h-[10%] rounded-full bg-gradient-to-t from-black/32 to-transparent blur-sm" />
             <div
-              className="absolute left-[-6%] top-[4%] h-[96%] w-[12%] rounded-full blur-md opacity-80"
+              className="absolute left-[-4%] top-[8%] h-[84%] w-[10%] rounded-full blur-sm opacity-70"
               style={{
                 backgroundImage: "url(/assets/ipod/shadow-left.png)",
                 backgroundSize: "cover",
               }}
             />
             <div
-              className="absolute right-[-5%] top-[4%] h-[96%] w-[11%] rounded-full blur-md opacity-80"
+              className="absolute right-[-3%] top-[8%] h-[84%] w-[9%] rounded-full blur-sm opacity-70"
               style={{
                 backgroundImage: "url(/assets/ipod/shadow-right.png)",
                 backgroundSize: "cover",
@@ -487,6 +496,7 @@ export function IpodDevice({
             </motion.div>
           ) : null}
         </div>
+        </motion.div>
       </motion.div>
 
       {showSharpPortal

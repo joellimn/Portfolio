@@ -100,24 +100,72 @@ export function CoverArt({
     return () => window.clearTimeout(revealTimer);
   }, [playing, hasReveal]);
 
+  // Warm the decoder during the still-cover delay (before crossfade).
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !revealMounted || !revealIsVideo) return;
+    if (!video || !revealIsVideo || !revealMounted) return;
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    if (video.readyState < 2) video.load();
+  }, [revealMounted, revealIsVideo, revealSrc]);
 
-    // Start during the reveal delay so the crossfade lands on a live frame.
-    video.currentTime = 0;
-    const playAttempt = video.play();
-    if (playAttempt) {
-      playAttempt.catch(() => {
-        // Autoplay can be blocked until a user gesture; Cover Flow
-        // interaction usually unlocks it on the next settle.
-      });
-    }
+  // iOS Safari often refuses / immediately pauses playback while the
+  // element is opacity:0 (treated as not visible). Play once revealed,
+  // and retry after canplay / a failed attempt.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !revealIsVideo || !revealMounted || !showReveal) return;
+
+    let cancelled = false;
+    let retryTimer = 0;
+
+    const tryPlay = () => {
+      if (cancelled) return;
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+
+      const kick = () => {
+        if (cancelled) return;
+        const attempt = video.play();
+        if (attempt) {
+          attempt.catch(() => {
+            if (cancelled) return;
+            retryTimer = window.setTimeout(tryPlay, 280);
+          });
+        }
+      };
+
+      if (video.readyState >= 2) {
+        try {
+          if (video.currentTime > 0.05) video.currentTime = 0;
+        } catch {
+          // Ignore seek-before-metadata on flaky mobile decoders.
+        }
+        kick();
+        return;
+      }
+
+      const onReady = () => {
+        video.removeEventListener("loadeddata", onReady);
+        video.removeEventListener("canplay", onReady);
+        kick();
+      };
+      video.addEventListener("loadeddata", onReady);
+      video.addEventListener("canplay", onReady);
+    };
+
+    tryPlay();
 
     return () => {
+      cancelled = true;
+      if (retryTimer) window.clearTimeout(retryTimer);
       video.pause();
     };
-  }, [revealMounted, revealIsVideo, revealSrc]);
+  }, [revealMounted, revealIsVideo, revealSrc, showReveal]);
 
   if (!hasReveal || !revealSrc) {
     return (
@@ -177,6 +225,7 @@ export function CoverArt({
                 className="pointer-events-none absolute inset-0 size-full object-cover"
                 style={frame.videoStyle}
                 src={revealSrc}
+                autoPlay
                 muted
                 loop
                 playsInline

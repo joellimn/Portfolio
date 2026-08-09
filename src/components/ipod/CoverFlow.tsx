@@ -735,6 +735,7 @@ const CoverFlowCard = memo(function CoverFlowCard({
         - scaleY(-1) on the strip itself
         - slight rotateX so it reads as a floor plane
         - opacity + white fade overlay (mask alone was too faint on light art)
+        Still cover only — a second <video> fights iOS autoplay / decode.
       */}
       {reflectionHeight > 0 ? (
         <div
@@ -760,7 +761,7 @@ const CoverFlowCard = memo(function CoverFlowCard({
             <CoverArt
               project={project}
               className="size-full"
-              playing={playing}
+              playing={false}
             />
             <motion.div
               className="absolute inset-0 bg-black"

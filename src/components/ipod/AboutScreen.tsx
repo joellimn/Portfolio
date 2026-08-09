@@ -173,15 +173,18 @@ export function AboutScreen({
 
   return (
     <div ref={setRef} className="h-full overflow-y-auto overscroll-contain">
-      {/* Snapshot 5: bio fills the screen; footer sits on the bottom rule. */}
+      {/*
+        Bio type uses vmin so portrait / narrow stages scale up — pure cqi
+        was hitting the clamp floors on phones and leaving the page sparse.
+      */}
       <div className="flex min-h-full flex-col">
-        <div className="flex flex-1 flex-col justify-start px-[max(28px,6.2cqi)] pb-[3cqi] pt-[max(18px,4cqi)]">
-          <div className="flex items-start gap-[max(16px,3.5cqi)]">
-            <div className="flex min-w-0 flex-1 flex-col gap-[1.2cqi]">
-              <h1 className="text-[clamp(14px,2.85cqi,32px)] font-bold tracking-tight text-black">
+        <div className="flex flex-1 flex-col justify-center px-[max(16px,4.8cqi)] pb-[max(12px,2.4cqi)] pt-[max(12px,2.6cqi)]">
+          <div className="flex items-start gap-[max(12px,3.2cqi)]">
+            <div className="flex min-w-0 flex-1 flex-col gap-[max(8px,1.35cqi)]">
+              <h1 className="text-[clamp(18px,5.1vmin,34px)] font-bold tracking-tight text-black">
                 Nice to meet you, I&rsquo;m Joel!
               </h1>
-              <p className="max-w-[36em] text-[clamp(11px,2.1cqi,24px)] font-light leading-[1.35] text-black">
+              <p className="max-w-[42em] text-[clamp(14px,3.65vmin,24px)] font-light leading-[1.42] text-black">
                 I am a Student at Vanderbilt University from Memphis Tennessee.
                 Growing up, I was constantly surrounded by design since my
                 father was an interior designer. That early exposure sparked my
@@ -190,13 +193,13 @@ export function AboutScreen({
                 guitar!
               </p>
             </div>
-            <div className="relative aspect-[338/368] w-[min(32%,354px)] max-w-[338px] shrink-0 overflow-hidden">
+            <div className="relative aspect-[338/368] w-[min(30%,168px)] shrink-0 overflow-hidden min-[560px]:w-[min(32%,354px)] min-[560px]:max-w-[338px]">
               <Image
                 src="/assets/about/joel-photo.jpg"
                 alt="Joel Lim"
                 fill
                 className="object-cover"
-                sizes="338px"
+                sizes="(max-width: 560px) 168px, 338px"
                 unoptimized
                 priority
               />
@@ -204,25 +207,25 @@ export function AboutScreen({
           </div>
         </div>
 
-        <footer className="mt-auto shrink-0 border-t border-black/15 px-[max(28px,6.2cqi)] pb-[max(14px,2.2cqi)] pt-[max(16px,2.4cqi)]">
-          <div className="flex items-center justify-between gap-[max(16px,4cqi)]">
+        <footer className="mt-auto shrink-0 border-t border-black/15 px-[max(16px,4.8cqi)] pb-[max(12px,2cqi)] pt-[max(12px,2.2cqi)]">
+          <div className="flex items-center justify-between gap-[max(12px,3.5cqi)]">
             <div className="min-w-0 flex-1">
-              <p className="text-[clamp(12px,2.1cqi,24px)] font-bold text-black">
+              <p className="text-[clamp(13px,3.2vmin,24px)] font-bold text-black">
                 Thanks for tuning in.
               </p>
-              <p className="mt-[0.6cqi] text-[clamp(10px,1.75cqi,20px)] text-black">
+              <p className="mt-[0.5cqi] text-[clamp(11px,2.7vmin,20px)] text-black">
                 Ready to start a new project together?
               </p>
             </div>
 
             <div className="flex shrink-0 flex-col items-start gap-[0.15cqi]">
-              <p className="px-[0.4cqi] py-[0.2cqi] text-[clamp(10px,1.75cqi,20px)] font-bold text-black">
+              <p className="px-[0.4cqi] py-[0.2cqi] text-[clamp(11px,2.7vmin,20px)] font-bold text-black">
                 Contact
               </p>
               <ul className="flex flex-col items-stretch">
                 {CONTACT_LINKS.map((link) => {
                   const rowClass =
-                    "px-[0.4cqi] py-[0.35cqi] text-left text-[clamp(10px,1.75cqi,20px)] text-black transition-colors hover:text-accent-blue";
+                    "px-[0.4cqi] py-[0.35cqi] text-left text-[clamp(11px,2.7vmin,20px)] text-black transition-colors hover:text-accent-blue";
 
                   if (link.action === "copy") {
                     return (
@@ -260,7 +263,7 @@ export function AboutScreen({
             </div>
           </div>
 
-          <p className="mt-[1.4cqi] pb-[0.5cqi] text-center text-[clamp(8px,1.9cqi,11px)] text-black/35">
+          <p className="mt-[1.2cqi] pb-[0.4cqi] text-center text-[clamp(9px,1.9cqi,11px)] text-black/35">
             {touchMode
               ? "Swipe up to return to works"
               : "Scroll up to return to works"}
