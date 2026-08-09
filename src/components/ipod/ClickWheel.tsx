@@ -13,7 +13,7 @@ type ClickWheelProps = {
 };
 
 const WHEEL_LABEL =
-  "absolute z-10 font-bold tracking-[0.06em] text-wheel-label outline-none transition-[filter] [text-shadow:0_1px_0_rgba(35,10,60,0.4)] hover:brightness-95 active:brightness-90";
+  "absolute z-10 font-bold tracking-[0.06em] text-wheel-label outline-none transition-[filter] [text-shadow:0_1px_0_rgba(0,0,0,0.55)] hover:brightness-110 active:brightness-95";
 
 export function ClickWheel({
   opacity,
@@ -29,29 +29,8 @@ export function ClickWheel({
       className="relative mx-auto aspect-square w-full select-none"
       aria-label="iPod click wheel"
     >
-      {/* Radial gel disc — darker purple wheel, closer to the body (Classic mini) */}
-      <div
-        className="absolute inset-0 overflow-hidden rounded-full shadow-[inset_0_2px_4px_rgba(230,210,255,0.28),inset_0_-3px_8px_rgba(25,8,50,0.35),0_1px_2px_rgba(30,10,55,0.22)]"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 32%, #9a6bb8, #7a4898 55%, #5c3478 100%)",
-        }}
-      >
-        <Image
-          src="/assets/ipod/wheel.svg"
-          alt=""
-          fill
-          className="object-cover opacity-25 mix-blend-multiply"
-          unoptimized
-        />
-        <div
-          className="pointer-events-none absolute inset-0 rounded-full opacity-20 mix-blend-soft-light"
-          style={{
-            backgroundImage: "url(/assets/ipod/noise-center.png)",
-            backgroundSize: "cover",
-          }}
-        />
-      </div>
+      {/* Smooth matte rubber ring */}
+      <div className="ipod-rubber-wheel absolute inset-0 overflow-hidden rounded-full" />
 
       <button
         type="button"
@@ -65,7 +44,7 @@ export function ClickWheel({
       <button
         type="button"
         onClick={onPrev}
-        className="absolute left-[8%] top-1/2 z-10 h-[8%] w-[12%] -translate-y-1/2 opacity-90 transition hover:opacity-100"
+        className="absolute left-[8%] top-1/2 z-10 h-[8%] w-[12%] -translate-y-1/2 opacity-85 transition hover:opacity-100"
         aria-label="Previous"
       >
         <Image
@@ -80,7 +59,7 @@ export function ClickWheel({
       <button
         type="button"
         onClick={onNext}
-        className="absolute right-[8%] top-1/2 z-10 h-[8%] w-[12%] -translate-y-1/2 opacity-90 transition hover:opacity-100"
+        className="absolute right-[8%] top-1/2 z-10 h-[8%] w-[12%] -translate-y-1/2 opacity-85 transition hover:opacity-100"
         aria-label="Next"
       >
         <Image
@@ -95,7 +74,7 @@ export function ClickWheel({
       <button
         type="button"
         onClick={onPlay}
-        className="absolute bottom-[7%] left-1/2 z-10 h-[6%] w-[14%] -translate-x-1/2 opacity-90 transition hover:opacity-100"
+        className="absolute bottom-[7%] left-1/2 z-10 h-[6%] w-[14%] -translate-x-1/2 opacity-85 transition hover:opacity-100"
         aria-label="Play or pause"
       >
         <Image
@@ -107,6 +86,7 @@ export function ClickWheel({
         />
       </button>
 
+      {/* Center select — clips a chassis-sized copy of the body sheen */}
       <button
         type="button"
         onClick={onSelect ?? onPlay}
@@ -114,27 +94,12 @@ export function ClickWheel({
         aria-label="Select"
       >
         <span
-          className="absolute inset-0 overflow-hidden rounded-full shadow-[inset_0_2px_5px_rgba(30,10,55,0.28),0_1px_0_rgba(230,215,250,0.35)]"
-          style={{
-            // Match chassis mid/dark purple so the select disc reads as body color.
-            background:
-              "radial-gradient(circle at 50% 35%, #b888d9, #8a55b8 62%, #6b3a98 100%)",
-          }}
+          data-ipod-center
+          className="ipod-aluminum-face absolute inset-0 overflow-hidden rounded-full ring-1 ring-black/25"
         >
-          <Image
-            src="/assets/ipod/center.svg"
-            alt=""
-            fill
-            className="object-cover opacity-20 mix-blend-multiply"
-            unoptimized
-          />
-          <span
-            className="absolute inset-0 rounded-full opacity-15 mix-blend-soft-light"
-            style={{
-              backgroundImage: "url(/assets/ipod/noise-center.png)",
-              backgroundSize: "cover",
-            }}
-          />
+          <span className="ipod-metal-grain pointer-events-none absolute inset-0" />
+          <span className="ipod-metal-sheen pointer-events-none absolute" />
+          <span className="ipod-metal-specular pointer-events-none absolute" />
         </span>
       </button>
     </motion.div>

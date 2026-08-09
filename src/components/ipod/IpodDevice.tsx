@@ -23,6 +23,7 @@ import {
   computeRestZoomGeometry,
   useIpodChassisSize,
 } from "@/hooks/useIpodChassisSize";
+import { useIpodLighting } from "@/hooks/useIpodLighting";
 import { statusBarHeightCqi } from "@/lib/chromeDensity";
 
 type IpodDeviceProps = {
@@ -301,6 +302,14 @@ export function IpodDevice({
   const showSharpPortal =
     portalReady && sharpChrome && !suppressSharpChrome;
 
+  // Sheen / glass glare only on the resting Menu — never in zoomed Works /
+  // About / case study (stageMode stays false for Works; use zoom instead).
+  const [menuRest, setMenuRest] = useState(() => zoomProgress.get() < 0.04);
+  useMotionValueEvent(zoomRender, "change", (value) => {
+    setMenuRest(value < 0.04);
+  });
+  useIpodLighting(chassisRef, menuRest && !stageMode);
+
   return (
     <motion.div
       ref={chassisRef}
@@ -340,26 +349,32 @@ export function IpodDevice({
           <motion.div
             className="pointer-events-none absolute inset-0"
             style={{ opacity: chromeOpacity }}
+            aria-hidden
           >
+            {/* Brushed aluminum layers */}
+            <div className="ipod-metal-grain absolute inset-0" />
+            <div className="ipod-metal-sheen absolute inset-0" />
+            <div className="ipod-metal-specular absolute inset-0" />
+            {/* Soft isotropic grit on top of the brush */}
             <div
-              className="absolute inset-0 opacity-20 mix-blend-soft-light"
+              className="absolute inset-0 opacity-[0.14] mix-blend-soft-light"
               style={{
                 backgroundImage: "url(/assets/ipod/noise.png)",
                 backgroundSize: "cover",
               }}
             />
             <IpodStickers />
-            <div className="absolute inset-x-[8%] top-0 h-[3%] rounded-full bg-gradient-to-b from-black/40 to-transparent blur-md" />
-            <div className="absolute inset-x-0 bottom-0 h-[12%] rounded-full bg-gradient-to-t from-black/55 to-transparent blur-md" />
+            <div className="absolute inset-x-[8%] top-0 h-[3%] rounded-full bg-gradient-to-b from-black/35 to-transparent blur-md" />
+            <div className="absolute inset-x-0 bottom-0 h-[12%] rounded-full bg-gradient-to-t from-black/45 to-transparent blur-md" />
             <div
-              className="absolute left-[-6%] top-[4%] h-[96%] w-[12%] rounded-full blur-md"
+              className="absolute left-[-6%] top-[4%] h-[96%] w-[12%] rounded-full blur-md opacity-80"
               style={{
                 backgroundImage: "url(/assets/ipod/shadow-left.png)",
                 backgroundSize: "cover",
               }}
             />
             <div
-              className="absolute right-[-5%] top-[4%] h-[96%] w-[11%] rounded-full blur-md"
+              className="absolute right-[-5%] top-[4%] h-[96%] w-[11%] rounded-full blur-md opacity-80"
               style={{
                 backgroundImage: "url(/assets/ipod/shadow-right.png)",
                 backgroundSize: "cover",
@@ -427,8 +442,28 @@ export function IpodDevice({
                   className="absolute inset-0 z-[25] touch-manipulation bg-transparent"
                 />
               ) : null}
+              {/* Glass reflection — Menu at rest only (not zoomed Works/etc.) */}
+              {menuRest && !stageMode ? (
+                <div
+                  data-ipod-glass
+                  className="ipod-glass-reflect pointer-events-none absolute inset-0 z-[28] overflow-hidden"
+                  aria-hidden
+                >
+                  <div className="ipod-glass-tint absolute inset-0" />
+                  <div className="ipod-glass-gloss absolute inset-0" />
+                  <div className="ipod-metal-sheen absolute" />
+                  <div className="ipod-metal-specular absolute" />
+                </div>
+              ) : null}
+              {/*
+                Always pointer-events-none: NavigationDrawer only opts back in
+                when open. An empty inset wrapper here used to sit above the
+                Menu tap target and swallow all LCD touches on mobile.
+              */}
               {overlay && (stageMode || !showSharpPortal) ? (
-                <div className="absolute inset-0 z-30">{overlay}</div>
+                <div className="pointer-events-none absolute inset-0 z-30">
+                  {overlay}
+                </div>
               ) : null}
             </div>
           </motion.div>

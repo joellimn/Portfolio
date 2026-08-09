@@ -4,13 +4,22 @@
   --background: #ffffff;
   --foreground: #1a1a1a;
 
-  /* Chassis metal — Classic purple (violet, less pink) */
-  --aluminum-light: #ebe0f5;
-  --aluminum-mid: #9b6bc4;
-  --aluminum-dark: #6a3d96;
+  /* Chassis metal — soft purple brushed aluminum */
+  --aluminum-light: #e8dff4;
+  --aluminum-mid: #9a72b8;
+  --aluminum-dark: #5c3a7a;
+  --aluminum-shadow: #3d2654;
+
+  /* Click wheel rubber (matte, darker than body, smooth) */
+  --rubber-mid: #3d3348;
+
+  /* Pointer light (percent); sheen off until hover */
+  --ipod-light-x: 50%;
+  --ipod-light-y: 50%;
+  --ipod-sheen-opacity: 0;
 
   --bezel: #23262c;
-  --wheel-label: #f4eefb;
+  --wheel-label: #e8e0f0;
 
   /* Classic LCD status bar (glass, not flat gray) */
   --status-bar-top: #fdfefe;
@@ -115,21 +124,208 @@ body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Chassis shell — Classic purple metal with soft inset rim light */
+/* Chassis shell — flat purple brushed aluminum (grain/sheen add depth).
+   Specular position inherits --ipod-light-* from the chassis wrapper. */
 .ipod-chassis {
-  background: linear-gradient(
-    160deg,
-    #efe6f8 0%,
-    #b888d9 42%,
-    #8a55b8 72%,
-    #6b3a98 100%
-  );
+  background: var(--aluminum-mid);
   box-shadow:
-    inset 0 2px 0 rgba(245, 238, 255, 0.7),
-    inset 0 -4px 12px rgba(40, 15, 70, 0.2),
-    0 0 0 1px rgba(45, 20, 75, 0.24),
+    /* Bevel rim — bright top edge, soft bottom occlude */
+    inset 0 1.5px 0 rgba(255, 248, 255, 0.78),
+    inset 0 -2px 6px rgba(30, 12, 55, 0.28),
+    inset 1.5px 0 0 rgba(255, 245, 255, 0.22),
+    inset -1.5px 0 3px rgba(40, 15, 70, 0.18),
+    0 0 0 1px rgba(45, 20, 75, 0.28),
     0 26px 55px rgba(45, 20, 75, 0.28),
     0 4px 10px rgba(45, 20, 75, 0.14);
+}
+
+/* Fine horizontal brush grain over the chassis face */
+.ipod-metal-grain {
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.09) 0px,
+      rgba(255, 255, 255, 0.09) 0.4px,
+      rgba(40, 15, 70, 0.07) 0.4px,
+      rgba(40, 15, 70, 0.07) 0.9px,
+      transparent 0.9px,
+      transparent 2.2px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(255, 255, 255, 0.03) 3px,
+      rgba(255, 255, 255, 0.03) 3.5px
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.9;
+}
+
+/* Diagonal streak — hover only */
+.ipod-metal-sheen {
+  background: linear-gradient(
+    105deg,
+    transparent 4%,
+    rgba(255, 255, 255, 0.18) 32%,
+    rgba(255, 252, 255, 0.38) 50%,
+    rgba(255, 255, 255, 0.16) 68%,
+    transparent 96%
+  );
+  mix-blend-mode: soft-light;
+  opacity: calc(0.85 * var(--ipod-sheen-opacity, 0));
+  transition: opacity 0.25s ease;
+}
+
+/* Cursor-following hotspot — slightly softer than the earlier extreme */
+.ipod-metal-specular {
+  background: radial-gradient(
+    ellipse 110% 78% at var(--ipod-light-x, 50%) var(--ipod-light-y, 50%),
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 248, 255, 0.32) 28%,
+    rgba(245, 235, 255, 0.14) 52%,
+    rgba(180, 140, 220, 0.05) 72%,
+    transparent 90%
+  );
+  mix-blend-mode: soft-light;
+  opacity: calc(0.85 * var(--ipod-sheen-opacity, 0));
+  transition: opacity 0.25s ease;
+}
+
+/* Shared aluminum stack for the center select disc */
+.ipod-aluminum-face {
+  background: var(--aluminum-mid);
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 248, 255, 0.65),
+    inset 0 -2px 5px rgba(30, 12, 55, 0.32),
+    0 1px 0 rgba(230, 215, 250, 0.28);
+}
+
+.ipod-aluminum-face .ipod-metal-grain {
+  opacity: 0.75;
+}
+
+/*
+ * Center + glass clip chassis-sized lighting layers so body, LCD, and
+ * select disc share one continuous highlight field.
+ */
+.ipod-aluminum-face .ipod-metal-sheen,
+.ipod-aluminum-face .ipod-metal-specular,
+.ipod-glass-reflect .ipod-metal-sheen,
+.ipod-glass-reflect .ipod-metal-specular {
+  inset: auto;
+  width: var(--ipod-sheen-w, 100%);
+  height: var(--ipod-sheen-h, 100%);
+  left: var(--ipod-sheen-left, 0px);
+  top: var(--ipod-sheen-top, 0px);
+}
+
+/* LCD glass — real gloss needs screen/normal whites, not soft-light */
+.ipod-glass-reflect {
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Cool coat — present, but not milky */
+.ipod-glass-tint {
+  background: rgba(160, 190, 225, 0.08);
+  mix-blend-mode: multiply;
+}
+
+/*
+ * Hard specular coat — normal blend so whites sit on the UI
+ */
+.ipod-glass-gloss {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.62) 0%,
+      rgba(255, 255, 255, 0.28) 2.5%,
+      rgba(255, 255, 255, 0.08) 7%,
+      transparent 15%
+    ),
+    linear-gradient(
+      118deg,
+      rgba(255, 255, 255, 0.38) 0%,
+      rgba(255, 255, 255, 0.16) 12%,
+      rgba(255, 255, 255, 0.04) 24%,
+      transparent 36%,
+      transparent 100%
+    );
+}
+
+/* Secondary bounce — softer than the hazy pass */
+.ipod-glass-reflect::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.1) 9%,
+      transparent 22%
+    ),
+    linear-gradient(
+      155deg,
+      transparent 34%,
+      rgba(230, 240, 255, 0.12) 50%,
+      transparent 64%
+    );
+  mix-blend-mode: screen;
+  opacity: 0.55;
+}
+
+/* Fresnel rim */
+.ipod-glass-reflect::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.85),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    inset 1px 0 0 rgba(255, 255, 255, 0.16),
+    inset -1px 0 0 rgba(255, 255, 255, 0.12),
+    inset 0 -14px 20px rgba(10, 20, 40, 0.05);
+  opacity: 1;
+}
+
+/* Hover: bright elongated glass streak */
+.ipod-glass-reflect .ipod-metal-sheen {
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.2) 20%,
+    transparent 38%,
+    transparent 100%
+  );
+  mix-blend-mode: screen;
+  opacity: calc(0.7 * var(--ipod-sheen-opacity, 0));
+}
+
+.ipod-glass-reflect .ipod-metal-specular {
+  background: radial-gradient(
+    ellipse 150% 26% at var(--ipod-light-x, 50%)
+      calc(var(--ipod-light-y, 50%) * 0.5 + 6%),
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.35) 22%,
+    rgba(235, 245, 255, 0.12) 48%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  opacity: calc(0.8 * var(--ipod-sheen-opacity, 0));
+}
+
+/* Click wheel — smooth matte rubber (no grain / noise) */
+.ipod-rubber-wheel {
+  background: var(--rubber-mid);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.08),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.28),
+    0 1px 2px rgba(30, 10, 55, 0.18);
 }
 
 /* Dark LCD bezel around the screen glass */
@@ -137,6 +333,7 @@ body {
   background: linear-gradient(180deg, #23262c, #3a3e46);
   box-shadow:
     inset 0 2px 5px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
     0 1px 0 rgba(255, 255, 255, 0.75);
 }
 
