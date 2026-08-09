@@ -466,10 +466,18 @@ export function PortfolioExperience() {
                 }
               }
         }
+        // Same enterProjects path as the center wheel button.
+        onScreenTap={
+          isTouch && screen === "hero" && !navOpen ? enterProjects : undefined
+        }
       >
         {/* Cover Flow stays mounted forever — About/Reading never remount it. */}
         <div className="absolute inset-0 bg-white">
-          <div className="absolute inset-0">
+          <div
+            className={`absolute inset-0 ${
+              screen === "hero" ? "pointer-events-none" : ""
+            }`}
+          >
             <CoverFlow
               ref={coverFlowRef}
               projects={projects}
@@ -486,16 +494,11 @@ export function PortfolioExperience() {
           </div>
 
           <motion.div
-            className={`absolute inset-0 z-20 bg-white ${
-              screen === "hero" ? "pointer-events-auto" : "pointer-events-none"
-            }`}
+            className="pointer-events-none absolute inset-0 z-20 bg-white"
             style={{ opacity: menuOverlayOpacity }}
             aria-hidden={screen !== "hero"}
           >
-            <HeroScreen
-              touchMode={isTouch}
-              onEnterWorks={enterProjects}
-            />
+            <HeroScreen touchMode={isTouch} />
           </motion.div>
         </div>
       </IpodDevice>

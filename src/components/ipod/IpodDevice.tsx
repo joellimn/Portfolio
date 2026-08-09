@@ -45,6 +45,12 @@ type IpodDeviceProps = {
   onNext?: () => void;
   onPlay?: () => void;
   onSelect?: () => void;
+  /**
+   * Touch Menu: tap anywhere on the LCD glass (same action as the center
+   * wheel button). Rendered as a real full-glass <button> so iOS hit-testing
+   * under chassis transforms stays reliable.
+   */
+  onScreenTap?: () => void;
 };
 
 type ZoomGeometry = {
@@ -82,6 +88,7 @@ export function IpodDevice({
   onNext,
   onPlay,
   onSelect,
+  onScreenTap,
 }: IpodDeviceProps) {
   const { widthPx, screenAspect } = useIpodChassisSize();
   const chassisRef = useRef<HTMLDivElement>(null);
@@ -412,6 +419,14 @@ export function IpodDevice({
               >
                 {children}
               </div>
+              {onScreenTap ? (
+                <button
+                  type="button"
+                  aria-label="Tap to view works"
+                  onClick={onScreenTap}
+                  className="absolute inset-0 z-[25] touch-manipulation bg-transparent"
+                />
+              ) : null}
               {overlay && (stageMode || !showSharpPortal) ? (
                 <div className="absolute inset-0 z-30">{overlay}</div>
               ) : null}
