@@ -41,7 +41,7 @@ const NAV_ENTRIES: NavEntry[] = [
   {
     type: "link",
     label: "Resume",
-    href: "https://drive.google.com/file/d/1EpfISujvPV3touQihCY63IkajsmWT4KS/view?usp=sharing",
+    href: "https://drive.google.com/file/d/1ec7T6JgbBKFj4ljYxjV2yjy_gP_si70H/view?usp=sharing",
     action: "external",
   },
 ];
