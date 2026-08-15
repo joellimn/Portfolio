@@ -203,6 +203,15 @@ export function PortfolioExperience() {
     setScreen("projects");
   }, [zoomProgress]);
 
+  // Menu auto-enters Works after a short beat (scroll/tap can still jump early).
+  useEffect(() => {
+    if (screen !== "hero" || zoomOpen) return;
+    const t = window.setTimeout(() => {
+      enterProjects();
+    }, 2500);
+    return () => window.clearTimeout(t);
+  }, [screen, zoomOpen, enterProjects]);
+
   const goAbout = useCallback(() => {
     setSlideDirection(1);
     zoomProgress.set(1);

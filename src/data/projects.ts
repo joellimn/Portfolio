@@ -101,7 +101,7 @@ export const projects: Project[] = [
     title: "160th SOAR",
     subtitle:
       "Dashboard Design & User Research: Streamlining Special Ops Candidate Evaluations",
-    coverSrc: "/assets/covers/soar.png",
+    coverSrc: "/assets/covers/soar.png?v=2",
     coverVideoSrc: "/assets/covers/soar-cover.mp4",
     heroArt: {
       src: soarAsset("hero-art.jpg"),
@@ -302,7 +302,7 @@ export const projects: Project[] = [
     title: "Universal Music Group",
     subtitle:
       "AI Migration Workflow: Automating Low-Code Tool Conversion with Figma MCP",
-    coverSrc: "/assets/covers/umg.png",
+    coverSrc: "/assets/covers/umg.png?v=2",
     heroArt: {
       src: umgAsset("hero-art.jpg"),
       alt: "Universal Music Group mark",
@@ -375,7 +375,7 @@ export const projects: Project[] = [
     title: "Wearitt",
     subtitle:
       "Design System: Building Scalable Component Systems for Smart Wardrobes",
-    coverSrc: "/assets/covers/wearitt.png",
+    coverSrc: "/assets/covers/wearitt.png?v=2",
     coverVideoSrc: "/assets/covers/wearitt-cover.png",
     heroArt: {
       src: wearittAsset("hero-art.jpg"),
@@ -539,7 +539,7 @@ export const projects: Project[] = [
     title: "Where to Turn in Nashville",
     subtitle:
       "End-to-End Design: Mobile Platform for Emergency Relief Services",
-    coverSrc: "/assets/covers/wttin.png",
+    coverSrc: "/assets/covers/wttin.png?v=2",
     coverVideoSrc: "/assets/covers/wttin-cover.mp4",
     heroArt: {
       src: wttinAsset("hero-art.jpg"),

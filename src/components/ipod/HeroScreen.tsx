@@ -1,14 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 
 type HeroScreenProps = {
-  /** When true, copy reads "Tap…" (the glass itself handles the tap). */
+  /** Reserved for touch-specific hero affordances (tap still enters early). */
   touchMode?: boolean;
 };
 
-export function HeroScreen({ touchMode = false }: HeroScreenProps) {
+export function HeroScreen({ touchMode: _touchMode = false }: HeroScreenProps) {
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center bg-white px-4 pb-[18%] text-center">
       <motion.p
@@ -28,40 +27,17 @@ export function HeroScreen({ touchMode = false }: HeroScreenProps) {
         Product Designer Previously @UMG
       </motion.p>
 
+      {/* Auto-zoom to Works after ~2.5s — no scroll/tap cue needed. */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.55, duration: 0.6 }}
+        animate={{ opacity: 0.45 }}
+        transition={{ delay: 0.7, duration: 0.6 }}
         className="absolute bottom-[12%] flex flex-col items-center"
+        aria-hidden
       >
-        {touchMode ? (
-          <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
-            Tap to view works
-          </p>
-        ) : (
-          <>
-            <p className="text-[clamp(10px,3.2cqi,12px)] text-black">
-              Scroll to view works
-            </p>
-            <motion.div
-              animate={{ y: [0, 4, 0] }}
-              transition={{
-                repeat: Infinity,
-                duration: 1.4,
-                ease: "easeInOut",
-              }}
-              className="relative mt-1 size-4"
-            >
-              <Image
-                src="/assets/ipod/arrow-down.svg"
-                alt=""
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </motion.div>
-          </>
-        )}
+        <p className="text-[clamp(10px,3.2cqi,12px)] text-black/70">
+          Entering works…
+        </p>
       </motion.div>
     </div>
   );

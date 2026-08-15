@@ -10,15 +10,16 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import {
   motion,
   useMotionValue,
+  useMotionValueEvent,
   useSpring,
   useTransform,
   type MotionValue,
   type PanInfo,
 } from "framer-motion";
-import { CoverArt } from "@/components/ipod/CoverArt";
 import { STATUS_BAR_FRACTION } from "@/lib/chromeDensity";
 import type { Project } from "@/data/projects";
 
@@ -63,8 +64,11 @@ type CoverFlowProps = {
 };
 
 const ITEM_SIZE = 200;
+/** Landscape cover — 16:10, matches the expanded cover stills. */
+const COVER_ASPECT = 16 / 10;
 const STACK_SPACING = 58;
-const CENTER_GAP = 130;
+const CENTER_GAP = 88;
+const SIDE_SCALE = 0.78;
 const ROTATION = 55;
 const SCROLL_THRESHOLD = 260;
 // A single large delta reported to onReachStart for discrete gestures
@@ -114,8 +118,34 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
     const activeRef = useRef(active);
     activeRef.current = active;
 
+    const idleZoom = useMotionValue(1);
+    const zoomValue = zoomProgress ?? idleZoom;
+    const [slot, setSlot] = useState<HTMLDivElement | null>(null);
+    const [sharp, setSharp] = useState(
+      () => active && (zoomProgress?.get() ?? 0) >= 0.995,
+    );
+
+    useMotionValueEvent(zoomValue, "change", (progress) => {
+      setSharp((prev) => {
+        if (!activeRef.current) return false;
+        if (prev) return progress >= 0.98;
+        return progress >= 0.995;
+      });
+    });
+
+    useEffect(() => {
+      if (!active) setSharp(false);
+    }, [active]);
+
     const onReadyRef = useRef(onReady);
     onReadyRef.current = onReady;
+
+    useEffect(() => {
+      for (const project of projects) {
+        const img = new window.Image();
+        img.src = project.coverSrc;
+      }
+    }, [projects]);
 
     const scrollX = useMotionValue(activeIndex);
     const springX = useSpring(scrollX, {
@@ -188,13 +218,18 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
         )
       : 0;
 
-    const size =
+    const coverHeight =
       destWidth > 0 && destHeight > 0
         ? Math.max(
             36,
-            Math.round(Math.min(destHeight * 0.5, destWidth * 0.62)),
+            Math.round(
+              Math.min(destHeight * 0.54, destWidth * 0.88 / COVER_ASPECT),
+            ),
           )
         : 0;
+    const coverWidth =
+      coverHeight > 0 ? Math.round(coverHeight * COVER_ASPECT) : 0;
+    const size = coverHeight;
 
     const fitScale =
       hasSize && destWidth > 0 && destHeight > 0
@@ -207,8 +242,8 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
 
     // Keep spacing proportional to cover size so the fan looks the same
     // whether we're inside the tiny on-device screen or the full-bleed stage.
-    const stackSpacing = Math.round(size * (STACK_SPACING / ITEM_SIZE));
-    const centerGap = Math.round(size * (CENTER_GAP / ITEM_SIZE));
+    const stackSpacing = Math.round(coverWidth * (STACK_SPACING / ITEM_SIZE));
+    const centerGap = Math.round(coverWidth * (CENTER_GAP / ITEM_SIZE));
     // Match @ashishgogula/coverflow — reflection strip is ~42% of cover height.
     const reflectionHeight = Math.round(size * 0.42);
 
@@ -218,7 +253,7 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       destWidth > 0 && destHeight > 0 ? destWidth / destHeight : 1;
     const wideT = Math.min(1, Math.max(0, (stageAspect - 1) / 0.75));
     const coverPadTop = Math.round(
-      reflectionHeight * (0.35 + wideT * 0.45),
+      coverHeight * (0.18 + wideT * 0.08) + reflectionHeight * 0.15,
     );
     const coverPadBottom = Math.round(
       reflectionHeight * (0.75 - wideT * 0.4),
@@ -422,18 +457,27 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
 
     if (projects.length === 0) return null;
 
-    return (
+    const shellClass = `select-none overflow-hidden focus:outline-none ${
+      !active
+        ? "pointer-events-none cursor-default"
+        : `${touchMode ? "touch-none" : "touch-pan-x"} ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`
+    }`;
+
+    const content = (
       <motion.div
         ref={containerRef}
-        className={`relative h-full w-full select-none overflow-hidden focus:outline-none ${
-          // Menu overlay sits above Cover Flow; keep it from stealing taps
-          // while inactive (cards use pointer-events: auto + high z-index).
-          !active
-            ? "pointer-events-none cursor-default"
-            : `${touchMode ? "touch-none" : "touch-pan-x"} ${
-                isDragging ? "cursor-grabbing" : "cursor-grab"
-              }`
-        }`}
+        className={
+          sharp
+            ? `fixed right-0 bottom-0 left-0 z-[14] bg-white ${shellClass}`
+            : `relative h-full w-full ${shellClass}`
+        }
+        style={
+          sharp
+            ? { top: viewportSize.width * STATUS_BAR_FRACTION }
+            : undefined
+        }
         role="region"
         aria-label="Cover Flow"
         aria-hidden={!active}
@@ -449,30 +493,33 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
         onDrag={onDrag}
         onDragEnd={onDragEnd}
       >
-        {/* Viewport-sized stage, CSS-scaled into the current glass. Title
-            rides along so it doesn't jump when the container query context
-            swaps at stageMode. */}
         <div
-          className="absolute left-1/2 top-1/2 flex flex-col"
-          style={{
-            width: destWidth || "100%",
-            height: destHeight || "100%",
-            transform: `translate(-50%, -50%) scale(${fitScale})`,
-            transformOrigin: "center center",
-          }}
+          className={
+            sharp
+              ? "relative flex h-full w-full flex-col"
+              : "absolute left-1/2 top-1/2 flex flex-col"
+          }
+          style={
+            sharp
+              ? undefined
+              : {
+                  width: destWidth || "100%",
+                  height: destHeight || "100%",
+                  transform: `translate(-50%, -50%) scale(${fitScale})`,
+                  transformOrigin: "center center",
+                }
+          }
         >
           <div
             className="pointer-events-none relative z-0 min-h-0 w-full flex-1"
             style={{ perspective: 900, transformStyle: "preserve-3d" }}
           >
             <div
-              className="absolute inset-0 flex items-center justify-center"
+              className="absolute left-0 right-0 flex items-center justify-center"
               style={{
+                top: coverPadTop,
+                bottom: coverPadBottom,
                 transformStyle: "preserve-3d",
-                // Keep reflections above the title band, with a little
-                // extra headroom above the covers (more on wide screens).
-                paddingTop: coverPadTop,
-                paddingBottom: coverPadBottom,
               }}
             >
               {size > 0
@@ -482,7 +529,9 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
                       project={project}
                       index={index}
                       scrollX={springX}
-                      size={size}
+                      width={coverWidth}
+                      height={coverHeight}
+                      fitScale={fitScale}
                       reflectionHeight={reflectionHeight}
                       stackSpacing={stackSpacing}
                       centerGap={centerGap}
@@ -513,8 +562,139 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
         </div>
       </motion.div>
     );
+
+    const portalTarget = sharp ? document.body : slot;
+
+    return (
+      <>
+        <div
+          ref={(node) => {
+            if (node !== slot) setSlot(node);
+          }}
+          className="h-full w-full"
+        />
+        {portalTarget ? createPortal(content, portalTarget) : null}
+      </>
+    );
   },
 );
+
+const coverImageCache = new Map<string, Promise<HTMLImageElement>>();
+
+function loadCoverImage(src: string) {
+  const pending = coverImageCache.get(src);
+  if (pending) return pending;
+  const next = new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new window.Image();
+    img.decoding = "async";
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+  coverImageCache.set(src, next);
+  return next;
+}
+
+/**
+ * Paint covers at source / dest-retina resolution so the Menu→Works
+ * chassis scale samples a bitmap instead of re-rasterizing a live <img>.
+ */
+function CoverStill({
+  src,
+  width,
+  height,
+  fitScale = 1,
+  alt,
+  slice,
+  sliceHeight,
+}: {
+  src: string;
+  width: number;
+  height: number;
+  fitScale?: number;
+  alt?: string;
+  slice?: "reflection";
+  sliceHeight?: number;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const paintHeight = slice === "reflection" ? (sliceHeight ?? height) : height;
+
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || width < 1 || paintHeight < 1) return;
+    let cancelled = false;
+
+    loadCoverImage(src).then((img) => {
+      if (cancelled || !canvasRef.current) return;
+      const dpr = Math.min(
+        typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
+        3,
+      );
+      // Extra pixels so glass shrink + chassis enlarge still has source detail.
+      const boost = 1 / Math.max(fitScale, 0.2);
+      const targetW = Math.min(
+        img.naturalWidth,
+        Math.max(1, Math.ceil(width * dpr * boost)),
+      );
+      const targetH = Math.min(
+        slice === "reflection"
+          ? Math.max(1, Math.round(img.naturalHeight * (paintHeight / height)))
+          : img.naturalHeight,
+        Math.max(1, Math.ceil(paintHeight * dpr * boost)),
+      );
+      canvas.width = targetW;
+      canvas.height = targetH;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${paintHeight}px`;
+
+      const ctx = canvas.getContext("2d", { alpha: false });
+      if (!ctx) return;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      if (slice === "reflection") {
+        const srcH = img.naturalHeight * (paintHeight / height);
+        ctx.drawImage(
+          img,
+          0,
+          img.naturalHeight - srcH,
+          img.naturalWidth,
+          srcH,
+          0,
+          0,
+          targetW,
+          targetH,
+        );
+      } else {
+        ctx.drawImage(img, 0, 0, targetW, targetH);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [src, width, height, paintHeight, fitScale, slice]);
+
+  return (
+    <>
+      <img
+        src={src}
+        alt={alt ?? ""}
+        width={3232}
+        height={2020}
+        draggable={false}
+        decoding="async"
+        className="absolute inset-0 size-full object-cover"
+        aria-hidden={alt ? undefined : true}
+      />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 size-full"
+        aria-hidden
+        style={{ transform: "translateZ(0)" }}
+      />
+    </>
+  );
+}
 
 /** Renders title/subtitle as a dest-resolution bitmap so nested zoom
  * scales stay sharp the same way cover art does (HTML text would
@@ -614,7 +794,7 @@ function CoverFlowLabel({
 
   return (
     <div
-      className="pointer-events-none relative z-[1100] flex shrink-0 justify-center bg-white"
+      className="pointer-events-none relative z-[1100] flex shrink-0 justify-center"
       style={{
         paddingBottom: `${4.5 - wideT * 2.2}%`,
         paddingTop: "0.4%",
@@ -634,7 +814,9 @@ type CardProps = {
   project: Project;
   index: number;
   scrollX: MotionValue<number>;
-  size: number;
+  width: number;
+  height: number;
+  fitScale: number;
   reflectionHeight: number;
   stackSpacing: number;
   centerGap: number;
@@ -651,7 +833,9 @@ const CoverFlowCard = memo(function CoverFlowCard({
   project,
   index,
   scrollX,
-  size,
+  width,
+  height,
+  fitScale,
   reflectionHeight,
   stackSpacing,
   centerGap,
@@ -680,6 +864,11 @@ const CoverFlowCard = memo(function CoverFlowCard({
       : centerGap + (absPos - 1) * stackSpacing;
   });
 
+  const scale = useTransform(scrollX, (value) => {
+    const t = Math.min(1, Math.abs(index - value));
+    return 1 + (SIDE_SCALE - 1) * t;
+  });
+
   const z = useTransform(scrollX, (value) => {
     const absPos = Math.abs(index - value);
     return absPos > 0.5 ? -200 : absPos * -400;
@@ -700,13 +889,14 @@ const CoverFlowCard = memo(function CoverFlowCard({
     <motion.div
       className="absolute left-1/2 top-1/2 cursor-pointer"
       style={{
-        width: size,
-        height: size,
+        width,
+        height,
         // Bias up so reflections clear the titles, but leave headroom above.
-        marginTop: -size / 2 - reflectionHeight * 0.4,
-        marginLeft: -size / 2,
+        marginTop: -height / 2 - reflectionHeight * 0.12,
+        marginLeft: -width / 2,
         x,
         z,
+        scale,
         rotateY,
         zIndex,
         pointerEvents: interactive ? "auto" : "none",
@@ -715,12 +905,13 @@ const CoverFlowCard = memo(function CoverFlowCard({
       }}
       onClick={interactive ? onCardClick : undefined}
     >
-      <div className="relative size-full overflow-hidden border border-black/10 shadow-[0_10px_24px_rgba(0,0,0,0.22)]">
-        <CoverArt
-          project={project}
-          className="size-full"
-          priority={isActive}
-          playing={playing}
+      <div className="relative size-full overflow-hidden border border-black/10 bg-white shadow-[0_10px_24px_rgba(0,0,0,0.22)]">
+        <CoverStill
+          src={project.coverSrc}
+          width={width}
+          height={height}
+          fitScale={fitScale}
+          alt={`${project.title} cover`}
         />
         <motion.div
           aria-hidden
@@ -743,7 +934,7 @@ const CoverFlowCard = memo(function CoverFlowCard({
           className="pointer-events-none absolute left-0 overflow-hidden"
           style={{
             top: "100%",
-            width: size,
+            width,
             height: reflectionHeight,
             marginTop: 1,
             transformOrigin: "top center",
@@ -758,10 +949,13 @@ const CoverFlowCard = memo(function CoverFlowCard({
               opacity: 0.5,
             }}
           >
-            <CoverArt
-              project={project}
-              className="size-full"
-              playing={false}
+            <CoverStill
+              src={project.coverSrc}
+              width={width}
+              height={height}
+              fitScale={fitScale}
+              slice="reflection"
+              sliceHeight={reflectionHeight}
             />
             <motion.div
               className="absolute inset-0 bg-black"

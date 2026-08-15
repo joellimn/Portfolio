@@ -266,6 +266,10 @@ export function IpodDevice({
   const chassisRadius = useTransform(zoomRender, [0, 0.8], [38, 0]);
   const chromeOpacity = useTransform(zoomRender, [0, 0.12], [1, 0]);
   const wheelOpacity = useTransform(zoomRender, [0, 0.35], [1, 0]);
+  // Dark LCD frame stays on the Menu; fade it before Works settles so a
+  // subpixel sliver doesn't read as a border under the overlay status bar.
+  const bezelChromeOpacity = useTransform(zoomRender, [0.82, 0.96], [1, 0]);
+  const glassCornerRadius = useTransform(zoomRender, [0, 0.88], [1, 0]);
   const wheelPointerEvents = useTransform(zoomRender, (progress) =>
     progress > 0.02 ? "none" : "auto",
   );
@@ -404,19 +408,31 @@ export function IpodDevice({
             className={
               stageMode
                 ? "relative min-h-0 w-full flex-1 overflow-hidden bg-white"
-                : "ipod-screen-bezel relative w-full overflow-hidden p-[1.9%]"
+                : "relative w-full overflow-hidden bg-white p-[1.9%]"
             }
             style={stageMode ? undefined : { borderRadius: screenBorderRadius }}
           >
-            <div
+            {!stageMode ? (
+              <motion.div
+                className="ipod-screen-bezel pointer-events-none absolute inset-0"
+                style={{ opacity: bezelChromeOpacity }}
+                aria-hidden
+              />
+            ) : null}
+            <motion.div
               ref={glassRef}
               className={
                 stageMode
                   ? "absolute inset-0 overflow-hidden bg-white [container-type:size]"
-                  : "relative w-full overflow-hidden rounded-[1px] bg-white [container-type:size]"
+                  : "relative w-full overflow-hidden bg-white [container-type:size]"
               }
               style={{
-                ...(stageMode ? undefined : { aspectRatio: screenAspect }),
+                ...(stageMode
+                  ? undefined
+                  : {
+                      aspectRatio: screenAspect,
+                      borderRadius: glassCornerRadius,
+                    }),
                 ["--status-bar-h" as string]: statusBarCqi,
               }}
             >
@@ -474,7 +490,7 @@ export function IpodDevice({
                   {overlay}
                 </div>
               ) : null}
-            </div>
+            </motion.div>
           </motion.div>
 
           {!stageMode ? (
