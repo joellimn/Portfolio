@@ -120,14 +120,12 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
 
     const idleZoom = useMotionValue(1);
     const zoomValue = zoomProgress ?? idleZoom;
-    const [slot, setSlot] = useState<HTMLDivElement | null>(null);
-    const [sharp, setSharp] = useState(
-      () => active && (zoomProgress?.get() ?? 0) >= 0.995,
-    );
+    const viewportReadyRef = useRef(false);
+    const [sharp, setSharp] = useState(false);
 
     useMotionValueEvent(zoomValue, "change", (progress) => {
       setSharp((prev) => {
-        if (!activeRef.current) return false;
+        if (!activeRef.current || !viewportReadyRef.current) return false;
         if (prev) return progress >= 0.98;
         return progress >= 0.995;
       });
@@ -180,28 +178,35 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       measureContainer();
     });
 
-    useEffect(() => {
-      const container = containerRef.current;
-      if (!container) return;
-
+    useLayoutEffect(() => {
       const updateViewport = () => {
-        setViewportSize({
+        const next = {
           width: window.innerWidth,
           height: window.innerHeight,
-        });
+        };
+        viewportReadyRef.current = next.width > 1 && next.height > 1;
+        setViewportSize(next);
       };
       updateViewport();
       window.addEventListener("resize", updateViewport);
+      window.addEventListener("orientationchange", updateViewport);
+      return () => {
+        window.removeEventListener("resize", updateViewport);
+        window.removeEventListener("orientationchange", updateViewport);
+      };
+    }, []);
 
+    useEffect(() => {
+      const container = containerRef.current;
+      if (!container) return;
       const ro = new ResizeObserver(() => {
         measureContainer();
       });
       ro.observe(container);
       return () => {
         ro.disconnect();
-        window.removeEventListener("resize", updateViewport);
       };
-    }, [measureContainer]);
+    }, [measureContainer, sharp]);
 
     const hasSize = containerSize.width > 1 && containerSize.height > 1;
     const hasViewport = viewportSize.width > 1 && viewportSize.height > 1;
@@ -563,18 +568,13 @@ export const CoverFlow = forwardRef<CoverFlowHandle, CoverFlowProps>(
       </motion.div>
     );
 
-    const portalTarget = sharp ? document.body : slot;
-
-    return (
+    return sharp ? (
       <>
-        <div
-          ref={(node) => {
-            if (node !== slot) setSlot(node);
-          }}
-          className="h-full w-full"
-        />
-        {portalTarget ? createPortal(content, portalTarget) : null}
+        <div className="h-full w-full" />
+        {createPortal(content, document.body)}
       </>
+    ) : (
+      content
     );
   },
 );

@@ -36,7 +36,25 @@ export function HeroScreen({ touchMode: _touchMode = false }: HeroScreenProps) {
         aria-hidden
       >
         <p className="text-[clamp(10px,3.2cqi,12px)] text-black/70">
-          Entering works…
+          Entering works
+          <span className="inline-flex w-[1.2em] justify-start">
+            {[0, 1, 2].map((i) => (
+              <motion.span
+                key={i}
+                className="inline-block"
+                animate={{ opacity: [0, 1, 1, 0] }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                  ease: "linear",
+                  times: [0, 0.2, 0.7, 1],
+                }}
+              >
+                .
+              </motion.span>
+            ))}
+          </span>
         </p>
       </motion.div>
     </div>
