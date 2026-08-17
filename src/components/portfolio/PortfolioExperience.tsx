@@ -94,6 +94,10 @@ export function PortfolioExperience() {
     initialRoute.screen !== "hero",
   );
   const projectsTitleRef = useRef(initialRoute.screen !== "hero");
+  const [allowAutoZoom, setAllowAutoZoom] = useState(
+    initialRoute.screen === "hero",
+  );
+  const leftHeroRef = useRef(initialRoute.screen !== "hero");
 
   const zoomProgress = useMotionValue(initialRoute.screen === "hero" ? 0 : 1);
   const zoomRender = useSpring(zoomProgress, ZOOM_SPRING);
@@ -203,14 +207,23 @@ export function PortfolioExperience() {
     setScreen("projects");
   }, [zoomProgress]);
 
+  // First landing only — coming back to Menu turns this off.
+  useEffect(() => {
+    if (screen !== "hero") {
+      leftHeroRef.current = true;
+      return;
+    }
+    if (leftHeroRef.current) setAllowAutoZoom(false);
+  }, [screen]);
+
   // Menu auto-enters Works after a short beat (scroll/tap can still jump early).
   useEffect(() => {
-    if (screen !== "hero" || zoomOpen) return;
+    if (!allowAutoZoom || screen !== "hero" || zoomOpen) return;
     const t = window.setTimeout(() => {
       enterProjects();
     }, 2500);
     return () => window.clearTimeout(t);
-  }, [screen, zoomOpen, enterProjects]);
+  }, [allowAutoZoom, screen, zoomOpen, enterProjects]);
 
   const goAbout = useCallback(() => {
     setSlideDirection(1);
@@ -409,11 +422,27 @@ export function PortfolioExperience() {
   const toggleNav = useCallback(() => setNavOpen((open) => !open), []);
 
   const navActive: NavTarget | null =
-    screen === "about" ? "about" : screen === "hero" ? null : "projects";
+    screen === "about" ? "about" : screen === "hero" ? "hero" : "projects";
+
+  const goMenu = useCallback(() => {
+    leftHeroRef.current = true;
+    setAllowAutoZoom(false);
+    zoomProgress.set(0);
+    zoomOpenRef.current = false;
+    setZoomOpen(false);
+    setProjectsTitle(false);
+    projectsTitleRef.current = false;
+    setScreen("hero");
+    setNavOpen(false);
+  }, [zoomProgress]);
 
   const handleNavigate = useCallback(
     (target: NavTarget) => {
       setNavOpen(false);
+      if (target === "hero") {
+        goMenu();
+        return;
+      }
       if (target === "about") {
         goAbout();
         return;
@@ -421,7 +450,7 @@ export function PortfolioExperience() {
       if (screenRef.current === "about") setSlideDirection(-1);
       enterProjects();
     },
-    [goAbout, enterProjects],
+    [goMenu, goAbout, enterProjects],
   );
 
   const glassBack =
@@ -507,7 +536,11 @@ export function PortfolioExperience() {
             style={{ opacity: menuOverlayOpacity }}
             aria-hidden={screen !== "hero"}
           >
-            <HeroScreen touchMode={isTouch} />
+            <HeroScreen
+              touchMode={isTouch}
+              autoZoom={allowAutoZoom}
+              onViewWorks={enterProjects}
+            />
           </motion.div>
         </div>
       </IpodDevice>

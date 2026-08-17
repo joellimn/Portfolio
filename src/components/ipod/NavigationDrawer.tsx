@@ -8,7 +8,7 @@ import {
   type ChromeDensity,
 } from "@/lib/chromeDensity";
 
-export type NavTarget = "projects" | "about";
+export type NavTarget = "hero" | "projects" | "about";
 
 type NavEntry =
   | { type: "screen"; label: string; target: NavTarget }
@@ -23,6 +23,7 @@ type NavEntry =
 
 // TODO: keep these in sync with AboutScreen's contact links.
 const NAV_ENTRIES: NavEntry[] = [
+  { type: "screen", label: "Menu", target: "hero" },
   { type: "screen", label: "Works", target: "projects" },
   { type: "screen", label: "About", target: "about" },
   {
