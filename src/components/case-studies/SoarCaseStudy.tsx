@@ -416,8 +416,8 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
           width={1072}
           height={399}
         />
-        <div className="flex items-center gap-10 px-12 py-10">
-          <div className="min-w-0 flex-1">
+        <div className="flex items-start gap-10 px-12 py-10">
+          <div className="min-w-0 flex-1 text-right">
             <p className="text-[24px] leading-[27.5px] text-black">
               Jakob’s Law:{" "}
               <span className="text-black/50">Traditional Sidebar</span>
@@ -428,10 +428,13 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
               for reviewers.
             </p>
           </div>
-          <div className="w-[420px] shrink-0 rounded-[32px] bg-[#fffef5] p-8">
+          <div className="w-[420px] shrink-0 rounded-[32px] bg-[#f2e7c4] p-8">
             <CaseStudyVideo
               src={asset("sidebar-expand.mp4")}
               label="Sidebar expanding from icon rail to a traditional navigation list"
+              cropX={3}
+              cropTop={3}
+              cropBottom={3}
             />
           </div>
         </div>

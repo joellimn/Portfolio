@@ -244,29 +244,31 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             <Em>Simple Interactions</Em> that accelerate discovery and minimize
             friction.
           </p>
-          <div className="flex flex-col items-center justify-center gap-12 px-16 py-4 md:flex-row md:items-start">
-            <figure className="flex w-full max-w-[400px] flex-col items-center gap-3">
-              <CaseStudyVideo
-                src={asset("map-select.mp4")}
-                label="Tap a nearby resource on the map"
-                radius="phone"
-              />
-              <figcaption className="text-center text-[12px] leading-[28.5px] text-black/50">
-                Click any resource near you
-              </figcaption>
-            </figure>
-            <figure className="flex w-full max-w-[400px] flex-col items-center gap-3">
-              <CaseStudyVideo
-                src={asset("map-filter.mp4")}
-                label="Filter map results by distance and category"
-                radius="phone"
-                cropX={2}
-                cropBottom={1}
-              />
-              <figcaption className="text-center text-[12px] leading-[28.5px] text-black/50">
-                Filter results near you
-              </figcaption>
-            </figure>
+          <div className="px-16 py-4">
+            <div className="flex flex-col items-center justify-center gap-12 rounded-[32px] bg-[#f0f4f8] p-8 md:flex-row md:items-start">
+              <figure className="flex w-full max-w-[400px] flex-col items-center gap-3">
+                <CaseStudyVideo
+                  src={asset("map-select.mp4")}
+                  label="Tap a nearby resource on the map"
+                  radius="phone"
+                />
+                <figcaption className="text-center text-[12px] leading-[28.5px] text-black/50">
+                  Click any resource near you
+                </figcaption>
+              </figure>
+              <figure className="flex w-full max-w-[400px] flex-col items-center gap-3">
+                <CaseStudyVideo
+                  src={asset("map-filter.mp4")}
+                  label="Filter map results by distance and category"
+                  radius="phone"
+                  cropX={2}
+                  cropBottom={1}
+                />
+                <figcaption className="text-center text-[12px] leading-[28.5px] text-black/50">
+                  Filter results near you
+                </figcaption>
+              </figure>
+            </div>
           </div>
           <div className="h-[92px]" />
           <p className="px-12 py-8 text-[40px] leading-[27.5px] text-black">
