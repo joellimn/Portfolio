@@ -64,6 +64,10 @@
   --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+@utility preserve-3d {
+  transform-style: preserve-3d;
+}
+
 html {
   scroll-behavior: auto;
 }
@@ -386,4 +390,62 @@ body {
 .ipod-insight-cell {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   background: transparent;
+}
+
+/* Works intro: opacity only — a transform on this ancestor breaks Cover Flow
+   drag / horizontal wheel (3D perspective + pointer math). */
+@keyframes portfolio-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.portfolio-works-enter {
+  animation: portfolio-fade-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) 0.52s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-works-enter {
+    animation: none;
+  }
+}
+
+/* Ashish Cover Flow — 32px corners to match Portfolio V2 covers. */
+.portfolio-coverflow .bg-black {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.portfolio-coverflow .rounded-xl {
+  border-radius: 32px;
+  overflow: hidden;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.12));
+}
+
+.portfolio-coverflow [aria-label="Cover Flow"],
+.portfolio-coverflow [aria-label="Cover Flow"] > div {
+  overflow: visible;
+}
+
+.portfolio-coverflow h3,
+.portfolio-coverflow [aria-label="Cover Flow"] > .absolute {
+  display: none !important;
+}
+
+.portfolio-coverflow .border-white\/10,
+.portfolio-coverflow .bg-linear-to-tr {
+  display: none;
+}
+
+.portfolio-coverflow .group\/cf,
+.portfolio-coverflow .preserve-3d {
+  cursor: none !important;
+}
+
+.portfolio-cursor-root,
+.portfolio-cursor-root * {
+  cursor: none !important;
 }

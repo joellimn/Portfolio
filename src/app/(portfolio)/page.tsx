@@ -1,3 +1,3 @@
-export default function MenuPage() {
+export default function HomePage() {
   return null;
 }

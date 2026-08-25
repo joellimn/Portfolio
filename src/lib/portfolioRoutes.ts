@@ -8,17 +8,21 @@ export type PortfolioRoute = {
   projectIndex: number;
 };
 
+function isCaseStudyId(id: string) {
+  return projects.some((project) => project.id === id);
+}
+
 export function pathForRoute(route: PortfolioRoute): string {
   switch (route.screen) {
     case "hero":
       return "/";
     case "projects":
-      return "/works";
+      return "/#works";
     case "about":
-      return "/about";
+      return "/#about";
     case "reading": {
       const id = projects[route.projectIndex]?.id;
-      return id ? `/works/${id}` : "/works";
+      return id ? `/${id}` : "/#works";
     }
     default:
       return "/";
@@ -26,19 +30,12 @@ export function pathForRoute(route: PortfolioRoute): string {
 }
 
 export function routeFromPath(pathname: string): PortfolioRoute {
-  if (pathname === "/works") {
-    return { screen: "projects", projectIndex: 0 };
-  }
-  if (pathname === "/about") {
-    return { screen: "about", projectIndex: 0 };
-  }
-  const caseMatch = pathname.match(/^\/works\/([^/]+)\/?$/);
-  if (caseMatch) {
-    const index = projects.findIndex((project) => project.id === caseMatch[1]);
-    if (index >= 0) {
-      return { screen: "reading", projectIndex: index };
-    }
-    return { screen: "projects", projectIndex: 0 };
+  const id = pathname.replace(/^\/+/, "").replace(/\/+$/, "");
+  if (id && isCaseStudyId(id)) {
+    return {
+      screen: "reading",
+      projectIndex: projects.findIndex((project) => project.id === id),
+    };
   }
   return { screen: "hero", projectIndex: 0 };
 }
@@ -50,17 +47,17 @@ export function shouldReplaceHistory(
 ): boolean {
   if (fromPath === toPath) return true;
 
-  const fromMenuWorks = fromPath === "/" || fromPath === "/works";
-  const toMenuWorks = toPath === "/" || toPath === "/works";
+  const fromMenuWorks = fromPath === "/" || fromPath === "/#works";
+  const toMenuWorks = toPath === "/" || toPath === "/#works";
   if (fromMenuWorks && toMenuWorks) return true;
 
-  // Switching between case studies keeps a single history entry.
-  if (fromPath.startsWith("/works/") && toPath.startsWith("/works/")) {
+  const fromId = fromPath.replace(/^\/+/, "").replace(/\/+$/, "");
+  const toId = toPath.replace(/^\/+/, "").replace(/\/+$/, "");
+  if (isCaseStudyId(fromId) && isCaseStudyId(toId)) {
     return true;
   }
 
-  // Closing About / case study back to Works.
-  if (toPath === "/works" && (fromPath === "/about" || fromPath.startsWith("/works/"))) {
+  if (toPath === "/#works" && (fromPath === "/#about" || isCaseStudyId(fromId))) {
     return true;
   }
 

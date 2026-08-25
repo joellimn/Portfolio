@@ -99,8 +99,7 @@ export const projects: Project[] = [
 {
     id: "soar",
     title: "160th SOAR",
-    subtitle:
-      "Dashboard Design & User Research: Streamlining Special Ops Candidate Evaluations",
+    subtitle: "U.S. Army — Spring 2026",
     coverSrc: "/assets/covers/soar.png?v=2",
     coverVideoSrc: "/assets/covers/soar-cover.mp4",
     heroArt: {
@@ -108,13 +107,16 @@ export const projects: Project[] = [
       alt: "SOAR project cover mark",
     },
     heroBanner: {
-      src: soarAsset("hero-banner.png"),
-      alt: "160th SOAR assessment dashboard on desktop and mobile",
+      src: soarAsset("hero-banner.png") + "?v=3",
+      alt: "160th SOAR assessment packet inbox and packet overview",
     },
     meta: [
-      { label: "Role", lines: ["Product Designer"] },
+      {
+        label: "Role",
+        lines: ["Design Lead —", "Interaction Design,", "Rapid Prototyping"],
+      },
       { label: "Timeline", lines: ["January 2026 –", "May 2026"] },
-      { label: "Team", lines: ["3 Product Designers"] },
+      { label: "Team", lines: ["Product Manager,", "UX Researcher"] },
       {
         label: "Tools/Skills",
         lines: ["User Research,", "Figma Make, Figma,", "Miro"],
@@ -123,157 +125,250 @@ export const projects: Project[] = [
     blocks: [
       {
         type: "text",
+        heading:
+          "Compressing 44-page packets into a standardized scoring dashboard",
+      },
+      {
+        type: "text",
+        label: "Highlights",
+        body: "Transformed a 90-day review cycle across 5 stakeholder tiers into a centralized dashboard, standardizing 44-page candidate packets with a seamless digital rubric and voting process.",
+      },
+      {
+        type: "media",
+        src: soarAsset("highlights-analytics.png"),
+        alt: "SOAR analytics dashboard with packet volume, reviewer load, and pipeline metrics",
+      },
+      {
+        type: "text",
         label: "Context",
-        body: "The 160th Special Operations Aviation Regiment (SOAR) is the U.S. Army\u2019s elite rotary-wing night-strike force (\u201cNight Stalkers\u201d). Operating within Vanderbilt University\u2019s Enterprise Design Thinking program, our team was tasked with diagnosing and optimizing their 90-day officer application assessment process. Evaluating candidates requires coordinating multiple reviewers across separate battalions, airframe specialties (MH-60 Blackhawk, MH-47 Chinook, AH-6 Little Bird), and administrative command tiers.",
+        heading: "44 Pages, reviewed manually...",
+        body: "Evaluating 160th SOAR officer candidates was bogged down by a fragmented, 90-day review cycle. Reviewers relied on manual SharePoint workflows to evaluate dense 44-page packets across separate battalions, leading to severe administrative bottlenecks and subjective \u201cgut-feel\u201d scoring.",
+      },
+      {
+        type: "media",
+        src: soarAsset("sharepoint-portal.png"),
+        alt: "Old SharePoint portal used to review candidate packets",
+        caption: "Old SharePoint Portal",
       },
       {
         type: "callout",
         tone: "blue",
-        body: "How might we replace a fragmented, manual SharePoint packet review process with a standardized, high-density operational dashboard that ensures application assessments are interpreted and scored consistently across reviewers?",
+        body: "How might we standardize candidate scoring with a single, unified review dashboard?",
       },
       {
         type: "text",
-        label: "Research & Discovery",
-        heading: "Mapping the \u201cVoting Wheel\u201d & Systemic Bottlenecks",
-        body: "Through 8 qualitative research and prototype testing sessions across 5 primary stakeholders\u2014including Sean (Assessment Office), Seth & Tony (Personnel Office), Mr. Shorey (Data Entry/Admin), and CPT Josh Clemmons (Training Battalion Commander)\u2014we mapped out the end-to-end packet lifecycle.",
+        label: "Design",
+        heading: "At its core — The Evaluation Rubric.",
       },
       {
-        type: "media",
-        src: soarAsset("research-map.jpg"),
-        alt: "As-is scenario map of the SOAR packet review workflow",
-      },
-      {
-        type: "insightGrid",
-        label: "Findings",
-        heading: "Key research findings & pain points",
-        subheading: "What broke the existing process",
-        body: "Three systemic issues kept resurfacing across stakeholder sessions.",
-        itemStyle: "finding",
-        items: [
-          {
-            heading: "The \u201cVoting Wheel\u201d & Manual Upload Bottlenecks",
-            quote:
-              "Packets moved sequentially through manual data entry and SharePoint uploads. Constant back-and-forth loops between reviewers created severe administrative fatigue.",
-          },
-          {
-            heading: "Subjective Judgments & Comment Drift",
-            quote:
-              "Lacking a rubric, reviewers evaluated 44-page PDFs using personal \u201cgut feel.\u201d Readers relied heavily on previous comments rather than full packets, allowing early bias to skew decisions.",
-          },
-          {
-            heading: "External Systemic Constraints",
-            quote:
-              "Candidate throughput was ultimately capped by fixed annual training seats (66\u201384 slots) rather than review speed alone. A required 9-month buffer between review and duty demanded a balance of speed and operational flexibility.",
-          },
-        ],
+        type: "callout",
+        tone: "pink",
+        body: "\u201COur decisions and what we do... is like extremely schizophrenic and changes and is a lot of like intuition and gut feel.\u201D \u2014 Assessment Officer",
       },
       {
         type: "split",
-        label: "Ideation & Convergence",
-        heading: "Importance vs. Feasibility prioritization",
-        body: "To translate research insights into actionable concepts, we ran a structured ideation sprint and plotted solutions onto an Importance vs. Feasibility matrix\u2014objectively scoring ideas for standardizing evaluations and eliminating bottlenecked handoffs.",
-        note: {
-          tone: "blue",
-          body: "This matrix locked our two-part core strategy: a Standardized Rubric to solve scoring inconsistency, paired with a Centralized Dashboard to streamline administrative throughput.",
-        },
+        heading: "Standardized 1–5 scoring",
+        body: "Converts subjective reviews into standardized, 1–5 benchmarked scores across core performance categories.",
         media: {
-          src: soarAsset("prioritization-matrix.jpg"),
-          alt: "Importance versus feasibility prioritization matrix",
+          src: soarAsset("evaluation-rubric.png"),
+          alt: "Evaluation rubric with 1–5 benchmarked scores for LOR and OER sections",
         },
-        mediaPosition: "end",
+        mediaPosition: "start",
       },
       {
         type: "text",
-        label: "Prototyping",
-        heading: "The prototyping innovation: AI-first (\u201cVibe Coding\u201d)",
-        body: "With our core strategy locked in, I pioneered a hybrid workflow to bridge the gap between our prioritization matrix and a tangible product: using AI to vibe-code an interactive prototype first, followed by deep product design and UX refinement.",
-      },
-      {
-        type: "calloutList",
-        label: "Why AI first?",
-        intro:
-          "Prototyping an operational app of this scale manually in Figma within a one-week sprint was impossible. Leveraging AI provided three critical advantages:",
-        tone: "yellow",
-        items: [
-          "Overcoming sprint constraints — Generated a functional baseline in days, enabling rapid design iterations between stakeholder feedback sessions.",
-          "Generating synthetic edge-case data — Bulk-created realistic candidate dossiers covering complex criteria, including legal/drug flags, flight hour thresholds (500 total / 50 PIC), and diverse evaluation histories.",
-          "Live flow testing — Converted basic flowcharts into an interactive prototype via Figma Make, allowing stakeholders like Seth and Mr. Shorey to test real candidate queues instead of clicking static frames.",
-        ],
-      },
-      {
-        type: "text",
-        label: "Usability Testing",
-        heading: "Two rounds of iterative feedback",
-        body: "To evaluate the AI-generated baseline, we ran a joint prototype walkthrough with Seth and Mr. Shorey focused on the web dashboard, clean UI, and digital rubric\u2014then followed with individual usability sessions where users shared their screens and navigated live.",
-      },
-      {
-        type: "calloutList",
-        label: "Key User Responses",
-        intro: "What stakeholders pushed for next.",
-        tone: "blue",
-        items: [
-          "Nuanced feedback — Users requested optional comments on specific sections, such as Officer Evaluation Reports (OERs), to provide context for assigned scores.",
-          "Workflow optimization — Comments must remain optional so the process never becomes an administrative burden.",
-          "High utility — Stakeholders said the prototype successfully acted on long-standing problems they had discussed internally for years.",
-        ],
-      },
-      {
-        type: "text",
-        label: "Deep UX Design",
-        heading: "Dashboard architecture",
-        body: "Post-testing, I executed deep design iterations to rebuild the AI baseline into a high-density, production-ready enterprise dashboard.",
-      },
-      {
-        type: "text",
-        heading: "Figma Make vs. Redesign comparison",
+        heading: "What started as a simple pdf...",
       },
       {
         type: "mediaPair",
         left: {
-          src: soarAsset("figma-make-dashboard.jpg"),
-          alt: "AI-generated Figma Make dashboard baseline",
+          src: soarAsset("packet-pdf.png"),
+          alt: "Initial 44-page PDF packet rendition",
         },
         right: {
-          src: soarAsset("redesign-inbox.jpg"),
-          alt: "Redesigned assessment packet review inbox",
+          src: soarAsset("packet-digital.png") + "?v=2",
+          alt: "First digital packet prototype",
         },
       },
       {
+        type: "text",
+        heading: "...evolved into an interactive digital experience.",
+      },
+      {
         type: "split",
-        heading: "Side Tab",
-        body: "Replaced basic top-level flows with a persistent, collapsible sidebar that maximizes screen real estate for dense data tables and seamless tab switching\u2014while isolating finished candidate packages into a dedicated Completed view so evaluated packets never pile up in the active queue.",
+        heading: "Collapsible sections",
+        body: "Introduced collapsible sections to maximize screen real estate and reduce cognitive load during dense packet reviews.",
         media: {
-          src: soarAsset("sidebar-recording.mov"),
-          alt: "Collapsible sidebar navigation on the assessment dashboard",
+          src: soarAsset("packet-collapsible.png"),
+          alt: "Collapsible packet sections in the digital review experience",
+        },
+        mediaPosition: "start",
+      },
+      {
+        type: "split",
+        heading: "Automated scoring",
+        body: "Automated scoring reduces manual grading time while enforcing objective, benchmarked standards across every packet.",
+        media: {
+          src: soarAsset("scoring-row.png"),
+          alt: "Automated 1–5 scoring row on the evaluation rubric",
+        },
+        mediaPosition: "bottom",
+      },
+      {
+        type: "split",
+        heading: "Split-screen review",
+        body: "Split-screen view allows for seamless cross-referencing, cutting review time.",
+        media: {
+          src: soarAsset("split-screen.png"),
+          alt: "Split-screen packet and rubric view",
         },
         mediaPosition: "bottom",
       },
       {
         type: "text",
-        heading: "Analytics View",
-        body: "Added a dedicated analytics hub tracking macro-level operational metrics across the assessment pipeline.",
+        heading: "Remember, our users are military.",
+        body: "Designed for non-technical military personnel to pick up and use immediately, without second-guessing icons or workflows.",
       },
       {
-        type: "media",
-        src: soarAsset("analytics-dashboard.jpg"),
-        alt: "Detailed overview analytics dashboard with charts and status gauges",
+        type: "split",
+        heading: "Hover tooltips",
+        body: "Hover tooltips over icons so you never have to guess what a button does.",
+        media: {
+          src: soarAsset("icon-tooltips.png"),
+          alt: "Icon hover tooltip explaining a dashboard action",
+        },
+        mediaPosition: "end",
+        mediaWidth: "narrow",
       },
       {
-        type: "calloutList",
-        label: "Value & Impact",
-        intro:
-          "By shifting from a fragmented, manual SharePoint workflow to a centralized, AI-accelerated evaluation engine, the 160th SOAR assessment process was transformed across three key dimensions:",
-        tone: "blue",
-        items: [
-          "Eliminated administrative overhead — Standardized data entry and consolidated candidate dossiers into a single interface, ending the manual back-and-forth email loops across the \u201cVoting Wheel.\u201d",
-          "Objective, consistent evaluations — Replaced subjective \u201cgut feel\u201d reviews with benchmarked scoring across the four most critical evaluation areas (Physical Fitness, Legal/Moral, LORs, and OERs).",
-          "Pipeline transparency & speed — Gave administrators real-time visibility into packet progress and turnaround metrics, preventing evaluated files from piling up in active queues.",
-        ],
+        type: "split",
+        heading: "Onboarding popups",
+        body: "Onboarding popups to guide users through their next steps.",
+        media: {
+          src: soarAsset("onboarding.png"),
+          alt: "Getting Started onboarding popup for first-time reviewers",
+        },
+        mediaPosition: "end",
+        mediaWidth: "narrow",
+      },
+      {
+        type: "text",
+        heading: "Simple interactions. Faster decisions.",
       },
       {
         type: "callout",
-        tone: "pink",
-        body: "\u201CThis is again, this is awesome. I wish it wasn\u2019t a prototype.\u201D \u2014 Seth, Personnel Office (S1)",
+        tone: "blue",
+        body: "The timeline from application to assessment: \u201Caverage is, I think, 3 to 4 months... but it sometimes pushes to 9 months.\u201D \u2014 Assessment Officer",
+      },
+      {
+        type: "split",
+        heading: "Flags disqualifiers early. Saves hours.",
+        body: "Our research found that packets with clear disqualifiers—like drug use, failed fitness tests, or legal flags—still move through the entire review chain before being caught.",
+        media: {
+          src: soarAsset("disqualifier-flags.png"),
+          alt: "Legal and medical flags surfaced early in the packet review",
+        },
+        mediaPosition: "end",
+      },
+      {
+        type: "split",
+        heading: "Real-time tracking. Seamless handoffs.",
+        body: "Live Activity Log: Keeps track of exactly who reviewed what and when, making sure packets keep moving without falling through the cracks.",
+        media: {
+          src: soarAsset("activity-log.png"),
+          alt: "Live activity log of packet reviews and handoffs",
+        },
+        mediaPosition: "bottom",
+      },
+      {
+        type: "text",
+        label: "Here’s the twist",
+        heading: "Rapid Prototyping with AI.",
+      },
+      {
+        type: "calloutList",
+        label: "Why?",
+        intro:
+          "Three reasons AI-first prototyping unlocked a dashboard of this scale in a sprint.",
+        tone: "yellow",
+        items: [
+          "Sprint Velocity — Spun up a functional baseline in days, speeding up feedback loops between stakeholder reviews.",
+          "Realistic Synthetic Data — Generated complex edge-case candidate files (flight hour minimums, legal/drug flags, diverse ratings) instantly.",
+          "Live Flow Validation — Let key stakeholders test real, interactive queues instead of clicking through static mockups.",
+        ],
+      },
+      {
+        type: "text",
+        heading: "A solid foundation. A necessary redesign.",
+      },
+      {
+        type: "media",
+        src: soarAsset("figma-make-comparison.png"),
+        alt: "Figma Make baseline beside the redesigned assessment inbox",
+        caption: "Figma Make Design Comparison",
+      },
+      {
+        type: "split",
+        heading: "Jakob’s Law: Traditional Sidebar",
+        body: "Replaced non-standard navigation with a familiar left sidebar, reclaiming core screen real estate and eliminating learning curves for reviewers.",
+        media: {
+          src: soarAsset("sidebar-jakob.png"),
+          alt: "Traditional left sidebar navigation on the assessment dashboard",
+        },
+        mediaPosition: "end",
+      },
+      {
+        type: "split",
+        heading: "Peak-End Rule: Success States",
+        body: "Clear success states ensure the dense review process ends on a high note, giving users instant visual confirmation that their final vote was captured.",
+        media: {
+          src: soarAsset("success-state.png"),
+          alt: "Vote submitted success state on the packet overview",
+        },
+        mediaPosition: "end",
+      },
+      {
+        type: "text",
+        label: "Impact",
+        heading:
+          "\u201CThis is again, this is awesome. I wish it wasn't a prototype.\u201D",
+        body: "— Personnel Officer (S1)",
+      },
+      {
+        type: "calloutList",
+        label: "What changed",
+        intro: "Three outcomes from shifting packet review onto one dashboard.",
+        tone: "blue",
+        items: [
+          "Cut Admin Overhead — Condensed 44-page dossiers into a single view, ending manual data entry and email threads.",
+          "Standardized Scoring — Swapped \u201cgut-feel\u201d reviews for objective benchmarks across 4 core evaluation areas.",
+          "Accelerated Review Time — Real-time tracking cuts down the volatile 3–9 month candidate turnaround time.",
+        ],
+      },
+      {
+        type: "insightGrid",
+        label: "Takeaways",
+        heading: "What this project locked in",
+        subheading: "Three lessons from leading the work",
+        body: "Research, AI, and interaction design had to stay in the same loop.",
+        itemStyle: "finding",
+        items: [
+          {
+            heading: "User Research",
+            quote:
+              "8 rounds of interviewing real operators cuts through operational complexity and grounds design decisions in actual user pain points, not assumptions.",
+          },
+          {
+            heading: "Using AI as a Tool",
+            quote:
+              "AI is great for spinning up functional prototypes in days, but hands-on design craft is what makes the product actually intuitive.",
+          },
+          {
+            heading: "User-Centered Interactions",
+            quote:
+              "Building familiar, frictionless micro-interactions flattens the learning curve for non-technical users in high-stakes environments.",
+          },
+        ],
       },
       {
         type: "media",
@@ -285,15 +380,15 @@ export const projects: Project[] = [
     sections: [
       {
         heading: "Overview",
-        body: "A dashboard architecture project for the 160th SOAR officer assessment packet review process.",
+        body: "A standardized scoring dashboard that compresses 44-page SOAR officer packets into one review flow.",
       },
       {
         heading: "Approach",
-        body: "Research-led mapping of the Voting Wheel, then an AI-first prototype refined into a high-density operational dashboard.",
+        body: "AI-first prototyping, then interaction design for military reviewers: rubric, flags, activity log, and familiar navigation.",
       },
       {
         heading: "Outcome",
-        body: "A centralized evaluation engine with consistent scoring, clearer pipeline visibility, and far less administrative overhead.",
+        body: "Less admin overhead, objective 1–5 scoring, and a faster handoff between the 3–9 month review cycle.",
       },
     ],
   },

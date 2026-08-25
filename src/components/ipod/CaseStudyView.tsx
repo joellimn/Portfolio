@@ -3,6 +3,10 @@
 import type { RefObject } from "react";
 import Image from "next/image";
 import type { Project } from "@/data/projects";
+import { SoarCaseStudy } from "@/components/case-studies/SoarCaseStudy";
+import { UmgCaseStudy } from "@/components/case-studies/UmgCaseStudy";
+import { WearittCaseStudy } from "@/components/case-studies/WearittCaseStudy";
+import { WttinCaseStudy } from "@/components/case-studies/WttinCaseStudy";
 import { CaseStudyBlocks } from "@/components/ipod/CaseStudyBlocks";
 import { CoverWithReflection } from "@/components/ipod/CoverWithReflection";
 
@@ -39,14 +43,43 @@ export function CaseStudyView({
   scrollRef,
   onReturn,
 }: CaseStudyViewProps) {
+  if (project.id === "soar") {
+    return (
+      <div ref={scrollRef} className="min-h-screen bg-white">
+        <SoarCaseStudy onReturn={onReturn} />
+      </div>
+    );
+  }
+
+  if (project.id === "umg") {
+    return (
+      <div ref={scrollRef} className="min-h-screen bg-white">
+        <UmgCaseStudy onReturn={onReturn} />
+      </div>
+    );
+  }
+
+  if (project.id === "wttin") {
+    return (
+      <div ref={scrollRef} className="min-h-screen bg-white">
+        <WttinCaseStudy onReturn={onReturn} />
+      </div>
+    );
+  }
+
+  if (project.id === "wearitt") {
+    return (
+      <div ref={scrollRef} className="min-h-screen bg-white">
+        <WearittCaseStudy onReturn={onReturn} />
+      </div>
+    );
+  }
+
   const hasRichContent = Boolean(project.blocks?.length);
   const useBannerHero = Boolean(project.heroBanner);
 
   return (
-    <div
-      ref={scrollRef}
-      className="h-full overflow-y-auto overscroll-contain"
-    >
+    <div ref={scrollRef} className="@container min-h-screen bg-white">
       <div className="flex w-full flex-col gap-[5.5cqi] py-[4.5cqi]">
         {useBannerHero && project.heroBanner ? (
           // Traditional case-study hero (banner → title → meta), Sofi-inspired.
