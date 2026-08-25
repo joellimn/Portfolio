@@ -6,6 +6,8 @@ type CaseStudyVideoProps = {
   radius?: "window" | "phone";
   /** Crop this many CSS pixels from the left and right edges. */
   cropX?: number;
+  /** Crop this many CSS pixels from the top edge. */
+  cropTop?: number;
   /** Crop this many CSS pixels from the bottom edge. */
   cropBottom?: number;
 };
@@ -21,10 +23,11 @@ export function CaseStudyVideo({
   className = "",
   radius = "window",
   cropX = 0,
+  cropTop = 0,
   cropBottom = 0,
 }: CaseStudyVideoProps) {
   const cropStyle =
-    cropX || cropBottom
+    cropX || cropTop || cropBottom
       ? {
           ...(cropX
             ? {
@@ -33,6 +36,7 @@ export function CaseStudyVideo({
                 marginLeft: `-${cropX}px`,
               }
             : { width: "100%" }),
+          ...(cropTop ? { marginTop: `-${cropTop}px` } : {}),
           ...(cropBottom ? { marginBottom: `-${cropBottom}px` } : {}),
         }
       : { width: "100%" };

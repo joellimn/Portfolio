@@ -32,8 +32,7 @@ const introVariants = {
 
 const EMAIL = "joel.c.lim@vanderbilt.edu";
 const LINKEDIN = "https://www.linkedin.com/in/joelchaelim/";
-const RESUME =
-  "https://drive.google.com/file/d/1ec7T6JgbBKFj4ljYxjV2yjy_gP_si70H/view?usp=sharing";
+const RESUME = "/Joel-Lim-Resume.pdf";
 
 const COVER_V2: Record<string, string> = {
   soar: "/assets/covers/v2/soar.png",

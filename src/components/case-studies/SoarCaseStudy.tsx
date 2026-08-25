@@ -328,12 +328,29 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
               and use immediately, without second-guessing icons or workflows.
             </p>
           </div>
-          <Frame
-            src={asset("framed-military.png")}
-            alt="Hover tooltips and onboarding popups for military reviewers"
-            width={4800}
-            height={2204}
-          />
+          <div className="flex items-start gap-8 px-12 pb-8">
+            <div className="min-w-0 flex-1 pt-8">
+              <CaseStudyVideo
+                src={asset("icon-tooltips.mp4")}
+                label="Hover tooltips explaining dashboard icon actions"
+                cropX={3}
+                cropTop={3}
+                cropBottom={3}
+              />
+              <p className="mt-6 text-[20px] leading-[27.5px] text-black/50">
+                Hover <Em>tooltips</Em> over icons so you never have to guess
+                what a button does.
+              </p>
+            </div>
+            <div className="min-w-0 flex-[1.45]">
+              <Frame
+                src={asset("framed-onboarding.png")}
+                alt="Onboarding popups to guide users through their next steps"
+                width={2752}
+                height={2204}
+              />
+            </div>
+          </div>
         </Shell>
       </div>
 
