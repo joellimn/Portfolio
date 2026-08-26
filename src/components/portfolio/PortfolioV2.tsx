@@ -66,6 +66,33 @@ function renderCoverImage(props: RenderImageProps) {
   );
 }
 
+/** Outbound contact row whose label crossfades to "View" on hover; the redirect
+ * arrow rides on the custom cursor. Both labels share one grid cell so the row
+ * never reflows mid-hover. */
+function ContactLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      data-cursor="external"
+      className="group flex w-full items-center justify-center px-[8px] py-[4px] text-black/50 transition-colors hover:text-black"
+    >
+      <span className="grid place-items-center">
+        <span className="col-start-1 row-start-1 transition-opacity duration-200 group-hover:opacity-0">
+          {label}
+        </span>
+        <span
+          aria-hidden
+          className="col-start-1 row-start-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+        >
+          View
+        </span>
+      </span>
+    </a>
+  );
+}
+
 export function PortfolioV2() {
   const router = useRouter();
   const reduced = useReducedMotion();
@@ -73,6 +100,8 @@ export function PortfolioV2() {
   const [activeIndex, setActiveIndex] = useState(
     SOAR_INDEX >= 0 ? SOAR_INDEX : 0,
   );
+  // Drives the cursor's "copied!" confirmation only — the button label stays
+  // "Email" so the row never reflows.
   const [emailCopied, setEmailCopied] = useState(false);
 
   useEffect(() => {
@@ -285,26 +314,10 @@ export function PortfolioV2() {
               data-copied={emailCopied ? "true" : undefined}
               className="px-[8px] py-[4px] text-center text-black/50 transition-colors hover:text-black"
             >
-              {emailCopied ? "Copied" : "Email"}
+              Email
             </button>
-            <a
-              href={LINKEDIN}
-              target="_blank"
-              rel="noreferrer"
-              data-cursor="view"
-              className="flex w-full items-center justify-center px-[8px] py-[4px] text-black/50 transition-colors hover:text-black"
-            >
-              LinkedIn
-            </a>
-            <a
-              href={RESUME}
-              target="_blank"
-              rel="noreferrer"
-              data-cursor="view"
-              className="flex w-full items-center justify-center px-[8px] py-[4px] text-black/50 transition-colors hover:text-black"
-            >
-              Resume
-            </a>
+            <ContactLink href={LINKEDIN} label="LinkedIn" />
+            <ContactLink href={RESUME} label="Resume" />
           </section>
         </SectionReveal>
       </div>

@@ -1,17 +1,18 @@
+import { ArrowUpRight } from "lucide-react";
+
+/** `external` adds the redirect arrow, marking targets that leave the site. */
+export type CursorHint = { label: string; external?: boolean };
+
 type CaseStudyCursorProps = {
   x: number;
   y: number;
-  label?: string | null;
+  hint?: CursorHint | null;
 };
 
 const CURSOR_PURPLE = "#7C3AED";
 
-export function CaseStudyCursor({
-  x,
-  y,
-  label = null,
-}: CaseStudyCursorProps) {
-  const showLabel = Boolean(label);
+export function CaseStudyCursor({ x, y, hint = null }: CaseStudyCursorProps) {
+  const showLabel = Boolean(hint);
 
   return (
     <div
@@ -26,12 +27,15 @@ export function CaseStudyCursor({
         style={{ backgroundColor: CURSOR_PURPLE }}
       />
       <span
-        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full px-3 py-1 font-sans text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-white transition-[opacity,transform] duration-200 ease-out ${
+        className={`absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-[3px] rounded-full px-3 py-1 font-sans text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-white transition-[opacity,transform] duration-200 ease-out ${
           showLabel ? "scale-100 opacity-100" : "scale-50 opacity-0"
         }`}
         style={{ backgroundColor: CURSOR_PURPLE }}
       >
-        {label ?? ""}
+        {hint?.label ?? ""}
+        {hint?.external ? (
+          <ArrowUpRight className="size-[14px] shrink-0" strokeWidth={2.5} />
+        ) : null}
       </span>
     </div>
   );
@@ -68,22 +72,26 @@ export function isCenterCoverTarget(target: EventTarget | null) {
   return cover === front;
 }
 
-export function getCursorLabel(target: EventTarget | null) {
+export function getCursorHint(target: EventTarget | null): CursorHint | null {
   if (!(target instanceof Element)) return null;
   if (target.closest(".is-dragging")) return null;
-  if (isCenterCoverTarget(target)) return "view case study";
-  if (coverFromTarget(target)) return "view";
+  if (isCenterCoverTarget(target)) return { label: "view case study" };
+  if (coverFromTarget(target)) return { label: "view" };
 
   const labeled = target.closest("[data-cursor]");
   if (!(labeled instanceof HTMLElement)) return null;
 
   switch (labeled.dataset.cursor) {
     case "click":
-      return "click!";
+      return { label: "click!" };
     case "copy":
-      return labeled.dataset.copied === "true" ? "copied!" : "copy";
+      return {
+        label: labeled.dataset.copied === "true" ? "copied!" : "copy",
+      };
     case "view":
-      return "view";
+      return { label: "view" };
+    case "external":
+      return { label: "view", external: true };
     default:
       return null;
   }

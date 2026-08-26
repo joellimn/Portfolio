@@ -3,14 +3,15 @@
 import { useState, type PointerEvent, type ReactNode } from "react";
 import {
   CaseStudyCursor,
-  getCursorLabel,
+  getCursorHint,
+  type CursorHint,
 } from "@/components/portfolio/CaseStudyCursor";
 
 export function PortfolioCursorRoot({ children }: { children: ReactNode }) {
   const [cursor, setCursor] = useState<{
     x: number;
     y: number;
-    label: string | null;
+    hint: CursorHint | null;
   } | null>(null);
 
   const updateCursor = (event: PointerEvent<HTMLDivElement>) => {
@@ -18,7 +19,7 @@ export function PortfolioCursorRoot({ children }: { children: ReactNode }) {
     setCursor({
       x: event.clientX,
       y: event.clientY,
-      label: getCursorLabel(event.target),
+      hint: getCursorHint(event.target),
     });
   };
 
@@ -34,14 +35,14 @@ export function PortfolioCursorRoot({ children }: { children: ReactNode }) {
           setCursor({
             x: clientX,
             y: clientY,
-            label: getCursorLabel(document.elementFromPoint(clientX, clientY)),
+            hint: getCursorHint(document.elementFromPoint(clientX, clientY)),
           });
         }, 0);
       }}
     >
       {children}
       {cursor ? (
-        <CaseStudyCursor x={cursor.x} y={cursor.y} label={cursor.label} />
+        <CaseStudyCursor x={cursor.x} y={cursor.y} hint={cursor.hint} />
       ) : null}
     </div>
   );
