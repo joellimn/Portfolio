@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useState, type PointerEvent, type ReactNode } from "react";
 import {
   CaseStudyCursor,
   getCursorHint,
+  onCursorRefresh,
   type CursorHint,
 } from "@/components/portfolio/CaseStudyCursor";
 
@@ -13,6 +14,21 @@ export function PortfolioCursorRoot({ children }: { children: ReactNode }) {
     y: number;
     hint: CursorHint | null;
   } | null>(null);
+
+  useEffect(
+    () =>
+      onCursorRefresh(() =>
+        setCursor((prev) =>
+          prev
+            ? {
+                ...prev,
+                hint: getCursorHint(document.elementFromPoint(prev.x, prev.y)),
+              }
+            : prev,
+        ),
+      ),
+    [],
+  );
 
   const updateCursor = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse") return;

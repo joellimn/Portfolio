@@ -9,6 +9,7 @@ import {
   type RenderImageProps,
 } from "@ashishgogula/coverflow";
 import { motion, useReducedMotion } from "motion/react";
+import { refreshCursorHint } from "@/components/portfolio/CaseStudyCursor";
 import { PhotoStack } from "@/components/portfolio/PhotoStack";
 import { SectionReveal } from "@/components/portfolio/SectionReveal";
 import { projects } from "@/data/projects";
@@ -66,9 +67,8 @@ function renderCoverImage(props: RenderImageProps) {
   );
 }
 
-/** Outbound contact row whose label crossfades to "View" on hover; the redirect
- * arrow rides on the custom cursor. Both labels share one grid cell so the row
- * never reflows mid-hover. */
+/** Outbound contact row. The "view" affordance and its redirect arrow live
+ * entirely on the custom cursor, so the label itself never changes. */
 function ContactLink({ href, label }: { href: string; label: string }) {
   return (
     <a
@@ -76,19 +76,9 @@ function ContactLink({ href, label }: { href: string; label: string }) {
       target="_blank"
       rel="noreferrer"
       data-cursor="external"
-      className="group flex w-full items-center justify-center px-[8px] py-[4px] text-black/50 transition-colors hover:text-black"
+      className="flex w-full items-center justify-center px-[8px] py-[4px] text-black/50 transition-colors hover:text-black"
     >
-      <span className="grid place-items-center">
-        <span className="col-start-1 row-start-1 transition-opacity duration-200 group-hover:opacity-0">
-          {label}
-        </span>
-        <span
-          aria-hidden
-          className="col-start-1 row-start-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        >
-          View
-        </span>
-      </span>
+      {label}
     </a>
   );
 }
@@ -105,6 +95,7 @@ export function PortfolioV2() {
   const [emailCopied, setEmailCopied] = useState(false);
 
   useEffect(() => {
+    refreshCursorHint();
     if (!emailCopied) return;
     const timer = window.setTimeout(() => setEmailCopied(false), 1500);
     return () => window.clearTimeout(timer);
@@ -114,13 +105,20 @@ export function PortfolioV2() {
     router.push(`/${id}`);
   };
 
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(EMAIL);
-      setEmailCopied(true);
-    } catch {
+  // Confirm on the click itself rather than waiting on the clipboard promise,
+  // and take it back only if the write actually fails.
+  const copyEmail = () => {
+    setEmailCopied(true);
+    const written = navigator.clipboard?.writeText(EMAIL);
+    if (!written) {
+      setEmailCopied(false);
       window.location.href = `mailto:${EMAIL}`;
+      return;
     }
+    written.catch(() => {
+      setEmailCopied(false);
+      window.location.href = `mailto:${EMAIL}`;
+    });
   };
 
   return (
@@ -163,104 +161,104 @@ export function PortfolioV2() {
           id="works"
           className="portfolio-works-enter flex w-full flex-col gap-[16px]"
         >
-            <div className="flex w-full flex-col items-end px-8 lg:px-[256px]">
-              <div
-                role="group"
-                aria-label="Works view"
-                className="grid grid-cols-2 items-center rounded-[24px] bg-black/10 p-[3px] shadow-[3px_3px_7.5px_0px_rgba(0,0,0,0.05)]"
-              >
-                <button
-                  type="button"
-                  onClick={() => setView("cover")}
-                  className={`flex items-center justify-center rounded-[24px] px-[8px] py-[3px] transition-[background-color,box-shadow,opacity] duration-200 ${
-                    view === "cover"
-                      ? "bg-white shadow-[3px_3px_7.5px_0px_rgba(0,0,0,0.05)]"
-                      : "opacity-50 hover:opacity-80"
-                  }`}
-                  aria-pressed={view === "cover"}
-                >
-                  <span className="text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-black">
-                    Cover view
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setView("grid")}
-                  className={`flex items-center justify-center rounded-[24px] px-[8px] py-[3px] transition-[background-color,box-shadow,opacity] duration-200 ${
-                    view === "grid"
-                      ? "bg-white shadow-[3px_3px_7.5px_0px_rgba(0,0,0,0.05)]"
-                      : "opacity-50 hover:opacity-80"
-                  }`}
-                  aria-pressed={view === "grid"}
-                >
-                  <span className="text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-black">
-                    Grid view
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            <div className="relative w-full">
-              <div
-                className={`portfolio-coverflow h-[568px] w-full transition-opacity duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          <div className="flex w-full flex-col items-end px-8 lg:px-[256px]">
+            <div
+              role="group"
+              aria-label="Works view"
+              className="grid grid-cols-2 items-center rounded-[24px] bg-black/10 p-[3px] shadow-[3px_3px_7.5px_0px_rgba(0,0,0,0.05)]"
+            >
+              <button
+                type="button"
+                onClick={() => setView("cover")}
+                className={`flex items-center justify-center rounded-[24px] px-[8px] py-[3px] transition-[background-color,box-shadow,opacity] duration-200 ${
                   view === "cover"
-                    ? "relative opacity-100"
-                    : "pointer-events-none invisible absolute inset-x-0 top-0 overflow-hidden opacity-0"
+                    ? "bg-white shadow-[3px_3px_7.5px_0px_rgba(0,0,0,0.05)]"
+                    : "opacity-50 hover:opacity-80"
                 }`}
-                aria-hidden={view !== "cover"}
-                inert={view !== "cover" ? true : undefined}
+                aria-pressed={view === "cover"}
               >
-                <CoverFlow
-                  items={COVER_ITEMS}
-                  itemWidth={520}
-                  itemHeight={492}
-                  stackSpacing={90}
-                  centerGap={280}
-                  rotation={50}
-                  initialIndex={activeIndex}
-                  enableReflection={false}
-                  enableClickToSnap
-                  enableScroll
-                  scrollThreshold={800}
-                  enableAudio
-                  className="[&>.absolute]:hidden"
-                  onIndexChange={setActiveIndex}
-                  onItemClick={(item) => openProject(String(item.id))}
-                  renderImage={renderCoverImage}
-                />
-              </div>
-              <div
-                className={`grid w-full grid-cols-1 gap-8 px-8 transition-opacity duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-2 lg:px-[64px] ${
+                <span className="text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-black">
+                  Cover view
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setView("grid")}
+                className={`flex items-center justify-center rounded-[24px] px-[8px] py-[3px] transition-[background-color,box-shadow,opacity] duration-200 ${
                   view === "grid"
-                    ? "relative opacity-100"
-                    : "pointer-events-none absolute inset-x-0 top-0 opacity-0"
+                    ? "bg-white shadow-[3px_3px_7.5px_0px_rgba(0,0,0,0.05)]"
+                    : "opacity-50 hover:opacity-80"
                 }`}
-                aria-hidden={view !== "grid"}
-                inert={view !== "grid" ? true : undefined}
+                aria-pressed={view === "grid"}
               >
-                {projects.map((project) => (
-                  <button
-                    key={project.id}
-                    type="button"
-                    onClick={() => openProject(project.id)}
-                    tabIndex={view === "grid" ? 0 : -1}
-                    className="group relative aspect-[600/568] rounded-[32px] shadow-[0_8px_16px_rgba(0,0,0,0.12)]"
-                    aria-label={`${project.title} case study`}
-                  >
-                    <span className="block size-full overflow-hidden rounded-[32px]">
-                      <Image
-                        src={COVER_V2[project.id] ?? project.coverSrc}
-                        alt={project.title}
-                        width={600}
-                        height={568}
-                        className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
-                        unoptimized
-                      />
-                    </span>
-                  </button>
-                ))}
-              </div>
+                <span className="text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-black">
+                  Grid view
+                </span>
+              </button>
             </div>
+          </div>
+
+          <div className="relative w-full">
+            <div
+              className={`portfolio-coverflow h-[568px] w-full transition-opacity duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                view === "cover"
+                  ? "relative opacity-100"
+                  : "pointer-events-none invisible absolute inset-x-0 top-0 overflow-hidden opacity-0"
+              }`}
+              aria-hidden={view !== "cover"}
+              inert={view !== "cover" ? true : undefined}
+            >
+              <CoverFlow
+                items={COVER_ITEMS}
+                itemWidth={520}
+                itemHeight={492}
+                stackSpacing={90}
+                centerGap={280}
+                rotation={50}
+                initialIndex={activeIndex}
+                enableReflection={false}
+                enableClickToSnap
+                enableScroll
+                scrollThreshold={800}
+                enableAudio
+                className="[&>.absolute]:hidden"
+                onIndexChange={setActiveIndex}
+                onItemClick={(item) => openProject(String(item.id))}
+                renderImage={renderCoverImage}
+              />
+            </div>
+            <div
+              className={`grid w-full grid-cols-1 gap-8 px-8 transition-opacity duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)] sm:grid-cols-2 lg:px-[64px] ${
+                view === "grid"
+                  ? "relative opacity-100"
+                  : "pointer-events-none absolute inset-x-0 top-0 opacity-0"
+              }`}
+              aria-hidden={view !== "grid"}
+              inert={view !== "grid" ? true : undefined}
+            >
+              {projects.map((project) => (
+                <button
+                  key={project.id}
+                  type="button"
+                  onClick={() => openProject(project.id)}
+                  tabIndex={view === "grid" ? 0 : -1}
+                  className="group relative aspect-[600/568] rounded-[32px] shadow-[0_8px_16px_rgba(0,0,0,0.12)]"
+                  aria-label={`${project.title} case study`}
+                >
+                  <span className="block size-full overflow-hidden rounded-[32px]">
+                    <Image
+                      src={COVER_V2[project.id] ?? project.coverSrc}
+                      alt={project.title}
+                      width={600}
+                      height={568}
+                      className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                      unoptimized
+                    />
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section

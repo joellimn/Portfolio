@@ -3,6 +3,20 @@ import { ArrowUpRight } from "lucide-react";
 /** `external` adds the redirect arrow, marking targets that leave the site. */
 export type CursorHint = { label: string; external?: boolean };
 
+/** The cursor normally re-reads its hint on pointer movement. Fire this when
+ * the target changes underneath a stationary pointer — a copy confirmation,
+ * say — so the label flips on the click instead of the next move. */
+const CURSOR_REFRESH_EVENT = "portfolio:cursor-refresh";
+
+export function refreshCursorHint() {
+  window.dispatchEvent(new Event(CURSOR_REFRESH_EVENT));
+}
+
+export function onCursorRefresh(listener: () => void) {
+  window.addEventListener(CURSOR_REFRESH_EVENT, listener);
+  return () => window.removeEventListener(CURSOR_REFRESH_EVENT, listener);
+}
+
 type CaseStudyCursorProps = {
   x: number;
   y: number;
