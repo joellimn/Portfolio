@@ -1,115 +1,16 @@
-import type { ReactNode } from "react";
-import Image from "next/image";
+import { CaseStudyLayout } from "@/components/case-studies/CaseStudyLayout";
+import {
+  Body,
+  Em,
+  Figure,
+  Headline,
+  Label,
+  Takeaway,
+} from "@/components/case-studies/CaseStudyPrimitives";
+import { CASE_STUDY_TOC } from "@/data/caseStudyToc";
 
-const asset = (file: string) => `/assets/case-studies/wearitt/${file}`;
-
-function Em({ children }: { children: ReactNode }) {
-  return <span className="text-black">{children}</span>;
-}
-
-function Shell({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`mx-auto w-full max-w-[1200px] ${className}`}>{children}</div>
-  );
-}
-
-function Label({
-  children,
-  className = "px-12 pt-8 pb-4",
-}: {
-  children: string;
-  className?: string;
-}) {
-  return (
-    <p className={`${className} text-[20px] leading-[27.5px] text-[#924892]`}>
-      {children}
-    </p>
-  );
-}
-
-function BleedFade({
-  to,
-  hold = "50%",
-  children,
-}: {
-  to: string;
-  hold?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div
-      style={{
-        backgroundImage: `linear-gradient(180deg, #fff 0%, #fff ${hold}, ${to} 100%)`,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
-function Frame({
-  src,
-  alt,
-  width,
-  height,
-  priority = false,
-  className = "block h-auto w-full",
-}: {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  priority?: boolean;
-  className?: string;
-}) {
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-      unoptimized
-      priority={priority}
-    />
-  );
-}
-
-function Takeaway({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex w-full items-start gap-4 rounded-[32px] bg-[#faf1fa] p-4">
-      <div className="flex h-[88px] shrink-0 items-center px-2 py-4">
-        <div className="size-8 overflow-clip">
-          <img
-            src={asset("star.svg")}
-            alt=""
-            width={32}
-            height={32}
-            className="size-full"
-          />
-        </div>
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="p-2 text-[24px] leading-[27.5px] text-black">{title}</p>
-        <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
-          {children}
-        </p>
-      </div>
-    </div>
-  );
-}
+const asset = (file: string) => `/assets/case-studies/v4/wearitt/${file}`;
+const ACCENT = "#924892";
 
 type WearittCaseStudyProps = {
   onReturn?: () => void;
@@ -117,236 +18,267 @@ type WearittCaseStudyProps = {
 
 export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
   return (
-    <article className="w-full bg-white pb-16 font-sans">
-      <BleedFade to="#fff5ff">
-        <Shell>
-          <header className="flex flex-col items-center pt-16 pb-4 tracking-[-1px]">
-            <h1 className="text-center text-[56px] font-medium leading-[44px] text-black">
-              Wearitt
-            </h1>
-          </header>
-          <Frame
-            src={asset("framed-hero.png")}
-            alt="Wearitt color tokens, spacing system, and component library"
-            width={2400}
-            height={1023}
-            priority
-          />
-        </Shell>
-      </BleedFade>
-
-      <div className="bg-[#fff5ff]">
-        <Shell>
-          <p className="py-4 text-center text-[20px] leading-[27.5px] text-black">
-            Building a design system for mobile wardrobe app
-          </p>
-          <div className="flex items-start justify-center px-12 py-8">
-            {[
-              { label: "Role", value: "UX Design Intern" },
-              { label: "Timeline", value: "December 2025 - May 2026" },
-              {
-                label: "Team",
-                value: "2 UX Design Interns\n3 UX Designers",
-              },
-              { label: "Tools/Skills", value: "Figma, Design Systems" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="flex min-w-0 flex-1 flex-col gap-2 px-4"
-              >
-                <p className="text-[12px] font-medium uppercase leading-[17.25px] tracking-[1.61px] text-black/40">
-                  {item.label}
-                </p>
-                <p className="whitespace-pre-line text-[16px] leading-[20.625px] text-black/80">
-                  {item.value}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <Label className="px-12 py-8">Highlights</Label>
-          <p className="px-12 py-4 text-center text-[24px] leading-[27.5px] text-black/50">
-            Created a <Em>scalable design system</Em> to turn disjointed tools
-            into <Em>one focused experience.</Em>
-          </p>
-          <Frame
-            src={asset("framed-highlights.png")}
-            alt="Wearitt account, profile, closet, and collage screens from the design system"
-            width={2400}
-            height={3624}
-          />
-        </Shell>
-      </div>
-
-      <div className="h-[60px] bg-white" />
-
-      <Shell>
-        <section>
-          <Label className="px-12 py-8">Context</Label>
-          <div className="mx-auto flex w-full max-w-[520px] flex-col items-center gap-4 py-8">
-            <p className="text-center text-[48px] leading-[48px] text-black">
+    <div className="w-full bg-white pb-16 font-sans">
+      <CaseStudyLayout
+        onHome={onReturn}
+        hero="/assets/case-studies/heroes/wearitt.png"
+        heroAlt="Wearitt logo and design-system components"
+        title="Wearitt: Building a design system for mobile wardrobe app"
+        meta={[
+          { label: "Role", value: "UX Design Intern" },
+          { label: "Timeline", value: "December 2025 - May 2026" },
+          { label: "Team", value: "2 UX Design Interns  3 UX Designers" },
+          { label: "Tools/Skills", value: "Figma, Design Systems" },
+        ]}
+        toc={CASE_STUDY_TOC.wearitt}
+      >
+        <section id="problem" className="scroll-mt-24">
+          <Label color={ACCENT}>Problem</Label>
+          <div className="flex flex-col gap-4 px-8 pb-4">
+            <p className="text-[32px] leading-[32px] text-black">
               Too many features.
             </p>
-            <p className="text-center text-[16px] leading-6 text-black/50">
+            <p className="max-w-[520px] text-[16px] leading-6 text-black/50">
               Wearitt was <Em>fractured</Em> across{" "}
               <Em>four competing features:</Em> Virtual Try-On, Collage Maker,
               Digital Closet, and an Inspiration Feed.
             </p>
           </div>
-          <div className="flex flex-col items-center p-4">
-            <Frame
-              src={asset("framed-homescreen.png")}
-              alt="Current Wearitt homescreen"
-              width={528}
-              height={1155}
-              className="h-auto w-[264px]"
-            />
-            <p className="w-[264px] text-right text-[12px] leading-[28.5px] text-black/50">
-              Current Wearitt Homescreen
-            </p>
-          </div>
-          <p className="px-12 py-4 text-center text-[40px] leading-[40px] text-black/50">
+          <Figure
+            src={asset("problem-features.png")}
+            alt="Wearitt home, look generator, product, and collage screens"
+            width={3824}
+            height={2075}
+            caption="Wearitt features"
+            priority
+          />
+        </section>
+
+        <section id="goal" className="scroll-mt-24">
+          <Label color={ACCENT}>Goal</Label>
+          <p className="px-8 pb-8 text-[32px] leading-[40px] text-black/50">
             <Em>How might we</Em> create a <Em>unified framework</Em> that pulls
             four disconnected features into one seamless flow?
           </p>
         </section>
-      </Shell>
 
-      <Shell>
-        <div className="h-[60px]" />
-        <Label>Design</Label>
-        <p className="px-12 py-4 text-[40px] leading-[40px] text-black">
-          The Solution: Design System.
-        </p>
-        <p className="px-12 pb-10 pt-4 text-[20px] leading-[20.5px] text-black/50">
-          Applied <Em>Brad Frost’s Atomic Design framework</Em> to build a
-          centralized component library that resolved feature fragmentation
-          across the app.
-        </p>
-
-        <p className="px-16 pb-4 pt-8 text-[24px] leading-[27.5px] text-black">
-          Atoms
-        </p>
-        <div className="flex flex-col items-start gap-8 px-16 py-4 md:flex-row">
-          <Frame
-            src={asset("framed-atoms.png")}
-            alt="Wearitt color tokens, typography, and spacing foundations"
-            width={1552}
-            height={1721}
-            className="h-auto w-full max-w-[776px] shrink-0"
+        <section id="process" className="scroll-mt-24">
+          <Label color={ACCENT}>Process</Label>
+          <Headline>
+            Create a scalable design system that unifies the fragmentation
+            across Wearitt’s features.
+          </Headline>
+          <div className="px-8 pt-2 pb-8">
+            <p className="text-[20px] leading-[27.5px] text-black/50">
+              Started by <Em>auditing Wearitt’s active features</Em> alongside{" "}
+              <Em>industry design systems</Em> to identify recurring UI
+              patterns. I mapped out which components needed strict
+              standardization, which required flexibility, and which were
+              feature-specific.
+            </p>
+          </div>
+          <Figure
+            src={asset("process-steps.png")}
+            alt="Audit, Design, Component, Implement"
+            width={3904}
+            height={288}
           />
-          <p className="w-full max-w-[264px] text-[20px] leading-[27.5px] text-black/50">
-            Established <Em>core visual rules</Em>, including an{" "}
-            <Em>8pt grid,</Em> tokenized <Em>color palettes, typography</Em>{" "}
-            scales, and unified button states.
-          </p>
-        </div>
+        </section>
 
-        <p className="px-16 pb-4 pt-8 text-[24px] leading-[27.5px] text-black">
-          Molecules
-        </p>
-        <div className="flex flex-col items-start gap-8 px-16 py-8 md:flex-row">
-          <p className="w-full max-w-[360px] text-right text-[20px] leading-[27.5px] text-black/50">
-            Paired foundational tokens into <Em>reusable units,</Em> like
-            view-selection tabs (Closet vs. Wishlist) and{" "}
-            <Em>standardized tagging inputs.</Em>
+        <section id="design-language" className="scroll-mt-24">
+          <Label color={ACCENT}>Design Language</Label>
+          <Headline>Defining core visual rules.</Headline>
+          <div className="px-8 pt-2 pb-4">
+            <p className="text-[20px] leading-[27.5px] text-black/50">
+              Established <Em>core visual rules</Em>, including color palettes,
+              typography scales, spacing, and icons.
+            </p>
+          </div>
+
+          <p className="px-8 pt-8 pb-2 text-[24px] leading-[27.5px] text-black">
+            Color
           </p>
-          <Frame
-            src={asset("framed-molecules.png")}
-            alt="Wearitt buttons, chips, tabs, and navigation icon molecules"
-            width={1360}
-            height={1188}
-            className="h-auto w-full max-w-[680px] shrink-0"
+          <Body>
+            Primary and secondary colors inspired by the existing brand logo.
+          </Body>
+          <Figure
+            src={asset("color-palette.png")}
+            alt="Wearitt primary purple and secondary orange color scales"
+            width={3824}
+            height={2012}
           />
-        </div>
-
-        <p className="px-16 pb-4 pt-8 text-[24px] leading-[27.5px] text-black">
-          Organisms
-        </p>
-        <div className="flex flex-col items-start justify-center gap-8 px-16 py-4 md:flex-row">
-          <Frame
-            src={asset("framed-organisms.png")}
-            alt="Wearitt bottom navigation bar states"
-            width={849}
-            height={1364}
-            className="h-auto w-full max-w-[424px] shrink-0"
+          <div className="px-8 pt-2">
+            <p className="text-[20px] leading-[27.5px] text-black/50">
+              Light and dark tones selected to support accessibility, meeting
+              WCAG AA contrast standards. Furthermore, gradient tones used in
+              special brand moments.
+            </p>
+          </div>
+          <Figure
+            src={asset("color-a11y.png")}
+            alt="Contrast checker and gradient brand moments"
+            width={3824}
+            height={1372}
           />
-          <p className="w-full max-w-[220px] text-[20px] leading-[27.5px] text-black/50">
-            Assembled molecules into complex global components, including{" "}
-            <Em>shared navigation bars,</Em> canvas modals, and responsive feed
-            cards.
-          </p>
-        </div>
-      </Shell>
 
-      <Shell>
-        <section>
-          <Label>Challenges</Label>
-          <p className="px-12 py-4 text-[48px] leading-[48px] text-black">
+          <p className="px-8 pt-8 pb-2 text-[24px] leading-[27.5px] text-black">
+            Typography
+          </p>
+          <Body>
+            Typography needed to stay consistent and simple to accommodate for
+            mobile usage.
+          </Body>
+          <Figure
+            src={asset("typography.png")}
+            alt="Wearitt type scale"
+            width={3824}
+            height={2012}
+          />
+
+          <p className="px-8 pt-8 pb-2 text-[24px] leading-[27.5px] text-black">
+            Spacing
+          </p>
+          <Body>
+            Margins and spacing was all over the place. Followed consistent 16pt
+            spacing and margins to ensure cohesiveness.
+          </Body>
+          <Figure
+            src={asset("spacing.png")}
+            alt="16pt spacing and margin system"
+            width={3824}
+            height={1524}
+          />
+
+          <p className="px-8 pt-8 pb-2 text-[24px] leading-[27.5px] text-black">
+            Icons
+          </p>
+          <Body>
+            Set range of icons with various colors for different states and
+            usages.
+          </Body>
+          <Figure
+            src={asset("icons.png")}
+            alt="Wearitt icon set in multiple states"
+            width={3824}
+            height={732}
+          />
+        </section>
+
+        <section id="components" className="scroll-mt-24">
+          <Label color={ACCENT}>Components</Label>
+          <Headline>Building blocks.</Headline>
+          <div className="px-8 pt-2">
+            <p className="text-[20px] leading-[27.5px] text-black/50">
+              Identified commonly used components to assemble foundational
+              tokens into <Em>reusable units.</Em>
+            </p>
+          </div>
+          <Figure
+            src={asset("components.png")}
+            alt="Buttons, cards, navigation bars, and text fields"
+            width={3824}
+            height={852}
+          />
+          <p className="px-8 pt-8 pb-2 text-[24px] leading-[27.5px] text-black">
+            Properties
+          </p>
+          <Body>
+            Various properties allow for quick changes and modifications.
+          </Body>
+          <Figure
+            src={asset("properties.png")}
+            alt="Button and item-card component properties"
+            width={3824}
+            height={1272}
+          />
+        </section>
+
+        <section id="result" className="scroll-mt-24">
+          <Label color={ACCENT}>Result</Label>
+          <Headline>
+            A structured, cohesive app with clear visual and functional clarity.
+          </Headline>
+          <p className="px-8 pt-8 pb-2 text-[24px] leading-[27.5px] text-black">
+            Before and after
+          </p>
+          <Figure
+            src={asset("result.png")}
+            alt="Before and after profile and account screens"
+            width={3824}
+            height={1856}
+          />
+        </section>
+
+        <section id="challenges" className="scroll-mt-24">
+          <Label color={ACCENT}>Challenges</Label>
+          <p className="px-8 text-[32px] leading-[27.5px] text-black">
             Navigating an established project.
           </p>
-          <div className="flex flex-col gap-10 px-16 py-12 md:flex-row md:items-stretch">
-            <div className="flex min-w-0 flex-1 flex-col rounded-[32px] bg-[#faf1fa] p-4">
-              <p className="p-2 text-[24px] leading-[27.5px] text-black">
-                Context
-              </p>
-              <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
-                Joining a live product established in 2023 meant navigating
-                substantial existing design debt for the first time.
-              </p>
-            </div>
-            <div className="flex min-w-0 flex-1 flex-col rounded-[32px] bg-[#f4d5f4] p-4">
-              <p className="p-2 text-[24px] leading-[27.5px] text-black">
-                Approach
-              </p>
-              <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
-                Rather than jumping straight into new UI screens, I audited
-                historical product documentation and legacy files to understand
-                the core mission.
-              </p>
-            </div>
-            <div className="flex min-w-0 flex-1 flex-col rounded-[32px] bg-[#f7c1f7] p-4">
-              <p className="p-2 text-[24px] leading-[27.5px] text-black">
-                Outcome
-              </p>
-              <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
-                Uncovered the root cause of feature fragmentation, uncovering an
-                urgent need for a standardized design system.
-              </p>
-            </div>
+          <div className="flex flex-col items-stretch gap-4 px-8 py-12 md:flex-row">
+            {(
+              [
+                {
+                  title: "Context",
+                  body: "Joining a live product established in 2023 meant navigating substantial existing design debt for the first time.",
+                  bg: "bg-[#faf1fa]",
+                },
+                {
+                  title: "Approach",
+                  body: "Rather than jumping straight into new UI screens, I audited historical product documentation and legacy files to understand the core mission.",
+                  bg: "bg-[#f4d5f4]",
+                },
+                {
+                  title: "Outcome",
+                  body: "Uncovered the root cause of feature fragmentation, uncovering an urgent need for a standardized design system.",
+                  bg: "bg-[#f7c1f7]",
+                },
+              ] as const
+            ).map((card) => (
+              <div
+                key={card.title}
+                className={`flex min-w-0 flex-1 flex-col rounded p-4 ${card.bg}`}
+              >
+                <p className="p-2 text-[24px] leading-[27.5px] text-black">
+                  {card.title}
+                </p>
+                <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
+                  {card.body}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
-      </Shell>
 
-      <Shell>
-        <section>
-          <Label>Takeaways</Label>
-          <div className="flex flex-col gap-10 px-16 py-12">
-            <Takeaway title="Scalable Architecture">
+        <section id="takeaways" className="scroll-mt-24">
+          <Label color={ACCENT}>Takeaways</Label>
+          <div className="flex flex-col gap-10 px-8 py-8">
+            <Takeaway
+              title="Scalable Architecture"
+              star={asset("star.svg")}
+              border="#fce5fc"
+            >
               Treated design systems as <Em>functional infrastructure</Em> for
               team alignment and clean dev handoffs.
             </Takeaway>
-            <Takeaway title="Legacy Adaptability">
+            <Takeaway
+              title="Legacy Adaptability"
+              star={asset("star.svg")}
+              border="#fce5fc"
+            >
               Balanced <Em>existing product footprints</Em> with modern UX
               upgrades without breaking current workflows.
             </Takeaway>
-            <Takeaway title="Logic-Driven Feedback">
+            <Takeaway
+              title="Logic-Driven Feedback"
+              star={asset("star.svg")}
+              border="#fce5fc"
+            >
               Grounded <Em>daily peer reviews</Em> in clear user goals rather
               than personal design preferences.
             </Takeaway>
           </div>
         </section>
-
-        {onReturn ? (
-          <button
-            type="button"
-            onClick={onReturn}
-            className="w-full pb-8 text-center font-sans text-[15px] text-black/32 transition-colors hover:text-black/55"
-          >
-            Return to works
-          </button>
-        ) : null}
-      </Shell>
-    </article>
+      </CaseStudyLayout>
+    </div>
   );
 }

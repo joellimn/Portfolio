@@ -61,7 +61,8 @@
   --color-aqua-gel-hi: var(--aqua-gel-hi);
   --color-aqua-gel-mid: var(--aqua-gel-mid);
   --color-aqua-gel-light: var(--aqua-gel-light);
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-geist), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
 }
 
 @utility preserve-3d {
@@ -448,4 +449,332 @@ body {
 .portfolio-cursor-root,
 .portfolio-cursor-root * {
   cursor: none !important;
+}
+
+.portfolio-cursor-root [data-native-cursor],
+.portfolio-cursor-root [data-native-cursor] * {
+  cursor: auto !important;
+}
+
+.portfolio-cursor-root [data-native-cursor] input {
+  cursor: text !important;
+}
+
+.portfolio-cursor-root [data-native-cursor] button,
+.portfolio-cursor-root [data-native-cursor] a {
+  cursor: pointer !important;
+}
+
+/* Expanding scent ripple. Custom properties are registered so the
+   mask can grow and fade instead of snapping between keyframes. */
+@property --opc {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --gradient-h {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --gradient-w {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --gradient-inner-opacity {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --gradient-middle-opacity {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --gradient-outer-opacity {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@property --conic-rotate {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.footer-wash {
+  --ox: 50%;
+  --oy: 50%;
+  --hue1: 70;
+  --hue2: 45;
+  --hue3: 90;
+  --hue4: 30;
+  --hue5: 110;
+  --opc: 0%;
+  --gradient-h: 0%;
+  --gradient-w: 0%;
+  --gradient-inner-opacity: 0%;
+  --gradient-middle-opacity: 0%;
+  --gradient-outer-opacity: 0%;
+  --conic-rotate: 0deg;
+  background-color: transparent;
+  background-image:
+    radial-gradient(
+      circle at var(--ox) var(--oy),
+      oklch(0.94 0.08 80 / calc(var(--opc) * 0.7)) 0%,
+      oklch(0.93 0.09 var(--hue2) / var(--opc)) 10%,
+      oklch(0.96 0.04 var(--hue4) / 0%) 52%
+    ),
+    radial-gradient(
+      80% 70% at var(--ox) var(--oy),
+      oklch(0.94 0.07 var(--hue5) / calc(var(--opc) * 0.5)) 0%,
+      oklch(0.95 0.05 var(--hue3) / 0%) 64%
+    ),
+    conic-gradient(
+      from var(--conic-rotate) at var(--ox) var(--oy),
+      oklch(0.92 0.1 var(--hue1) / var(--opc)) 0%,
+      oklch(0.94 0.08 75 / calc(var(--opc) * 0.85)) 14%,
+      oklch(0.93 0.09 var(--hue2) / var(--opc)) 28%,
+      oklch(0.91 0.07 var(--hue3) / var(--opc)) 44%,
+      oklch(0.95 0.06 var(--hue4) / var(--opc)) 60%,
+      oklch(0.92 0.09 var(--hue5) / var(--opc)) 76%,
+      oklch(0.93 0.08 80 / calc(var(--opc) * 0.8)) 88%,
+      oklch(0.92 0.1 var(--hue1) / var(--opc)) 100%
+    );
+  background-blend-mode: normal, normal, normal;
+  mask-image: radial-gradient(
+    var(--gradient-w) var(--gradient-h) at var(--ox) var(--oy),
+    rgb(0 0 0 / var(--gradient-inner-opacity)) 10%,
+    rgb(0 0 0 / var(--gradient-middle-opacity)) 28%,
+    rgb(0 0 0 / var(--gradient-middle-opacity)) 46%,
+    rgb(0 0 0 / var(--gradient-outer-opacity)) 68%,
+    rgb(0 0 0 / 0%) 100%
+  );
+  mask-size: cover;
+  mask-position: center;
+  mask-repeat: no-repeat;
+}
+
+.footer-wash.is-rippling {
+  animation: footer-ripple 5.6s cubic-bezier(0.22, 0.01, 0.32, 1) both;
+}
+
+@keyframes footer-ripple {
+  0% {
+    --conic-rotate: -90deg;
+    --opc: 52%;
+    --gradient-h: 0%;
+    --gradient-w: 0%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 42%;
+    --gradient-outer-opacity: 0%;
+  }
+
+  42% {
+    --gradient-h: 150%;
+    --gradient-w: 120%;
+    --opc: 62%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 62%;
+    --gradient-outer-opacity: 18%;
+  }
+
+  72% {
+    --conic-rotate: 48deg;
+    --gradient-h: 230%;
+    --gradient-w: 190%;
+    --opc: 30%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 28%;
+    --gradient-outer-opacity: 8%;
+  }
+
+  100% {
+    --conic-rotate: 110deg;
+    --gradient-h: 300%;
+    --gradient-w: 260%;
+    --opc: 0%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 0%;
+    --gradient-outer-opacity: 0%;
+  }
+}
+
+/* Opening screen: same scent recipe, held a little closer and richer
+   so the bloom can reveal white type on a full-viewport white field. */
+.opening-wash.is-rippling {
+  animation: opening-ripple 3.5s cubic-bezier(0.22, 0.01, 0.32, 1) both;
+}
+
+.opening-ink {
+  color: #fff;
+  animation: opening-ink 5.2s cubic-bezier(0.22, 0.01, 0.32, 1) both;
+}
+
+@keyframes opening-ink {
+  0%,
+  32% {
+    color: #fff;
+  }
+
+  100% {
+    color: var(--foreground);
+  }
+}
+
+@keyframes opening-ripple {
+  0% {
+    --conic-rotate: -90deg;
+    --opc: 58%;
+    --gradient-h: 0%;
+    --gradient-w: 0%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 50%;
+    --gradient-outer-opacity: 0%;
+  }
+
+  20% {
+    --gradient-h: 88%;
+    --gradient-w: 78%;
+    --opc: 80%;
+    --gradient-inner-opacity: 10%;
+    --gradient-middle-opacity: 74%;
+    --gradient-outer-opacity: 24%;
+  }
+
+  42% {
+    --conic-rotate: 36deg;
+    --gradient-h: 120%;
+    --gradient-w: 104%;
+    --opc: 14%;
+    --gradient-inner-opacity: 1%;
+    --gradient-middle-opacity: 10%;
+    --gradient-outer-opacity: 3%;
+  }
+
+  68% {
+    --conic-rotate: 78deg;
+    --gradient-h: 168%;
+    --gradient-w: 148%;
+    --opc: 2%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 2%;
+    --gradient-outer-opacity: 0%;
+  }
+
+  100% {
+    --conic-rotate: 110deg;
+    --gradient-h: 200%;
+    --gradient-w: 180%;
+    --opc: 0%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 0%;
+    --gradient-outer-opacity: 0%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-wash.is-rippling {
+    animation: none;
+  }
+
+  .opening-wash.is-rippling {
+    animation: none;
+  }
+
+  .opening-ink {
+    animation: none;
+    color: var(--foreground);
+  }
+
+  .footer-wash.is-held {
+    --opc: 48%;
+    --gradient-h: 160%;
+    --gradient-w: 140%;
+    --gradient-inner-opacity: 0%;
+    --gradient-middle-opacity: 52%;
+    --gradient-outer-opacity: 8%;
+  }
+}
+
+/* Follows the tag silhouette so the shadow sits on the scent wash,
+   not in a rectangular box. */
+.footer-tag {
+  filter: drop-shadow(3px 8px 10px rgba(0, 0, 0, 0.2));
+}
+
+/* NYC about strip: four photos visible, the rest slide through. */
+.nyc-carousel {
+  container-type: inline-size;
+}
+
+.nyc-track {
+  display: flex;
+  width: max-content;
+  animation: nyc-marquee 42s linear infinite;
+}
+
+.nyc-carousel:hover .nyc-track {
+  animation-play-state: paused;
+}
+
+.nyc-set {
+  display: flex;
+  gap: 16px;
+  padding-right: 16px;
+}
+
+.nyc-slide {
+  width: calc((100cqi - 16px) / 2);
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .nyc-slide {
+    width: calc((100cqi - 48px) / 4);
+  }
+}
+
+@keyframes nyc-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nyc-track {
+    animation: none;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .nyc-set:last-child {
+    display: none;
+  }
+
+  .nyc-set {
+    width: 100%;
+    flex-wrap: wrap;
+    padding-right: 0;
+  }
+
+  .nyc-slide {
+    width: calc((100% - 16px) / 2);
+  }
+
+  @media (min-width: 640px) {
+    .nyc-slide {
+      width: calc((100% - 48px) / 4);
+    }
+  }
 }

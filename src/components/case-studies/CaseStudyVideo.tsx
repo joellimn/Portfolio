@@ -2,8 +2,10 @@ type CaseStudyVideoProps = {
   src: string;
   label: string;
   className?: string;
-  /** Dashboard windows use 16px; phone screens use 32px like the framed stills. */
-  radius?: "window" | "phone";
+  /** Dashboard windows use 16px; phone screens 32px; cropped UI clips ~9px. */
+  radius?: "window" | "phone" | "clip";
+  width?: number;
+  height?: number;
   /** Crop this many CSS pixels from the left and right edges. */
   cropX?: number;
   /** Crop this many CSS pixels from the top edge. */
@@ -15,6 +17,7 @@ type CaseStudyVideoProps = {
 const RADIUS = {
   window: "rounded-[16px]",
   phone: "rounded-[32px]",
+  clip: "rounded-[9px]",
 };
 
 export function CaseStudyVideo({
@@ -22,6 +25,8 @@ export function CaseStudyVideo({
   label,
   className = "",
   radius = "window",
+  width,
+  height,
   cropX = 0,
   cropTop = 0,
   cropBottom = 0,
@@ -47,6 +52,8 @@ export function CaseStudyVideo({
     >
       <video
         src={src}
+        width={width}
+        height={height}
         className={`block h-auto ${RADIUS[radius]}`}
         style={cropStyle}
         autoPlay

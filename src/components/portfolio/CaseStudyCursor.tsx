@@ -88,6 +88,7 @@ export function isCenterCoverTarget(target: EventTarget | null) {
 
 export function getCursorHint(target: EventTarget | null): CursorHint | null {
   if (!(target instanceof Element)) return null;
+  if (target.closest("[data-native-cursor]")) return null;
   if (target.closest(".is-dragging")) return null;
   if (isCenterCoverTarget(target)) return { label: "view case study" };
   if (coverFromTarget(target)) return { label: "view" };
@@ -104,6 +105,8 @@ export function getCursorHint(target: EventTarget | null): CursorHint | null {
       };
     case "view":
       return { label: "view" };
+    case "case-study":
+      return { label: "view case study" };
     case "external":
       return { label: "view", external: true };
     default:

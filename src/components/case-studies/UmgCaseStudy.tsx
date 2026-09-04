@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
+import { CaseStudyBody } from "@/components/case-studies/CaseStudyToc";
+import { CASE_STUDY_TOC } from "@/data/caseStudyToc";
 
 const asset = (file: string) => `/assets/case-studies/umg/${file}`;
 const EMAIL = "joel.c.lim@vanderbilt.edu";
@@ -118,7 +120,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             Universal Music Group
           </h1>
           <p className="text-center text-[16px] leading-[44px] text-black/50">
-            U.S. Army - Spring 2026
+            Summer 2026
           </p>
         </header>
         <Frame
@@ -169,7 +171,8 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
           </p>
         </div>
 
-        <section>
+        <CaseStudyBody items={CASE_STUDY_TOC.umg} onHome={onReturn}>
+        <section id="context" className="scroll-mt-24">
           <Label>Context &amp; Challenge</Label>
           <p className="px-12 py-4 text-center text-[24px] leading-[27.5px] text-black/50">
             <Em>Universal Music Group</Em> relied on hundreds of{" "}
@@ -179,7 +182,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
           </p>
         </section>
 
-        <section>
+        <section id="impact" className="scroll-mt-24">
           <Label>Impact</Label>
           <div className="flex flex-col gap-10 px-16 py-12 md:flex-row md:items-stretch">
             <Card title="AI Agent">
@@ -197,7 +200,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
           </div>
         </section>
 
-        <section>
+        <section id="takeaways" className="scroll-mt-24">
           <Label>Takeaways</Label>
           <div className="flex flex-col gap-10 px-16 py-12">
             <Takeaway title="Leveraging AI">
@@ -222,6 +225,8 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             </div>
           </div>
         </section>
+
+        </CaseStudyBody>
 
         {onReturn ? (
           <button

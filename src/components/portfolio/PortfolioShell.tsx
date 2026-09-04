@@ -9,7 +9,7 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { PortfolioV2 } from "@/components/portfolio/PortfolioV2";
+import { WorkPage } from "@/components/portfolio/WorkPage";
 import { projects } from "@/data/projects";
 import { EASE_OUT, SHEET_DURATION } from "@/lib/motion";
 
@@ -53,10 +53,14 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
   const skipEnter = firstPaint.current && Boolean(caseId);
   const homeCovered = open || Boolean(sheet);
 
+  // Only Work and the case studies that slide over it need the persistent base.
+  // The other pages render on their own.
+  if (pathname !== "/" && !caseId) return <>{children}</>;
+
   return (
     <>
       <div inert={homeCovered ? true : undefined}>
-        <PortfolioV2 />
+        <WorkPage />
       </div>
       <AnimatePresence
         onExitComplete={() => {
@@ -69,7 +73,7 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
             role="dialog"
             aria-modal="true"
             aria-label="Case study"
-            className="fixed inset-0 z-40 overflow-y-auto bg-white"
+            className="fixed inset-0 z-40 overflow-y-auto scroll-smooth bg-white"
             initial={
               skipEnter ? false : reduced ? { opacity: 0 } : { y: "100%" }
             }

@@ -32,6 +32,13 @@ export function PortfolioCursorRoot({ children }: { children: ReactNode }) {
 
   const updateCursor = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse") return;
+    if (
+      event.target instanceof Element &&
+      event.target.closest("[data-native-cursor]")
+    ) {
+      setCursor(null);
+      return;
+    }
     setCursor({
       x: event.clientX,
       y: event.clientY,
