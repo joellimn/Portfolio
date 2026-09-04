@@ -314,7 +314,7 @@ export function SiteFooter() {
               ref={(node) => {
                 tagRefs.current[index] = node;
               }}
-              className="absolute will-change-transform"
+              className="footer-tag-wrap absolute"
               style={{
                 left: hang.x - tw / 2,
                 top: hang.y - hole,
@@ -328,7 +328,7 @@ export function SiteFooter() {
                 alt={tag.alt}
                 fill
                 sizes="15vw"
-                className="footer-tag object-contain"
+                className="footer-tag object-fill"
                 unoptimized
               />
             </div>

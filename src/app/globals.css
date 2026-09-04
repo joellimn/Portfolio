@@ -70,16 +70,14 @@
 }
 
 .wordmark {
-  -webkit-mask-image: url("/assets/wordmark-c2.png");
-  mask-image: url("/assets/wordmark-c2.png");
+  -webkit-mask-image: url("/assets/wordmark-c2.png?v=3");
+  mask-image: url("/assets/wordmark-c2.png?v=3");
   -webkit-mask-size: contain;
   mask-size: contain;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
-  -webkit-mask-source-type: luminance;
-  mask-mode: luminance;
 }
 
 html {
@@ -717,10 +715,15 @@ body {
   }
 }
 
-/* Follows the tag silhouette so the shadow sits on the scent wash,
-   not in a rectangular box. */
-.footer-tag {
+/* Shadow on the wrap, not the img — iOS Safari flattens filtered
+   PNGs and paints a black rectangle behind the alpha. */
+.footer-tag-wrap {
+  background-color: transparent;
   filter: drop-shadow(3px 8px 10px rgba(0, 0, 0, 0.2));
+}
+
+.footer-tag {
+  background-color: transparent;
 }
 
 /* NYC about strip: four photos visible, the rest slide through. */
