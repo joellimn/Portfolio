@@ -69,6 +69,19 @@
   transform-style: preserve-3d;
 }
 
+.wordmark {
+  -webkit-mask-image: url("/assets/wordmark-c2.png");
+  mask-image: url("/assets/wordmark-c2.png");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-source-type: luminance;
+  mask-mode: luminance;
+}
+
 html {
   scroll-behavior: auto;
 }
