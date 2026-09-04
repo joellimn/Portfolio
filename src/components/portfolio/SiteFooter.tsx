@@ -77,7 +77,6 @@ const TAGS = [
 
 const PAGES = [
   { href: "/", label: "Work" },
-  { href: "/listening-room", label: "Listening room" },
   { href: "/about", label: "About" },
 ] as const;
 
@@ -117,10 +116,10 @@ export function SiteFooter() {
   const [width, setWidth] = useState(DESIGN_W);
   const [stageTop, setStageTop] = useState(0);
   const [active, setActive] = useState<number | null>(null);
-  const [ripples, setRipples] = useState<{ id: number; index: number }[]>([]);
+  const [washes, setWashes] = useState<number[]>([]);
   const [reduced, setReduced] = useState(false);
   const activeRef = useRef<number | null>(null);
-  const rippleId = useRef(0);
+  const playing = useRef(TAGS.map(() => false));
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -215,12 +214,11 @@ export function SiteFooter() {
 
   const spawnRipple = (index: number) => {
     if (reduced) return;
-    rippleId.current += 1;
-    const id = rippleId.current;
-    setRipples((current) => {
-      const next = [...current, { id, index }];
-      return next.length > 8 ? next.slice(-8) : next;
-    });
+    if (playing.current[index]) return;
+    playing.current[index] = true;
+    setWashes((current) =>
+      current.includes(index) ? current : [...current, index],
+    );
   };
 
   const locate = (event: React.PointerEvent<HTMLElement>) => {
@@ -264,15 +262,12 @@ export function SiteFooter() {
       onPointerDown={onPointerDown}
       onPointerLeave={onPointerLeave}
     >
-      {(reduced && active !== null
-        ? [{ id: -1, index: active }]
-        : ripples
-      ).map((ripple) => {
-        const tag = TAGS[ripple.index];
-        const hang = hangs[ripple.index];
+      {(reduced && active !== null ? [active] : washes).map((index) => {
+        const tag = TAGS[index];
+        const hang = hangs[index];
         return (
           <div
-            key={ripple.id}
+            key={index}
             aria-hidden
             className={[
               "footer-wash pointer-events-none absolute inset-0",
@@ -291,9 +286,8 @@ export function SiteFooter() {
             }
             onAnimationEnd={(event) => {
               if (event.animationName !== "footer-ripple") return;
-              setRipples((current) =>
-                current.filter((item) => item.id !== ripple.id),
-              );
+              playing.current[index] = false;
+              setWashes((current) => current.filter((item) => item !== index));
             }}
           />
         );

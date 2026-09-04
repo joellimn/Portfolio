@@ -7,7 +7,6 @@ import { projects } from "@/data/projects";
 
 const LINKS = [
   { href: "/", label: "Work" },
-  { href: "/listening-room", label: "Listening room" },
   { href: "/about", label: "About" },
 ] as const;
 
