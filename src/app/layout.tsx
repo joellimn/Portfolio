@@ -17,9 +17,22 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.joellim.co"),
   title: "Joel Lim",
   description: "Joel Lim",
   manifest: "/site.webmanifest",
+  openGraph: {
+    title: "Joel Lim",
+    description: "Joel Lim",
+    type: "website",
+    locale: "en_US",
+    siteName: "Joel Lim",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Joel Lim",
+    description: "Joel Lim",
+  },
 };
 
 export default function RootLayout({

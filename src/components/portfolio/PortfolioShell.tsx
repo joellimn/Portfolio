@@ -10,6 +10,7 @@ import {
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { WorkPage } from "@/components/portfolio/WorkPage";
+import { markOpeningPlayed } from "@/components/portfolio/WorkIntro";
 import { projects } from "@/data/projects";
 import { EASE_OUT, SHEET_DURATION } from "@/lib/motion";
 
@@ -30,6 +31,10 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     firstPaint.current = false;
   }, []);
+
+  useEffect(() => {
+    if (pathname !== "/") markOpeningPlayed();
+  }, [pathname]);
 
   useLayoutEffect(() => {
     if (caseId) {
@@ -52,16 +57,17 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
 
   const skipEnter = firstPaint.current && Boolean(caseId);
   const homeCovered = open || Boolean(sheet);
-
-  // Only Work and the case studies that slide over it need the persistent base.
-  // The other pages render on their own.
-  if (pathname !== "/" && !caseId) return <>{children}</>;
+  const otherPage = pathname !== "/" && !caseId;
 
   return (
     <>
-      <div inert={homeCovered ? true : undefined}>
+      <div
+        hidden={otherPage}
+        inert={homeCovered || otherPage ? true : undefined}
+      >
         <WorkPage />
       </div>
+      {otherPage ? children : null}
       <AnimatePresence
         onExitComplete={() => {
           if (!caseId) setSheet(null);
