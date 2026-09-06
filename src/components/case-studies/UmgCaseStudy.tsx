@@ -1,66 +1,16 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
-import { CaseStudyBody } from "@/components/case-studies/CaseStudyToc";
+import { CaseStudyLayout } from "@/components/case-studies/CaseStudyLayout";
+import {
+  Em,
+  Figure,
+  Label,
+  Takeaway,
+} from "@/components/case-studies/CaseStudyPrimitives";
 import { CASE_STUDY_TOC } from "@/data/caseStudyToc";
 
-const asset = (file: string) => `/assets/case-studies/umg/${file}`;
-const EMAIL = "joel.c.lim@vanderbilt.edu";
-
-function Em({ children }: { children: ReactNode }) {
-  return <span className="text-black">{children}</span>;
-}
-
-function Shell({
-  children,
-  className = "",
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`mx-auto w-full max-w-[1200px] ${className}`}>{children}</div>
-  );
-}
-
-function Label({
-  children,
-  className = "px-12 pt-8 pb-4",
-}: {
-  children: string;
-  className?: string;
-}) {
-  return (
-    <p className={`${className} text-[20px] leading-[27.5px] text-[#6fb2c3]`}>
-      {children}
-    </p>
-  );
-}
-
-function Frame({
-  src,
-  alt,
-  width,
-  height,
-  priority = false,
-}: {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  priority?: boolean;
-}) {
-  return (
-    <Image
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className="block h-auto w-full"
-      unoptimized
-      priority={priority}
-    />
-  );
-}
+const v4 = (file: string) => `/assets/case-studies/v4/umg/${file}`;
+const ACCENT = "#2b84e9";
+const BORDER = "#75b5fe";
 
 function Card({
   title,
@@ -70,39 +20,11 @@ function Card({
   children: ReactNode;
 }) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col rounded-[32px] bg-[#f3f3f3] p-4 shadow-[4px_4px_5px_rgba(0,0,0,0.05)]">
+    <div className="flex min-w-0 flex-1 flex-col self-stretch rounded bg-[#f6faff] p-4">
       <p className="p-2 text-[24px] leading-[27.5px] text-black">{title}</p>
-      <p className="p-2 text-[20px] leading-[27.5px] text-black/50">{children}</p>
-    </div>
-  );
-}
-
-function Takeaway({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="flex w-full items-start gap-4 rounded-[32px] bg-[#f3f3f3] p-4 shadow-[4px_4px_5px_rgba(0,0,0,0.05)]">
-      <div className="flex h-[115px] shrink-0 items-center px-2 py-4">
-        <div className="size-8 overflow-clip">
-          <img
-            src={asset("star.svg")}
-            alt=""
-            width={32}
-            height={32}
-            className="size-full"
-          />
-        </div>
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="p-2 text-[24px] leading-[27.5px] text-black">{title}</p>
-        <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
-          {children}
-        </p>
-      </div>
+      <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
+        {children}
+      </p>
     </div>
   );
 }
@@ -113,131 +35,371 @@ type UmgCaseStudyProps = {
 
 export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
   return (
-    <article className="w-full bg-white pb-16 font-sans">
-      <Shell>
-        <header className="flex flex-col items-center pt-16 pb-4 tracking-[-1px]">
-          <h1 className="text-center text-[56px] font-medium leading-[44px] text-black">
-            Universal Music Group
-          </h1>
-          <p className="text-center text-[16px] leading-[44px] text-black/50">
-            Summer 2026
+    <div className="w-full bg-white pb-16 font-sans">
+      <CaseStudyLayout
+        onHome={onReturn}
+        hero="/assets/case-studies/heroes/umg.png"
+        heroAlt="Universal Music Group wordmark"
+        tallHero
+        containHero
+        title="Universal Music Group"
+        meta={[
+          { label: "Role", value: "UX Design Intern" },
+          { label: "Timeline", value: "June 2026 - August 2026" },
+          { label: "Team", value: "UMG Collaboration Tech" },
+          {
+            label: "Tools/Skills",
+            value:
+              "Figma, Gemini Enterprise Agent Platform, MCP, Codex, MS Power Platform",
+          },
+        ]}
+        toc={CASE_STUDY_TOC.umg}
+      >
+        <section id="problem" className="scroll-mt-24">
+          <Label color={ACCENT}>Problem</Label>
+          <p className="px-8 text-[32px] leading-[40px] text-black">
+            Outdated enterprise apps.
           </p>
-        </header>
-        <Frame
-          src={asset("framed-hero.png")}
-          alt="Power Apps to Figma to MCP to Codex migration workflow"
-          width={2400}
-          height={706}
-          priority
-        />
-        <p className="py-4 text-center text-[20px] leading-[27.5px] text-black">
-          Redesigning low-code tools with AI
-        </p>
-        <div className="flex items-start justify-center px-12 py-8">
-          {[
-            { label: "Role", value: "User Experience Intern" },
-            { label: "Timeline", value: "June 2026 – Aug 2026" },
-            { label: "Team", value: "UMG Collaboration Tech" },
-            {
-              label: "Tools/Skills",
-              value: "Figma, Figma MCP, Codex, MS Power Platform",
-            },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="flex min-w-0 flex-1 flex-col gap-2 px-4"
-            >
-              <p className="text-[12px] font-medium uppercase leading-[17.25px] tracking-[1.61px] text-black/40">
-                {item.label}
-              </p>
-              <p className="text-[16px] leading-[20.625px] text-black/80">
-                {item.value}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="px-16 py-8">
-          <p className="rounded-[32px] bg-[#eafbff] px-12 py-4 text-center text-[24px] leading-[27.5px] text-black/50">
-            Much of this work is under <Em>NDA.</Em> If you’re curious to hear
-            the full story,{" "}
-            <a
-              href={`mailto:${EMAIL}`}
-              className="underline decoration-solid underline-offset-[3px]"
-            >
-              Shoot me an email
-            </a>{" "}
-            — I’d love to chat.
+          <div className="flex flex-col items-center gap-6 px-8 py-4 md:flex-row md:items-center">
+            <p className="min-w-0 flex-1 text-[20px] leading-6 text-black/50">
+              Universal Music Group relies on hundreds of outdated,{" "}
+              <Em>low-code internal apps</Em> built on{" "}
+              <Em>Microsoft Power Apps.</Em> Most of these tools were{" "}
+              <Em>created for routine, single-purpose tasks</Em>
+              —such as tracking company hardware, coordinating release
+              schedules, and ordering catering.
+            </p>
+            <img
+              src={v4("stats.png")}
+              alt="800-plus PowerApps and 1500-plus Power Automate flows"
+              width={738}
+              height={322}
+              className="h-auto w-full max-w-[369px] shrink-0"
+            />
+          </div>
+          <p className="px-8 pt-8 text-[32px] leading-[40px] text-black">
+            Brand fragmentation.
           </p>
-        </div>
-
-        <CaseStudyBody items={CASE_STUDY_TOC.umg} onHome={onReturn}>
-        <section id="context" className="scroll-mt-24">
-          <Label>Context &amp; Challenge</Label>
-          <p className="px-12 py-4 text-center text-[24px] leading-[27.5px] text-black/50">
-            <Em>Universal Music Group</Em> relied on hundreds of{" "}
-            <Em>outdated</Em>, low-code internal apps. I was tasked with
-            systematically migrating these legacy tools to code-based
-            applications while <Em>upgrading their user experience.</Em>
+          <Figure
+            src={v4("brands.png")}
+            alt="UMG and its labels including Interscope, Capitol, Republic, and Def Jam"
+            width={1912}
+            height={765}
+          />
+          <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
+            There are over <Em>50 labels and brands under UMG.</Em> Unifying
+            the distinct identities across UMG’s labels wasn’t the goal of this
+            migration, but the{" "}
+            <Em>scattered visual landscape created friction</Em>. My focus was{" "}
+            <Em>
+              creating baseline UX clarity and structural cohesion without
+              disrupting label-specific branding.
+            </Em>
           </p>
         </section>
 
+        <section id="goal" className="scroll-mt-24">
+          <Label color={ACCENT}>Goal</Label>
+          <p className="px-8 pb-8 text-[32px] leading-[40px] text-black/50">
+            I was tasked with <Em>systematically migrating</Em> these legacy
+            tools to <Em>code-based applications</Em> while{" "}
+            <Em>upgrading their user experience.</Em>
+          </p>
+        </section>
+
+        <section id="process" className="scroll-mt-24">
+          <Label color={ACCENT}>Process</Label>
+          <p className="px-8 text-[32px] leading-[40px] text-black">
+            Here’s the quick overview of my workflow.
+          </p>
+          <Figure
+            src={v4("workflow.png")}
+            alt="Export, Document, Build, and Refine workflow across Power Apps, Gemini, Codex, and Figma MCP"
+            width={1912}
+            height={859}
+          />
+          <p className="px-8 pt-4 text-[24px] leading-[27.5px] text-black/50">
+            Why <Em>Documentation</Em> Made or Broke the Migration.
+          </p>
+          <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
+            The documentation phase was{" "}
+            <Em>the most critical step in the workflow.</Em> It was the only
+            stage capable of operating at{" "}
+            <Em>
+              true scale without being gated by stakeholder feedback,
+            </Em>{" "}
+            and every downstream phase{" "}
+            <Em>
+              hinged directly on the quality of the generated rebuild plans.
+            </Em>
+          </p>
+          <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black/50">
+            Finding the right <Em>AI</Em> for the job.
+          </p>
+          <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
+            To ensure high-accuracy rebuild plans, I ran a{" "}
+            <Em>controlled benchmark</Em>: three agents, identical prompt
+            parameters, and a test suite of <Em>30 sample applications</Em>{" "}
+            evaluated across{" "}
+            <Em>OpenAI, Glean, and Gemini Enterprise (Vertex AI).</Em>
+          </p>
+          <Figure
+            src={v4("ai-cards.png")}
+            alt="Benchmark cards comparing Glean, OpenAI, and Gemini Enterprise"
+            width={1912}
+            height={608}
+          />
+          <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
+            Backed by these results, we moved forward with using our{" "}
+            <Em>Gemini Enterprise Agent.</Em>
+          </p>
+          <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black/50">
+            Why <Em>Codex</Em> over <Em>Gemini?</Em>
+          </p>
+          <div className="flex flex-col items-start gap-8 px-8 pt-4 md:flex-row">
+            <img
+              src={v4("codex-gemini.png")}
+              alt="Codex chosen over Gemini for the build step"
+              width={776}
+              height={360}
+              className="h-auto w-full max-w-[368px] shrink-0"
+            />
+            <p className="min-w-0 flex-1 text-[20px] leading-[27.5px] text-black/50">
+              While sticking with the Gemini ecosystem would have created a{" "}
+              <Em>smoother handoff </Em>
+              from documentation to code, we chose Codex for long-term
+              organizational adoption.{" "}
+              <Em>
+                Codex was UMG’s standardized, &quot;birthright&quot; AI coding
+                tool
+              </Em>{" "}
+              available to every developer across the company. Standardizing on
+              it ensured downstream maintainability, meaning any internal team
+              could <Em>easily step in to tweak, refactor, or debug</Em> these
+              applications long after our initial migration.
+            </p>
+          </div>
+          <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black">
+            Our success metric: quantity.
+          </p>
+          <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
+            We measured success by throughput: our Gemini and Codex pipeline
+            documented over 100 legacy Power Apps, rebuilt 23 into production
+            code, and drove 5 through end-to-end Figma UX polish.{" "}
+            <Em>
+              Apps were prioritized by migration urgency, stakeholder access,
+              and usability needs.
+            </Em>
+          </p>
+          <Figure
+            src={v4("metrics.png")}
+            alt="100-plus apps exported, 100-plus documented, 23 built, 5 refined"
+            width={1912}
+            height={661}
+          />
+        </section>
+
+        <section id="design" className="scroll-mt-24">
+          <Label color={ACCENT}>Design</Label>
+          <p className="px-8 text-[32px] leading-[40px] text-black">
+            Example: Hardware Asset Management App
+          </p>
+          <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
+            The original legacy application running on
+            <Em> MS Power Apps before migration. </Em>
+            The interface suffered from{" "}
+            <Em>
+              outdated default styling, misaligned typography, and erratic
+              padding and spacing across screens,
+            </Em>{" "}
+            creating visual noise and friction for daily internal users.
+          </p>
+          <Figure
+            src={v4("powerapps.png")}
+            alt="Legacy Hardware Asset Management app in Microsoft Power Apps"
+            width={1912}
+            height={1060}
+            caption="Microsoft PowerApps"
+            priority
+          />
+          <div className="flex flex-col items-start gap-8 px-8 py-4 md:flex-row">
+            <p className="min-w-0 flex-1 text-[20px] leading-[27.5px] text-black/50 md:max-w-[220px]">
+              Codex rebuilt the Power App directly into code,{" "}
+              <Em>
+                refreshing the overall styling and executing the minor UX
+                improvements suggested in Gemini’s rebuild plan
+              </Em>{" "}
+              while staying faithful to the original app structure.
+            </p>
+            <img
+              src={v4("codex.png")}
+              alt="Codex rebuild of the hardware asset management app"
+              width={1360}
+              height={1391}
+              className="h-auto w-full min-w-0 flex-1"
+            />
+          </div>
+          <p className="px-8 pt-2 text-[16px] leading-6 text-black/50">
+            Early agent runs tended to generate{" "}
+            <Em>bloated, low-value KPI headers </Em>
+            that wasted prime screen space.{" "}
+            <Em>I iterated on Gemini&apos;s prompt framework</Em> to explicitly
+            identify and strip out these UI mistakes
+          </p>
+          <div className="flex flex-col items-start gap-8 px-8 py-8 md:flex-row">
+            <img
+              src={v4("figma.png")}
+              alt="Figma redesign of the hardware asset management app"
+              width={1412}
+              height={1797}
+              className="h-auto w-full min-w-0 flex-1"
+            />
+            <p className="min-w-0 flex-1 text-[20px] leading-[27.5px] text-black/50 md:max-w-[220px]">
+              In Figma, I focused on <Em>structural clarity</Em> over
+              surface-level cosmetics. I established high-contrast, unambiguous{" "}
+              <Em>CTAs</Em>, eliminated low-value clutter to{" "}
+              <Em>give essential data more space</Em>, and separated the app’s
+              two primary operational modes into{" "}
+              <Em>clean tabs for faster daily navigation.</Em>
+            </p>
+          </div>
+          <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
+            Implemented conventional <Em>filter facets and sort controls</Em> to
+            simplify data discovery and make search significantly easier.
+          </p>
+          <Figure
+            src={v4("filters.png")}
+            alt="Filter and sort facets for hardware asset search"
+            width={1912}
+            height={565}
+          />
+          <p className="px-8 text-[16px] leading-6 text-black/50">
+            Previously senseless <Em>KPIs were repositioned</Em> where they
+            actually belong, providing meaningful context rather than visual
+            noise.
+          </p>
+        </section>
+
+        <section id="iteration" className="scroll-mt-24">
+          <Label color={ACCENT}>Iteration</Label>
+          <div className="flex flex-col gap-8 px-8 pb-4">
+            <div className="flex flex-col items-center gap-8 md:flex-row md:items-start">
+              <div className="min-w-0 flex-1 md:text-right">
+                <p className="text-[24px] leading-[27.5px] text-black">
+                  Agent Iteration
+                </p>
+                <p className="pt-2 text-[20px] leading-[27.5px] text-black/50">
+                  With our main goal centered on streamlining the end-to-end
+                  migration, most of our iteration went into
+                  <Em> refining the Gemini documentation process.</Em> Dialing
+                  in the agent’s output early on proved to be the
+                  highest-leverage way to{" "}
+                  <Em>
+                    prevent errors from compounding later in the workflow.
+                  </Em>
+                </p>
+              </div>
+              <img
+                src={v4("iteration-gemini.png")}
+                alt=""
+                width={314}
+                height={332}
+                className="h-auto w-[157px] shrink-0"
+              />
+            </div>
+            <div className="flex flex-col-reverse items-center gap-8 md:flex-row md:items-start">
+              <img
+                src={v4("iteration-users.png")}
+                alt=""
+                width={294}
+                height={294}
+                className="h-auto w-[147px] shrink-0"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-[24px] leading-[27.5px] text-black">
+                  User Testing
+                </p>
+                <p className="pt-2 text-[20px] leading-[27.5px] text-black/50">
+                  Even with an AI-accelerated workflow,{" "}
+                  <Em>
+                    every completed application underwent thorough user
+                    testing.
+                  </Em>{" "}
+                  Out of the five apps taken through the entire pipeline, all
+                  five{" "}
+                  <Em>
+                    received 100% satisfaction ratings from stakeholders and
+                    day-to-day users.
+                  </Em>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="impact" className="scroll-mt-24">
-          <Label>Impact</Label>
-          <div className="flex flex-col gap-10 px-16 py-12 md:flex-row md:items-stretch">
+          <Label color={ACCENT}>Impact</Label>
+          <div className="flex flex-col gap-10 px-8 py-4 md:flex-row md:items-stretch">
             <Card title="AI Agent">
-              Built AI pipelines to parse legacy low-code logic, rapidly
-              refactoring apps into production-ready code.
+              <Em>Benchmarked 3 AI models </Em>
+              across <Em>30 legacy apps</Em>; built a custom Gemini Enterprise
+              agent that cut architectural hallucinations to drive rapid Codex
+              code generation.
             </Card>
             <Card title="Figma MCP Pipeline">
-              Connected AI agents to Figma via MCP, feeding live tokens straight
-              into code generation with zero manual handoff.
+              Linked AI agents directly to Figma via MCP, feeding live tokens
+              into code generation to{" "}
+              <Em>
+                eliminate 100% of manual handoffs and visual drift.
+              </Em>
             </Card>
             <Card title="Enterprise UX at Scale">
-              Used the Figma MCP pipeline to fix UI flaws, standardize tokens,
-              and elevate interface quality before final compilation.
+              Redesigned navigation, decluttered vanity KPIs, and standardized
+              search filters,{" "}
+              <Em>
+                achieving 100% user and stakeholder satisfaction{" "}
+              </Em>
+              across 5 pilot apps.
             </Card>
           </div>
         </section>
 
         <section id="takeaways" className="scroll-mt-24">
-          <Label>Takeaways</Label>
-          <div className="flex flex-col gap-10 px-16 py-12">
-            <Takeaway title="Leveraging AI">
-              Leveraged AI for repetitive code migration, allowing me to focus
-              on <Em>high-impact UX improvements</Em> and interface polish.
+          <Label color={ACCENT}>Takeaways</Label>
+          <div className="flex flex-col gap-10 px-8 py-4">
+            <Takeaway
+              title="User Research"
+              star={v4("star.svg")}
+              border={BORDER}
+            >
+              <Em>Discovery interviews and usability testing</Em> highlighted
+              key details and <Em>assumptions</Em> I had been making about my
+              users.
             </Takeaway>
-            <Takeaway title="Enterprise Level Collaboration">
-              Navigated large-scale organizational workflows, shifting focus
-              from surface-level UI to sustainable,{" "}
-              <Em>long-term architectural scalability.</Em>
+            <Takeaway
+              title="Collaboration"
+              star={v4("star.svg")}
+              border={BORDER}
+            >
+              Collaborating closely with <Em>product and engineering leads</Em>{" "}
+              taught me to design within real constraints early, avoiding late
+              redesigns and <Em>keeping our team aligned.</Em>
             </Takeaway>
-            <div>
-              <Frame
-                src={asset("framed-team.png")}
-                alt="Joel at UMG Nashville headquarters and the lobby floor logo"
-                width={2184}
-                height={898}
+            <div className="flex flex-col items-center gap-2 py-8">
+              <img
+                src={v4("team.png")}
+                alt="Joel at UMG Nashville headquarters"
+                width={1912}
+                height={862}
+                className="h-auto w-full"
               />
-              <p className="pt-2 text-center text-[12px] leading-[28.5px] text-black">
+              <p className="text-center text-[12px] leading-[28.5px] text-black">
                 UMG Nashville headquarters
               </p>
             </div>
           </div>
         </section>
-
-        </CaseStudyBody>
-
-        {onReturn ? (
-          <button
-            type="button"
-            onClick={onReturn}
-            className="w-full pb-8 text-center font-sans text-[15px] text-black/32 transition-colors hover:text-black/55"
-          >
-            Return to works
-          </button>
-        ) : null}
-      </Shell>
-    </article>
+      </CaseStudyLayout>
+    </div>
   );
 }

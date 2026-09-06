@@ -8,8 +8,8 @@ import { WorkIntro } from "@/components/portfolio/WorkIntro";
 const WORKS = [
   {
     id: "umg",
-    cover: "/assets/work/umg.png",
-    video: "/assets/Cover Videos/Umg Cover Video.mp4",
+    cover: "/assets/work/umg.png?v=2",
+    video: "/assets/Cover Videos/Umg Cover Video.mp4?v=2",
     kicker: "Universal Music Group - Summer 2026",
     title: "Redesigning low-code tools with AI",
     tags: ["AI", "Figma MCP", "Codex"],

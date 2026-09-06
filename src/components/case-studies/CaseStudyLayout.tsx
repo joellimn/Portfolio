@@ -7,10 +7,12 @@ export function CaseStudyHero({
   src,
   alt,
   tall = false,
+  contain = false,
 }: {
   src: string;
   alt: string;
   tall?: boolean;
+  contain?: boolean;
 }) {
   return (
     <div
@@ -23,7 +25,7 @@ export function CaseStudyHero({
         alt={alt}
         fill
         sizes="100vw"
-        className="object-cover"
+        className={contain ? "object-contain" : "object-cover"}
         priority
         unoptimized
       />
@@ -64,6 +66,7 @@ export function CaseStudyLayout({
   hero,
   heroAlt,
   tallHero,
+  containHero,
   title,
   meta,
   toc,
@@ -73,6 +76,7 @@ export function CaseStudyLayout({
   hero: string;
   heroAlt: string;
   tallHero?: boolean;
+  containHero?: boolean;
   title: string;
   meta: { label: string; value: string }[];
   toc: TocItem[];
@@ -81,7 +85,12 @@ export function CaseStudyLayout({
 }) {
   return (
     <article className="bg-white">
-      <CaseStudyHero src={hero} alt={heroAlt} tall={tallHero} />
+      <CaseStudyHero
+        src={hero}
+        alt={heroAlt}
+        tall={tallHero}
+        contain={containHero}
+      />
       <CaseStudyBody items={toc} onHome={onHome}>
         <CaseStudyIntro title={title} meta={meta} />
         {children}

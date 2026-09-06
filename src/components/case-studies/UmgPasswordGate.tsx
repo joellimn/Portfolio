@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, Lock } from "lucide-react";
 import { EMAIL } from "@/data/contact";
 
-const STORAGE_KEY = "umg-unlocked-v2";
+const STORAGE_KEY = "umg-unlocked-v3";
 const PASSWORD = "noir29";
 
 function readPassword(form: EventTarget | null) {
