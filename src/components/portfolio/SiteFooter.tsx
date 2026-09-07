@@ -80,12 +80,6 @@ const PAGES = [
   { href: "/about", label: "About" },
 ] as const;
 
-const CASE_PAGES = [
-  { href: "/", label: "Work" },
-  { href: "/listening-room", label: "Listening room" },
-  { href: "/about", label: "About" },
-] as const;
-
 export type CaseStudyFooterNext = {
   href: string;
   kicker: string;
@@ -164,7 +158,6 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
   const activeRef = useRef<number | null>(null);
   const playing = useRef(TAGS.map(() => false));
   const visible = next ? [next.tag] : TAGS.map((_, index) => index);
-  const pages = next ? CASE_PAGES : PAGES;
   const featured = next ? TAGS[next.tag] : null;
 
   useEffect(() => {
@@ -422,7 +415,7 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
       <div className="relative z-10 flex w-full items-start justify-end gap-[64px] px-[32px]">
         <nav aria-label="Pages, footer" className="flex flex-col items-start">
           <p className={columnHeading}>Page</p>
-          {pages.map(({ href, label }) => (
+          {PAGES.map(({ href, label }) => (
             <Link key={href} href={href} className={columnLink}>
               {label}
             </Link>
