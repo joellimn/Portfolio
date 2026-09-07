@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Eye, EyeOff, Lock } from "lucide-react";
 import { EMAIL } from "@/data/contact";
 
-const STORAGE_KEY = "umg-unlocked-v3";
+const STORAGE_KEY = "umg-unlocked-v4";
 const PASSWORD = "noir29";
 
 function readPassword(form: EventTarget | null) {
@@ -23,6 +23,9 @@ export function UmgPasswordGate({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setUnlocked(sessionStorage.getItem(STORAGE_KEY) === "1");
+    return () => {
+      sessionStorage.removeItem(STORAGE_KEY);
+    };
   }, []);
 
   const unlock = (form: EventTarget | null) => {

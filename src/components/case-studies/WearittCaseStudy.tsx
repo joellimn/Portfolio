@@ -31,6 +31,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
           { label: "Tools/Skills", value: "Figma, Design Systems" },
         ]}
         toc={CASE_STUDY_TOC.wearitt}
+        projectId="wearitt"
       >
         <section id="problem" className="scroll-mt-24">
           <Label color={ACCENT}>Problem</Label>

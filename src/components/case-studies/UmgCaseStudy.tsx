@@ -54,6 +54,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
           },
         ]}
         toc={CASE_STUDY_TOC.umg}
+        projectId="umg"
       >
         <section id="problem" className="scroll-mt-24">
           <Label color={ACCENT}>Problem</Label>
@@ -368,22 +369,21 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
           <Label color={ACCENT}>Takeaways</Label>
           <div className="flex flex-col gap-10 px-8 py-4">
             <Takeaway
-              title="User Research"
+              title="Leveraging AI"
               star={v4("star.svg")}
               border={BORDER}
             >
-              <Em>Discovery interviews and usability testing</Em> highlighted
-              key details and <Em>assumptions</Em> I had been making about my
-              users.
+              Leveraged AI for repetitive code migration, allowing me to focus
+              on <Em>high-impact UX improvements</Em> and interface polish.
             </Takeaway>
             <Takeaway
-              title="Collaboration"
+              title="Enterprise UX"
               star={v4("star.svg")}
               border={BORDER}
             >
-              Collaborating closely with <Em>product and engineering leads</Em>{" "}
-              taught me to design within real constraints early, avoiding late
-              redesigns and <Em>keeping our team aligned.</Em>
+              Navigated large-scale organizational workflows, shifting focus
+              from surface-level UI to sustainable,{" "}
+              <Em>long-term architectural scalability.</Em>
             </Takeaway>
             <div className="flex flex-col items-center gap-2 py-8">
               <img

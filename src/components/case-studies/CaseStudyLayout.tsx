@@ -2,6 +2,10 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import { CaseStudyBody } from "@/components/case-studies/CaseStudyToc";
 import type { TocItem } from "@/data/caseStudyToc";
+import {
+  CASE_STUDY_FOOTER,
+  SiteFooter,
+} from "@/components/portfolio/SiteFooter";
 
 export function CaseStudyHero({
   src,
@@ -71,6 +75,7 @@ export function CaseStudyLayout({
   meta,
   toc,
   onHome,
+  projectId,
   children,
 }: {
   hero: string;
@@ -81,6 +86,7 @@ export function CaseStudyLayout({
   meta: { label: string; value: string }[];
   toc: TocItem[];
   onHome?: () => void;
+  projectId: keyof typeof CASE_STUDY_FOOTER;
   children: ReactNode;
 }) {
   return (
@@ -95,6 +101,7 @@ export function CaseStudyLayout({
         <CaseStudyIntro title={title} meta={meta} />
         {children}
       </CaseStudyBody>
+      <SiteFooter next={CASE_STUDY_FOOTER[projectId]} />
     </article>
   );
 }

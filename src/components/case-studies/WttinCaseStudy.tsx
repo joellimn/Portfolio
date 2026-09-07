@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { CaseStudyLayout } from "@/components/case-studies/CaseStudyLayout";
 import { CaseStudyVideo } from "@/components/case-studies/CaseStudyVideo";
@@ -13,6 +14,23 @@ import { CASE_STUDY_TOC } from "@/data/caseStudyToc";
 const v4 = (file: string) => `/assets/case-studies/v4/wttin/${file}`;
 const media = (file: string) => `/assets/case-studies/wttin/${file}`;
 const ACCENT = "#82a0ba";
+
+function Card({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex min-w-0 flex-1 flex-col self-stretch rounded bg-[#f6faff] p-4">
+      <p className="p-2 text-[24px] leading-[27.5px] text-black">{title}</p>
+      <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
+        {children}
+      </p>
+    </div>
+  );
+}
 
 type WttinCaseStudyProps = {
   onReturn?: () => void;
@@ -37,6 +55,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
           { label: "Tools/Skills", value: "Figma, User Research, Prototyping" },
         ]}
         toc={CASE_STUDY_TOC.wttin}
+        projectId="wttin"
       >
         <section id="problem" className="scroll-mt-24">
           <Label color={ACCENT}>Problem</Label>
@@ -66,6 +85,68 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
           </p>
         </section>
 
+        <section id="research" className="scroll-mt-24">
+          <Label color={ACCENT}>Research</Label>
+          <p className="px-8 text-[24px] leading-8 text-black">
+            Speaking to Real Users:{" "}
+            <span className="text-black/50">First, I analyzed </span>
+            existing gaps
+            <span className="text-black/50">
+              {" "}
+              to map out the necessary features for the mobile solution.
+            </span>
+          </p>
+          <p className="px-8 pt-4 text-[17px] leading-[26px] text-black/70">
+            I conducted discovery interviews with 4 vendors from The
+            Contributor, who are part of the high-need population and represent
+            WTTIN&apos;s primary user base.
+          </p>
+          <div className="flex flex-col gap-4 px-8 py-8 md:flex-row">
+            <Card title="Need for mapping">
+              &ldquo;There&apos;s no clear way to see{" "}
+              <Em>what resources are near me.</Em>&rdquo;
+            </Card>
+            <Card title="Need for live status">
+              &ldquo;I don&apos;t know which places are{" "}
+              <Em>open or closed.</Em>&rdquo;
+            </Card>
+            <Card title="Need for easier search">
+              &ldquo;The <Em>search bar</Em> on the website doesn&apos;t work
+              sometimes.&rdquo;
+            </Card>
+          </div>
+          <p className="px-8 text-[24px] leading-8 text-black">
+            Stakeholder Discovery:{" "}
+            <span className="text-black/50">Interviewed </span>
+            three primary stakeholders
+            <span className="text-black/50">
+              {" "}
+              to establish the precise categorization and flow for the 2025
+              handbook.
+            </span>
+          </p>
+          <p className="px-8 pt-4 text-[17px] leading-[26px] text-black/70">
+            This allowed me to build a rigorous, logic-driven User Flow Chart to
+            ensure that multi-tier navigation pathways systematically resolve
+            into clear, actionable physical help locations.
+          </p>
+          <figure className="px-8 py-4">
+            <MediaMat tone="blue" className="w-full p-8">
+              <Image
+                src={v4("flowchart.png")}
+                alt="User flow chart mapping multi-tier navigation to help locations"
+                width={2111}
+                height={1481}
+                className="h-auto w-full max-w-[582px] rounded-[16px] shadow-[4px_4px_10px_rgba(0,0,0,0.05)]"
+                unoptimized
+              />
+            </MediaMat>
+            <figcaption className="pt-1 text-right text-[12px] leading-[28.5px] text-black/50">
+              User Flow Chart
+            </figcaption>
+          </figure>
+        </section>
+
         <section id="design" className="scroll-mt-24">
           <Label color={ACCENT}>Design</Label>
           <p className="px-8 text-[32px] leading-[40px] text-black">
@@ -75,12 +156,25 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             &quot;There&apos;s no clear way to see what{" "}
             <Em>resources are near me.&quot;</Em> — WTTIN User
           </p>
-          <Figure
-            src={v4("map.png")}
-            alt="Map view and nearby resource list"
-            width={3824}
-            height={3144}
-          />
+          <p className="px-8 pt-4 text-[24px] leading-[27.5px] text-black/50">
+            Designed around the Google Maps API to deliver a live map, helping
+            users quickly locate community resources near them.
+          </p>
+          <figure className="px-8 py-4">
+            <MediaMat tone="blue" className="w-full px-6 py-8">
+              <CaseStudyVideo
+                src={media("map-overview.mp4")}
+                label="Map of nearby resources with a pull-up list of directory results"
+                width={662}
+                height={1448}
+                className="w-full max-w-[410px]"
+              />
+            </MediaMat>
+            <figcaption className="pt-1 text-center text-[12px] leading-[23.5px] text-black">
+              Plots <Em>directory</Em> aid onto a <Em>live map</Em> centered on
+              the <Em>user&apos;s location.</Em>
+            </figcaption>
+          </figure>
           <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black/50">
             <Em>Simple Interactions</Em> that accelerate discovery and minimize
             friction.
@@ -89,10 +183,10 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             <figure className="flex min-w-0 flex-1 flex-col items-center">
               <MediaMat tone="blue" className="w-full px-6 py-8">
                 <CaseStudyVideo
-                  src={media("map-select.mp4")}
+                  src={`${media("map-select.mp4")}?v=3`}
                   label="Tap a nearby resource on the map"
-                  width={624}
-                  height={806}
+                  width={662}
+                  height={724}
                   className="w-full max-w-[410px]"
                 />
               </MediaMat>
@@ -103,12 +197,10 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             <figure className="flex min-w-0 flex-1 flex-col items-center">
               <MediaMat tone="blue" className="w-full px-6 py-8">
                 <CaseStudyVideo
-                  src={media("map-filter.mp4")}
+                  src={`${media("map-filter.mp4")}?v=5`}
                   label="Filter map results by distance and category"
-                  width={630}
-                  height={806}
-                  cropX={2}
-                  cropBottom={1}
+                  width={662}
+                  height={1086}
                   className="w-full max-w-[410px]"
                 />
               </MediaMat>

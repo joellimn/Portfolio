@@ -80,6 +80,49 @@ const PAGES = [
   { href: "/about", label: "About" },
 ] as const;
 
+const CASE_PAGES = [
+  { href: "/", label: "Work" },
+  { href: "/listening-room", label: "Listening room" },
+  { href: "/about", label: "About" },
+] as const;
+
+export type CaseStudyFooterNext = {
+  href: string;
+  kicker: string;
+  title: string;
+  tag: number;
+  fx?: number;
+};
+
+/** Next-project footers from the V4 Figma specs, in work-page order. */
+export const CASE_STUDY_FOOTER: Record<string, CaseStudyFooterNext> = {
+  umg: {
+    href: "/soar",
+    kicker: "See also:",
+    title: "My interaction design work with the U.S. Army",
+    tag: 0,
+  },
+  soar: {
+    href: "/wearitt",
+    kicker: "Next Project:",
+    title: "Building a design system for a mobile wardrobe app.",
+    tag: 2,
+    fx: 0.64,
+  },
+  wearitt: {
+    href: "/wttin",
+    kicker: "See also:",
+    title: "Designing and deploying a mobile app for a non-profit",
+    tag: 4,
+  },
+  wttin: {
+    href: "/umg",
+    kicker: "Next Project:",
+    title: "Redesigning low-code tools with AI.",
+    tag: 3,
+  },
+};
+
 const columnHeading =
   "px-[8px] py-[4px] text-[16px] leading-normal font-medium text-black";
 const columnLink =
@@ -106,7 +149,7 @@ function lineYAt(x: number, xs: readonly number[], ys: readonly number[]) {
   return bezier((lo + hi) / 2, ys);
 }
 
-export function SiteFooter() {
+export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
   const { copied, copyEmail } = useEmailCopy();
   const footer = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -120,6 +163,9 @@ export function SiteFooter() {
   const [reduced, setReduced] = useState(false);
   const activeRef = useRef<number | null>(null);
   const playing = useRef(TAGS.map(() => false));
+  const visible = next ? [next.tag] : TAGS.map((_, index) => index);
+  const pages = next ? CASE_PAGES : PAGES;
+  const featured = next ? TAGS[next.tag] : null;
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -143,8 +189,10 @@ export function SiteFooter() {
   const height = DESIGN_H * scale;
   const xs = LINE_FX.map((fraction) => fraction * width);
   const ys = LINE_Y.map((y) => y * scale);
-  const hangs = TAGS.map((tag) => {
-    const x = tag.fx * width;
+  const tagFx = (index: number) =>
+    next?.tag === index && next.fx != null ? next.fx : TAGS[index].fx;
+  const hangs = TAGS.map((tag, index) => {
+    const x = tagFx(index) * width;
     return { x, y: lineYAt(x, xs, ys) };
   });
   useEffect(() => {
@@ -175,7 +223,7 @@ export function SiteFooter() {
 
       TAGS.forEach((tag, index) => {
         const p = pendula.current[index];
-        const hangX = tag.fx * width;
+        const hangX = tagFx(index) * width;
         let acc = -22 * Math.sin(p.theta);
 
         if (pointer && active === index) {
@@ -198,7 +246,7 @@ export function SiteFooter() {
   }, [active, reduced, width]);
 
   const hitTest = (x: number, y: number) => {
-    for (let i = 0; i < TAGS.length; i += 1) {
+    for (const i of visible) {
       const tag = TAGS[i];
       const hang = hangs[i];
       const tw = tag.w * scale * TAG_SCALE;
@@ -293,17 +341,39 @@ export function SiteFooter() {
         );
       })}
 
-      <div className="relative z-10 flex w-full flex-col items-start px-[32px]">
-        <p className="text-[24px] leading-normal text-black">
-          Inspired by my favorite scents.
-        </p>
-        <p className="font-serif text-[24px] leading-normal text-white italic">
-          This website smells good.
-        </p>
-      </div>
+      {next ? null : (
+        <div className="relative z-10 flex w-full flex-col items-start px-[32px]">
+          <p className="text-[24px] leading-normal text-black">
+            Inspired by my favorite scents.
+          </p>
+          <p className="font-serif text-[24px] leading-normal text-white italic">
+            This website smells good.
+          </p>
+        </div>
+      )}
 
       <div ref={stage} className="relative z-10 w-full" style={{ height }}>
-        {TAGS.map((tag, index) => {
+        {next && featured ? (
+          <div
+            className={`absolute z-10 max-w-[min(100%-4rem,566px)] ${
+              featured.fx < 0.45 ? "right-8 left-1/2" : "left-8 right-1/2"
+            }`}
+            style={{
+              top: hangs[next.tag].y + featured.h * scale * TAG_SCALE * 0.28,
+            }}
+          >
+            <p className="text-[24px] leading-normal text-black">{next.kicker}</p>
+            <Link
+              href={next.href}
+              data-cursor="case-study"
+              className="block text-[24px] leading-normal text-black transition-colors hover:text-black/60"
+            >
+              {next.title}
+            </Link>
+          </div>
+        ) : null}
+        {visible.map((index) => {
+          const tag = TAGS[index];
           const hang = hangs[index];
           const tw = tag.w * scale * TAG_SCALE;
           const th = tag.h * scale * TAG_SCALE;
@@ -349,10 +419,10 @@ export function SiteFooter() {
         </svg>
       </div>
 
-      <div className="relative z-10 flex items-start gap-[64px] px-[32px]">
+      <div className="relative z-10 flex w-full items-start justify-end gap-[64px] px-[32px]">
         <nav aria-label="Pages, footer" className="flex flex-col items-start">
           <p className={columnHeading}>Page</p>
-          {PAGES.map(({ href, label }) => (
+          {pages.map(({ href, label }) => (
             <Link key={href} href={href} className={columnLink}>
               {label}
             </Link>

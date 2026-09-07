@@ -12,7 +12,7 @@ const WORKS = [
     video: "/assets/Cover Videos/Umg Cover Video.mp4?v=3",
     kicker: "Universal Music Group - Summer 2026",
     title: "Redesigning low-code tools with AI",
-    tags: ["AI", "Figma MCP", "Codex"],
+    tags: ["Enterprise Design", "AI", "Figma MCP", "Codex", "Gemini Enterprise"],
   },
   {
     id: "soar",

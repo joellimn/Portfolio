@@ -72,6 +72,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
           },
         ]}
         toc={CASE_STUDY_TOC.soar}
+        projectId="soar"
       >
         <section id="problem" className="scroll-mt-24">
           <Label color={ACCENT}>Problem</Label>
