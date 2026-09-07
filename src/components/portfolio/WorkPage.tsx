@@ -33,7 +33,7 @@ const WORKS = [
   },
   {
     id: "wttin",
-    cover: "/assets/work/wttin.png",
+    cover: "/assets/work/wttin.png?v=2",
     kicker: "Where to Turn in Nashville - Fall 2025",
     title: "Designing and deploying a mobile app for a non-profit",
     tags: ["Prototyping", "End to end", "Shipped!"],

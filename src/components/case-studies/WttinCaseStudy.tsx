@@ -41,7 +41,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
     <div className="w-full bg-white pb-16 font-sans">
       <CaseStudyLayout
         onHome={onReturn}
-        hero="/assets/case-studies/heroes/wttin.png"
+        hero="/assets/case-studies/heroes/wttin.png?v=2"
         heroAlt="WTTIN AI chat and map of nearby resources on overlapping iPhones"
         title="WTTIN: Designing and deploying a mobile app for a non-profit"
         meta={[
