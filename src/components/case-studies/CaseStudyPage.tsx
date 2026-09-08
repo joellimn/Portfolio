@@ -4,13 +4,12 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import type { Project } from "@/data/projects";
 import { CaseStudyView } from "@/components/ipod/CaseStudyView";
-import { UmgPasswordGate } from "@/components/case-studies/UmgPasswordGate";
 
 export function CaseStudyPage({ project }: { project: Project }) {
   const router = useRouter();
   const onReturn = () => router.push("/");
 
-  const page = (
+  return (
     <div className="min-h-full bg-white">
       <button
         type="button"
@@ -23,10 +22,4 @@ export function CaseStudyPage({ project }: { project: Project }) {
       <CaseStudyView project={project} onReturn={onReturn} />
     </div>
   );
-
-  if (project.id === "umg") {
-    return <UmgPasswordGate>{page}</UmgPasswordGate>;
-  }
-
-  return page;
 }
