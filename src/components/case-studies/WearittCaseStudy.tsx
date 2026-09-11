@@ -140,7 +140,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             Spacing
           </p>
           <Body>
-            Margins and spacing was all over the place. Followed consistent 16pt
+            Margins and spacing were all over the place. Followed consistent 16pt
             spacing and margins to ensure cohesiveness.
           </Body>
           <Figure

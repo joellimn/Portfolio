@@ -21,7 +21,7 @@ const WORKS = [
     playOnHover: true,
     kicker: "U.S. Army - Spring 2026",
     title: "Modernizing Manual Application Review",
-    tags: ["Dashboard Design", "Interaction Design", "Figma Make"],
+    tags: ["Class project", "Dashboard Design", "Interaction Design", "Figma Make"],
   },
   {
     id: "wearitt",
@@ -36,7 +36,7 @@ const WORKS = [
     cover: "/assets/work/wttin.png?v=2",
     kicker: "Where to Turn in Nashville - Fall 2025",
     title: "Designing and deploying a mobile app for a non-profit",
-    tags: ["Prototyping", "End to end", "Shipped!"],
+    tags: ["Prototyping", "End to end", "Internal beta"],
   },
 ] as const;
 
@@ -46,11 +46,12 @@ export function WorkBody() {
       <section className="w-full px-[32px] py-[8px] text-[24px]">
         <div className="flex max-w-[75ch] flex-col gap-[16px] tracking-[-1px]">
           <p className="text-[24px] leading-[24px] text-black">
-            <NameScramble /> is a product designer designing intentional,
-            story-driven products grounded in real-world systems.
+            <NameScramble /> is a product designer for operational software:
+            dense records, internal tools, and the people who use them under
+            time pressure.
           </p>
           <p className="text-[20px] leading-[24px] text-black/50">
-            Studying Human Behavior and Computer Science
+            Studying Human and Organizational Development and Computer Science
             <span className="text-black"> @ Vanderbilt University</span>
             <br />
             Previously UX Intern

@@ -33,6 +33,7 @@ export const CASE_STUDY_TOC: Record<string, TocItem[]> = {
     { id: "takeaways", label: "Takeaways" },
   ],
   umg: [
+    { id: "highlights", label: "Highlights" },
     { id: "problem", label: "Problem" },
     { id: "goal", label: "Goal" },
     { id: "process", label: "Process" },

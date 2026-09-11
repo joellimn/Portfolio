@@ -46,15 +46,12 @@ export function CaseStudyIntro({
 }) {
   return (
     <div>
-      <h1 className="px-8 py-4 text-[32px] leading-[40px] text-black">
+      <h1 className="px-8 pt-12 pb-4 text-[32px] leading-[40px] text-black">
         {title}
       </h1>
-      <div className="flex flex-col gap-8 px-8 py-8 sm:flex-row sm:gap-0">
+      <div className="flex flex-col items-start gap-8 px-8 py-8 sm:flex-row sm:gap-12">
         {meta.map((item) => (
-          <div
-            key={item.label}
-            className="flex min-w-0 flex-1 flex-col gap-2 px-4"
-          >
+          <div key={item.label} className="flex max-w-[220px] flex-col gap-2">
             <p className="text-[16px] leading-[24px] text-black">{item.label}</p>
             <p className="text-[16px] leading-[21px] text-black/80">
               {item.value}

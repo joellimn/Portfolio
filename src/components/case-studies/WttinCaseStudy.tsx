@@ -72,7 +72,6 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             alt="Printed Where to Turn in Nashville guide access point"
             width={4080}
             height={2361}
-            caption="Printed guide access point"
             priority
           />
         </section>
@@ -209,15 +208,9 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
               </figcaption>
             </figure>
           </div>
-          <p className="px-8 pt-8 text-[32px] leading-[40px] text-black">
-            AI Chatbot
+          <p className="px-8 pt-8 text-[20px] leading-[27.5px] text-black/50">
+            The app was released as an internal beta with the WTTIN team.
           </p>
-          <Figure
-            src={v4("chatbot.png")}
-            alt="WTTIN AI chat start state and a nearby-resources reply"
-            width={3824}
-            height={3208}
-          />
         </section>
 
         <section id="challenges" className="scroll-mt-24">

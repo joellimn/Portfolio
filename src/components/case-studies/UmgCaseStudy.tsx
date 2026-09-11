@@ -6,6 +6,7 @@ import {
   Label,
   Takeaway,
 } from "@/components/case-studies/CaseStudyPrimitives";
+import { UmgHighlightReel } from "@/components/case-studies/UmgHighlightReel";
 import { CASE_STUDY_TOC } from "@/data/caseStudyToc";
 
 const v4 = (file: string) => `/assets/case-studies/v4/umg/${file}`;
@@ -56,6 +57,8 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
         toc={CASE_STUDY_TOC.umg}
         projectId="umg"
       >
+        <UmgHighlightReel />
+
         <section id="problem" className="scroll-mt-24">
           <Label color={ACCENT}>Problem</Label>
           <p className="px-8 text-[32px] leading-[40px] text-black">
@@ -181,7 +184,8 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             </p>
           </div>
           <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black">
-            Our success metric: quantity.
+            We measured success by throughput, then polished the
+            highest-urgency apps.
           </p>
           <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
             We measured success by throughput: our Gemini and Codex pipeline
@@ -248,13 +252,22 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             identify and strip out these UI mistakes
           </p>
           <div className="flex flex-col items-start gap-8 px-8 py-8 md:flex-row">
-            <img
-              src={v4("figma.png")}
-              alt="Figma redesign of the hardware asset management app"
-              width={1412}
-              height={1797}
-              className="h-auto w-full min-w-0 flex-1"
-            />
+            <div className="flex min-w-0 flex-1 flex-col gap-8 rounded bg-[#f6faff] p-8">
+              <img
+                src={v4("figma-lookup.png")}
+                alt="Figma redesign of Hardware Asset Management, lookup tab"
+                width={4096}
+                height={2560}
+                className="h-auto w-full rounded-lg"
+              />
+              <img
+                src={v4("figma-scan.png")}
+                alt="Figma redesign of Hardware Asset Management, scan tab"
+                width={4096}
+                height={2560}
+                className="h-auto w-full rounded-lg"
+              />
+            </div>
             <p className="min-w-0 flex-1 text-[20px] leading-[27.5px] text-black/50 md:max-w-[220px]">
               In Figma, I focused on <Em>structural clarity</Em> over
               surface-level cosmetics. I established high-contrast, unambiguous{" "}
@@ -271,8 +284,8 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
           <Figure
             src={v4("filters.png")}
             alt="Filter and sort facets for hardware asset search"
-            width={1912}
-            height={565}
+            width={2868}
+            height={848}
           />
           <p className="px-8 text-[16px] leading-6 text-black/50">
             Previously senseless <Em>KPIs were repositioned</Em> where they
@@ -326,12 +339,9 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
                     every completed application underwent thorough user
                     testing.
                   </Em>{" "}
-                  Out of the five apps taken through the entire pipeline, all
-                  five{" "}
-                  <Em>
-                    received 100% satisfaction ratings from stakeholders and
-                    day-to-day users.
-                  </Em>
+                  All five pilots were reviewed with stakeholders and daily
+                  users. Feedback was positive enough to continue the
+                  pipeline; I did not run a scored survey.
                 </p>
               </div>
             </div>
@@ -348,19 +358,13 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
               code generation.
             </Card>
             <Card title="Figma MCP Pipeline">
-              Linked AI agents directly to Figma via MCP, feeding live tokens
-              into code generation to{" "}
-              <Em>
-                eliminate 100% of manual handoffs and visual drift.
-              </Em>
+              Linked agents to Figma via MCP so code generation could read
+              live tokens, cutting a manual handoff step and reducing visual
+              drift.
             </Card>
             <Card title="Enterprise UX at Scale">
-              Redesigned navigation, decluttered vanity KPIs, and standardized
-              search filters,{" "}
-              <Em>
-                achieving 100% user and stakeholder satisfaction{" "}
-              </Em>
-              across 5 pilot apps.
+              Redesigned navigation, removed vanity KPIs, and standardized
+              search filters across 5 pilot apps.
             </Card>
           </div>
         </section>
