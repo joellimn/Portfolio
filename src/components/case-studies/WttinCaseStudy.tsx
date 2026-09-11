@@ -95,7 +95,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
               to map out the necessary features for the mobile solution.
             </span>
           </p>
-          <p className="px-8 pt-4 text-[17px] leading-[26px] text-black/70">
+          <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
             I conducted discovery interviews with 4 vendors from The
             Contributor, who are part of the high-need population and represent
             WTTIN&apos;s primary user base.
@@ -124,7 +124,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
               handbook.
             </span>
           </p>
-          <p className="px-8 pt-4 text-[17px] leading-[26px] text-black/70">
+          <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
             This allowed me to build a rigorous, logic-driven User Flow Chart to
             ensure that multi-tier navigation pathways systematically resolve
             into clear, actionable physical help locations.
@@ -169,7 +169,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
                 className="w-full max-w-[410px]"
               />
             </MediaMat>
-            <figcaption className="pt-1 text-center text-[16px] leading-[23.5px] text-black">
+            <figcaption className="pt-1 text-center text-[20px] leading-[27.5px] text-black">
               Plots <Em>directory</Em> aid onto a <Em>live map</Em> centered on
               the <Em>user&apos;s location.</Em>
             </figcaption>

@@ -124,7 +124,7 @@ export function UmgHighlightReel() {
         className={
           reduced
             ? "flex flex-col gap-4"
-            : "sticky top-0 flex min-h-[100dvh] flex-col justify-center bg-white py-8"
+            : "sticky top-0 flex min-h-[100dvh] flex-col justify-start bg-white"
         }
       >
         <Label color={ACCENT}>Highlights</Label>

@@ -386,10 +386,10 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             was captured.
           </p>
           <Figure
-            src={v4("success.png")}
+            src={`${v4("success.png")}?v=2`}
             alt="Peak-End Rule success state after submitting a vote"
-            width={3824}
-            height={1905}
+            width={2504}
+            height={1648}
           />
           <p className="px-8 pt-8 text-[32px] leading-[40px] text-black">
             Simple interactions. <Em>Faster</Em> decisions.
@@ -399,38 +399,38 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             think, <Em>3 to 4 months...</Em> but it sometimes pushes to{" "}
             <Em>9 months.</Em>&quot; — Assessment Officer
           </p>
-          <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black">
-            Flags disqualifiers early. Saves hours.
+          <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black/50">
+            Flags <Em>disqualifiers</Em> early. Saves hours.
           </p>
           <p className="px-8 pt-2 text-[20px] leading-[27.5px] text-black/50">
-            Our research found that packets with clear disqualifiers, like drug
-            use, failed fitness tests, or legal flags, still move through the
-            entire review chain before being caught.
+            Our <Em>research</Em> found that: Packets with clear disqualifiers,
+            like drug use, failed fitness tests, or legal flags, still move
+            through the entire review chain before being caught.
           </p>
           <Figure
-            src={v4("flags.png")}
+            src={`${v4("flags.png")}?v=2`}
             alt="Flags disqualifiers early in the packet review"
             width={3824}
-            height={1846}
+            height={1129}
           />
-          <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black">
-            Real-time tracking. Seamless handoffs.
+          <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black/50">
+            Real-time <Em>tracking</Em>. Seamless handoffs.
           </p>
           <p className="px-8 pt-2 text-[20px] leading-[27.5px] text-black/50">
-            Live Activity Log: Keeps track of exactly who reviewed what and
-            when, making sure packets keep moving without falling through the
-            cracks.
+            Live <Em>Activity Log</Em>: Keeps track of exactly who reviewed what
+            and when, making sure packets keep moving without falling through
+            the cracks.
           </p>
           <Figure
-            src={v4("activity.png")}
+            src={`${v4("activity.png")}?v=2`}
             alt="Live activity log of packet reviews and handoffs"
             width={3824}
-            height={1718}
+            height={1066}
           />
           <p className="px-8 pt-8 text-[20px] leading-[27.5px] text-black/50">
-            Split-Screen View: Designed a side-by-side workspace directly
-            requested by stakeholders to enable seamless cross-referencing and
-            cut down review times.
+            <Em>Split-Screen View:</Em> Designed a side-by-side workspace{" "}
+            <Em>directly requested by stakeholders</Em> to enable seamless
+            cross-referencing and <Em>cut down review times.</Em>
           </p>
           <figure className="px-8 py-4">
             <MediaMat tone="cream" className="w-full p-8">
