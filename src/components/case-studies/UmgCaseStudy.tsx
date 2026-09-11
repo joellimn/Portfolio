@@ -39,10 +39,9 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
     <div className="w-full bg-white pb-16 font-sans">
       <CaseStudyLayout
         onHome={onReturn}
-        hero="/assets/case-studies/heroes/umg.png"
-        heroAlt="Universal Music Group wordmark"
+        hero="/assets/case-studies/heroes/umg.png?v=3"
+        heroAlt="Hardware Asset Management lookup and scan screens"
         tallHero
-        containHero
         title="Universal Music Group"
         meta={[
           { label: "Role", value: "UX Design Intern" },
@@ -154,7 +153,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             height={608}
           />
           <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
-            Backed by these results, we moved forward with using our{" "}
+            Backed by these results, I moved forward with using our{" "}
             <Em>Gemini Enterprise Agent.</Em>
           </p>
           <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black/50">
@@ -171,7 +170,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             <p className="min-w-0 flex-1 text-[20px] leading-[27.5px] text-black/50">
               While sticking with the Gemini ecosystem would have created a{" "}
               <Em>smoother handoff </Em>
-              from documentation to code, we chose Codex for long-term
+              from documentation to code, I chose Codex for long-term
               organizational adoption.{" "}
               <Em>
                 Codex was UMG’s standardized, &quot;birthright&quot; AI coding
@@ -184,11 +183,11 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             </p>
           </div>
           <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black">
-            We measured success by throughput, then polished the
+            I measured success by throughput, then polished the
             highest-urgency apps.
           </p>
           <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
-            We measured success by throughput: our Gemini and Codex pipeline
+            I measured success by throughput: our Gemini and Codex pipeline
             documented over 100 legacy Power Apps, rebuilt 23 into production
             code, and drove 5 through end-to-end Figma UX polish.{" "}
             <Em>

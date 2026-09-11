@@ -397,7 +397,7 @@ export const projects: Project[] = [
     title: "Universal Music Group",
     subtitle:
       "AI Migration Workflow: Automating Low-Code Tool Conversion with Figma MCP",
-    coverSrc: "/assets/covers/umg.png?v=2",
+    coverSrc: "/assets/covers/v2/umg.png?v=2",
     heroArt: {
       src: umgAsset("hero-art.jpg"),
       alt: "Universal Music Group mark",

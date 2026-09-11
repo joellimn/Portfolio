@@ -3,13 +3,13 @@ import { NameScramble } from "@/components/portfolio/NameScramble";
 import { WorkCover } from "@/components/portfolio/WorkCover";
 import { WorkIntro } from "@/components/portfolio/WorkIntro";
 
-/** UMG / Wearitt autoplay (Figma: no hover needed). SOAR phases into its
- * video on hover. WTTIN stays a still. */
+/** UMG / SOAR phase into video on hover. Wearitt autoplays. WTTIN stays a still. */
 const WORKS = [
   {
     id: "umg",
-    cover: "/assets/work/umg.png?v=3",
+    cover: "/assets/work/umg.png?v=4",
     video: "/assets/Cover Videos/Umg Cover Video.mp4?v=3",
+    playOnHover: true,
     kicker: "Universal Music Group - Summer 2026",
     title: "Redesigning low-code tools with AI",
     tags: ["Enterprise Design", "AI", "Figma MCP", "Codex", "Gemini Enterprise"],
