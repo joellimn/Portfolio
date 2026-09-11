@@ -11,6 +11,7 @@ const WORKS = [
     video: "/assets/Cover Videos/Umg Cover Video.mp4?v=3",
     playOnHover: true,
     kicker: "Universal Music Group - Summer 2026",
+    engagement: "Internship",
     title: "Redesigning low-code tools with AI",
     tags: ["Enterprise Design", "AI", "Figma MCP", "Codex", "Gemini Enterprise"],
   },
@@ -20,6 +21,7 @@ const WORKS = [
     video: "/assets/Cover Videos/SOAR Cover Video.mp4",
     playOnHover: true,
     kicker: "U.S. Army - Spring 2026",
+    engagement: "Class project",
     title: "Modernizing Manual Application Review",
     tags: ["Class project", "Dashboard Design", "Interaction Design", "Figma Make"],
   },
@@ -28,6 +30,7 @@ const WORKS = [
     cover: "/assets/work/wearitt.png",
     video: "/assets/Cover Videos/Wearitt Cover Video.mp4",
     kicker: "Wearitt - Winter 2026",
+    engagement: "Internship",
     title: "Building a design system for mobile wardrobe app",
     tags: ["Design System"],
   },
@@ -35,6 +38,7 @@ const WORKS = [
     id: "wttin",
     cover: "/assets/work/wttin.png?v=2",
     kicker: "Where to Turn in Nashville - Fall 2025",
+    engagement: "Internship",
     title: "Designing and deploying a mobile app for a non-profit",
     tags: ["Prototyping", "End to end", "Internal beta"],
   },
@@ -79,7 +83,14 @@ export function WorkBody() {
               />
             </div>
             <div className="flex flex-col px-[8px] py-[8px] text-black">
-              <p className="text-[16px] leading-[28px] font-light">{work.kicker}</p>
+              <div className="flex items-baseline justify-between gap-3">
+                <p className="text-[16px] leading-[28px] font-light">
+                  {work.kicker}
+                </p>
+                <p className="shrink-0 text-[12px] leading-[24px] font-light text-black/50">
+                  {work.engagement}
+                </p>
+              </div>
               <p className="text-[20px] leading-[28px]">{work.title}</p>
               <p className="flex flex-wrap gap-x-[12px] text-[12px] leading-[24px] font-light text-black/50">
                 {work.tags.map((tag) => (
