@@ -23,7 +23,7 @@ const WORKS = [
     kicker: "U.S. Army - Spring 2026",
     engagement: "Class project",
     title: "Modernizing Manual Application Review",
-    tags: ["Class project", "Dashboard Design", "Interaction Design", "Figma Make"],
+    tags: ["Dashboard Design", "Interaction Design", "Figma Make"],
   },
   {
     id: "wearitt",
