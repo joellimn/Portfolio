@@ -63,6 +63,7 @@
   --color-aqua-gel-light: var(--aqua-gel-light);
   --font-sans: var(--font-geist), "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
+  --font-hangul: var(--font-inter), var(--font-noto-kr), sans-serif;
 }
 
 @utility preserve-3d {

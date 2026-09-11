@@ -62,7 +62,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
           <p className="px-8 text-[32px] leading-[48px] text-black">
             Printed guides are inaccessible.
           </p>
-          <p className="px-8 pt-4 text-[16px] leading-6 text-black/50">
+          <p className="px-8 pt-4 text-[20px] leading-[27.5px] text-black/50">
             While Where to Turn in Nashville reached 100,000+ people through
             print booklets and a desktop portal, users needed a fast way to find
             local aid instantly.
@@ -140,7 +140,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
                 unoptimized
               />
             </MediaMat>
-            <figcaption className="pt-1 text-right text-[12px] leading-[28.5px] text-black/50">
+            <figcaption className="pt-1 text-right text-[16px] leading-[28.5px] text-black/50">
               User Flow Chart
             </figcaption>
           </figure>
@@ -169,7 +169,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
                 className="w-full max-w-[410px]"
               />
             </MediaMat>
-            <figcaption className="pt-1 text-center text-[12px] leading-[23.5px] text-black">
+            <figcaption className="pt-1 text-center text-[16px] leading-[23.5px] text-black">
               Plots <Em>directory</Em> aid onto a <Em>live map</Em> centered on
               the <Em>user&apos;s location.</Em>
             </figcaption>
@@ -189,7 +189,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
                   className="w-full max-w-[410px]"
                 />
               </MediaMat>
-              <figcaption className="w-full text-center text-[12px] leading-[23.5px] text-black">
+              <figcaption className="w-full text-center text-[16px] leading-[23.5px] text-black">
                 Click any resource near you
               </figcaption>
             </figure>
@@ -203,7 +203,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
                   className="w-full max-w-[410px]"
                 />
               </MediaMat>
-              <figcaption className="w-full text-center text-[12px] leading-[23.5px] text-black">
+              <figcaption className="w-full text-center text-[16px] leading-[23.5px] text-black">
                 Filter results near you
               </figcaption>
             </figure>
@@ -271,7 +271,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
                   unoptimized
                 />
               </div>
-              <p className="text-center text-[12px] leading-[28.5px] text-black">
+              <p className="text-center text-[16px] leading-[28.5px] text-black">
                 Where to Turn in Nashville Team 25-26
               </p>
             </div>

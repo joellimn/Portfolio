@@ -39,7 +39,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             <p className="text-[32px] leading-[32px] text-black">
               Too many features.
             </p>
-            <p className="max-w-[520px] text-[16px] leading-6 text-black/50">
+            <p className="max-w-[520px] text-[20px] leading-[27.5px] text-black/50">
               Wearitt was <Em>fractured</Em> across{" "}
               <Em>four competing features:</Em> Virtual Try-On, Collage Maker,
               Digital Closet, and an Inspiration Feed.

@@ -90,12 +90,17 @@ export function NameScramble() {
     };
   }, []);
 
+  const hangul = /[\u1100-\u11FF\u3130-\u318F\uAC00-\uD7AF]/.test(text);
+
   return (
     <span
       ref={nodeRef}
       data-name-scramble
       className="relative inline-block text-center align-baseline whitespace-nowrap"
-      style={width ? { width } : undefined}
+      style={{
+        width: width ?? undefined,
+        fontFamily: hangul ? "var(--font-hangul)" : undefined,
+      }}
     >
       <span
         ref={measureRef}

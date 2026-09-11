@@ -46,9 +46,8 @@ export function WorkBody() {
       <section className="w-full px-[32px] py-[8px] text-[24px]">
         <div className="flex max-w-[75ch] flex-col gap-[16px] tracking-[-1px]">
           <p className="text-[24px] leading-[24px] text-black">
-            <NameScramble /> is a product designer for operational software:
-            dense records, internal tools, and the people who use them under
-            time pressure.
+            <NameScramble /> is a product designer who turns dense, complex
+            workflows into intuitive digital experiences.
           </p>
           <p className="text-[20px] leading-[24px] text-black/50">
             Studying Human and Organizational Development and Computer Science

@@ -244,7 +244,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
               className="h-auto w-full min-w-0 flex-1"
             />
           </div>
-          <p className="px-8 pt-2 text-[16px] leading-6 text-black/50">
+          <p className="px-8 pt-2 text-[20px] leading-[27.5px] text-black/50">
             Early agent runs tended to generate{" "}
             <Em>bloated, low-value KPI headers </Em>
             that wasted prime screen space.{" "}
@@ -287,7 +287,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             width={2868}
             height={848}
           />
-          <p className="px-8 text-[16px] leading-6 text-black/50">
+          <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
             Previously senseless <Em>KPIs were repositioned</Em> where they
             actually belong, providing meaningful context rather than visual
             noise.
@@ -397,7 +397,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
                 height={862}
                 className="h-auto w-full"
               />
-              <p className="text-center text-[12px] leading-[28.5px] text-black">
+              <p className="text-center text-[16px] leading-[28.5px] text-black">
                 UMG Nashville headquarters
               </p>
             </div>

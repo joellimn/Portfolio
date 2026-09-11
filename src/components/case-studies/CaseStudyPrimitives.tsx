@@ -30,17 +30,11 @@ export function Headline({ children }: { children: ReactNode }) {
 
 export function Body({
   children,
-  size = 20,
 }: {
   children: ReactNode;
-  size?: 16 | 20;
 }) {
   return (
-    <p
-      className={`px-8 text-black/50 ${
-        size === 16 ? "text-[16px] leading-6" : "text-[20px] leading-[27.5px]"
-      }`}
-    >
+    <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
       {children}
     </p>
   );
@@ -98,7 +92,7 @@ export function Figure({
         priority={priority}
       />
       {caption ? (
-        <figcaption className="pt-1 text-right text-[12px] leading-[28.5px] text-black/50">
+        <figcaption className="pt-1 text-right text-[16px] leading-[28.5px] text-black/50">
           {caption}
         </figcaption>
       ) : null}

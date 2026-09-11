@@ -7,10 +7,12 @@ export type TocItem = {
 /** V4 gutter labels, taken from the case-study frames. */
 export const CASE_STUDY_TOC: Record<string, TocItem[]> = {
   soar: [
+    { id: "highlights", label: "Highlights" },
+    { id: "context", label: "Context" },
     { id: "problem", label: "Problem" },
     { id: "goal", label: "Goal" },
-    { id: "design", label: "Design" },
     { id: "process", label: "Process" },
+    { id: "design", label: "Design" },
     { id: "impact", label: "Impact" },
     { id: "takeaways", label: "Takeaways" },
   ],

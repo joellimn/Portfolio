@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Playfair_Display } from "next/font/google";
+import { Geist, Inter, Noto_Sans_KR, Playfair_Display } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
@@ -13,6 +13,19 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   style: ["italic", "normal"],
   variable: "--font-playfair",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const notoSansKr = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-noto-kr",
   display: "swap",
 });
 
@@ -43,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`h-full antialiased ${geist.variable} ${playfair.variable}`}
+      className={`h-full antialiased ${geist.variable} ${playfair.variable} ${inter.variable} ${notoSansKr.variable}`}
     >
       <head>
         <link
