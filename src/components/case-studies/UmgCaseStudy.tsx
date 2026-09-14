@@ -479,13 +479,13 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
               standardized spacing, and rounded corners,{" "}
               <Em>which noticeably improved data readability.</Em>
             </Card>
-            <Card title="What it Failed to Fix" tone="yellow">
+            <Card title="What it Half-solved" tone="yellow">
               Attempted to address the IA problem by adding a &quot;Lookup
               Results&quot; navigation button. However, the button only
               appeared after reaching the results view,{" "}
               <Em>which still required submitting an empty scan first.</Em>
             </Card>
-            <Card title="What it Half-solved" tone="red">
+            <Card title="What it Failed to Fix" tone="red">
               Added unnecessary KPI headers at the top of the view, consuming
               valuable vertical screen real estate and
               <Em> worsening the workspace constraint.</Em>
