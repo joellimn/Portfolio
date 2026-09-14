@@ -26,11 +26,11 @@ function captionOpacity(slideAt: number, index: number) {
 
 const SLIDES = [
   {
-    src: "/assets/case-studies/v4/umg/highlight-to-get-here.png?v=3",
+    src: "/assets/case-studies/v4/umg/highlight-to-get-here.png?v=4",
     alt: "Figma redesign of Hardware Asset Management lookup results",
     width: 2868,
     height: 1758,
-    caption: "To get here,",
+    caption: "My process to get here,",
     tools: [
       {
         src: "/assets/case-studies/v4/umg/logo-figma.png",
@@ -41,11 +41,11 @@ const SLIDES = [
     ],
   },
   {
-    src: "/assets/case-studies/v4/umg/highlight-through-this.png?v=3",
-    alt: "Codex and Gemini rebuild of Hardware Asset Management",
+    src: "/assets/case-studies/v4/umg/highlight-through-this.png?v=4",
+    alt: "Codex rebuild of Hardware Asset Management",
     width: 2868,
-    height: 1743,
-    caption: "I had to go through this,",
+    height: 1758,
+    caption: "From here,",
     tools: [
       {
         src: "/assets/case-studies/v4/umg/logo-codex.png?v=2",
@@ -62,11 +62,11 @@ const SLIDES = [
     ],
   },
   {
-    src: "/assets/case-studies/v4/umg/highlight-started-here.png?v=3",
+    src: "/assets/case-studies/v4/umg/highlight-started-here.png?v=4",
     alt: "Original Microsoft Power Apps Hardware Asset Management screen",
     width: 2868,
-    height: 1743,
-    caption: "But I started here.",
+    height: 1758,
+    caption: "Starting here.",
     tools: [
       {
         src: "/assets/case-studies/v4/umg/logo-powerapps.png",

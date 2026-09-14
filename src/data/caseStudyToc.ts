@@ -40,7 +40,6 @@ export const CASE_STUDY_TOC: Record<string, TocItem[]> = {
     { id: "goal", label: "Goal" },
     { id: "process", label: "Process" },
     { id: "design", label: "Design" },
-    { id: "iteration", label: "Iteration" },
     { id: "impact", label: "Impact" },
     { id: "takeaways", label: "Takeaways" },
   ],
