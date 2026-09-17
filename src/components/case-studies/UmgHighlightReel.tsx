@@ -2,27 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Label } from "@/components/case-studies/CaseStudyPrimitives";
 
 const ACCENT = "#2b84e9";
 const TOOL_BAR = "#e8f7ff";
-const END_HOLD = 0.16;
-const CAPTION_FADE = 0.08;
-
-function remapProgress(progress: number) {
-  if (progress <= END_HOLD) return 0;
-  if (progress >= 1 - END_HOLD) return 1;
-  return (progress - END_HOLD) / (1 - END_HOLD * 2);
-}
-
-function captionOpacity(slideAt: number, index: number) {
-  const dist = Math.abs(slideAt - index);
-  const start = 0.5 - CAPTION_FADE;
-  const end = 0.5 + CAPTION_FADE;
-  if (dist <= start) return 1;
-  if (dist >= end) return 0;
-  return 1 - (dist - start) / (CAPTION_FADE * 2);
-}
 
 const SLIDES = [
   {
@@ -130,119 +114,75 @@ function SlideImage({ item }: { item: (typeof SLIDES)[number] }) {
   );
 }
 
-function scrollRoot(node: HTMLElement | null) {
-  return node?.closest('[role="dialog"]') as HTMLElement | null;
-}
-
 export function UmgHighlightReel() {
-  const section = useRef<HTMLElement>(null);
-  const track = useRef<HTMLDivElement>(null);
-  const [slideAt, setSlideAt] = useState(0);
-  const [offset, setOffset] = useState(0);
-  const [reduced, setReduced] = useState(false);
+  const scroller = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const last = SLIDES.length - 1;
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduced(media.matches);
-    sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
-  }, []);
-
-  useEffect(() => {
-    if (reduced) return;
-    const el = section.current;
-    const root = scrollRoot(el);
-    if (!el || !root) return;
-
-    let frame = 0;
-    const measure = () => {
-      const rootBox = root.getBoundingClientRect();
-      const box = el.getBoundingClientRect();
-      const travel = el.offsetHeight - root.clientHeight;
-      if (travel <= 0) return;
-      const progress = remapProgress(
-        Math.min(1, Math.max(0, (rootBox.top - box.top) / travel)),
-      );
-      const last = SLIDES.length - 1;
-      const next = progress * last;
-      const slideW = track.current?.offsetWidth ?? 0;
-      const gap = slideW ? 40 : 0;
-      setOffset(next * (slideW + gap));
-      setSlideAt(next);
-    };
+    const strip = scroller.current;
+    if (!strip) return;
 
     const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(measure);
+      const width = strip.clientWidth;
+      if (!width) return;
+      setIndex(Math.round(strip.scrollLeft / width));
     };
 
-    measure();
-    root.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      cancelAnimationFrame(frame);
-      root.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [reduced]);
+    strip.addEventListener("scroll", onScroll, { passive: true });
+    return () => strip.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const goTo = (next: number) => {
+    const strip = scroller.current;
+    if (!strip) return;
+    const clamped = Math.min(last, Math.max(0, next));
+    strip.scrollTo({ left: clamped * strip.clientWidth, behavior: "smooth" });
+    setIndex(clamped);
+  };
 
   return (
-    <section
-      ref={section}
-      id="highlights"
-      className={`scroll-mt-24 ${reduced ? "" : "h-[340vh]"}`}
-    >
-      <div
-        className={
-          reduced
-            ? "flex flex-col gap-4"
-            : "sticky top-0 flex min-h-[100dvh] flex-col justify-start bg-white"
-        }
-      >
-        <Label color={ACCENT}>Highlights</Label>
-        {reduced ? (
-          <div className="flex flex-col gap-10 px-8">
-            {SLIDES.map((item) => (
-              <div key={item.src} className="flex flex-col gap-4">
-                <p className="text-[24px] leading-[27.5px] text-black">
-                  {item.caption}
-                </p>
-                <SlideImage item={item} />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <>
-            <div className="grid min-h-[28px] px-8">
-              {SLIDES.map((item, i) => (
-                <p
-                  key={item.caption}
-                  className="pointer-events-none col-start-1 row-start-1 text-[24px] leading-[27.5px] text-black"
-                  style={{ opacity: captionOpacity(slideAt, i) }}
-                  aria-hidden={Math.round(slideAt) !== i}
-                >
-                  {item.caption}
-                </p>
-              ))}
+    <section id="highlights" className="scroll-mt-24">
+      <Label color={ACCENT}>Highlights</Label>
+      <div className="flex items-center gap-4 px-8">
+        <p className="min-w-0 flex-1 text-[24px] leading-[27.5px] text-black">
+          {SLIDES[index].caption}
+        </p>
+        <div className="flex shrink-0 items-center gap-1">
+          <button
+            type="button"
+            aria-label="Previous highlight"
+            disabled={index === 0}
+            onClick={() => goTo(index - 1)}
+            className="flex size-8 items-center justify-center text-black transition-opacity disabled:opacity-25"
+          >
+            <ChevronLeft className="size-6" strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            aria-label="Next highlight"
+            disabled={index === last}
+            onClick={() => goTo(index + 1)}
+            className="flex size-8 items-center justify-center text-black transition-opacity disabled:opacity-25"
+          >
+            <ChevronRight className="size-6" strokeWidth={1.5} />
+          </button>
+        </div>
+      </div>
+      <div className="px-8 pt-4">
+        <div
+          ref={scroller}
+          className="flex snap-x snap-mandatory overflow-x-auto overflow-y-hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {SLIDES.map((item) => (
+            <div
+              key={item.src}
+              className="w-full min-w-full shrink-0 snap-start"
+            >
+              <SlideImage item={item} />
             </div>
-            <div className="overflow-hidden px-8 pt-4">
-              <div
-                ref={track}
-                className="flex w-full gap-10"
-                style={{
-                  transform: `translate3d(${-offset}px, 0, 0)`,
-                }}
-              >
-                {SLIDES.map((item) => (
-                  <div key={item.src} className="w-full min-w-full shrink-0">
-                    <SlideImage item={item} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
+          ))}
+        </div>
       </div>
     </section>
   );

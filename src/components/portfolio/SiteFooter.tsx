@@ -143,7 +143,11 @@ function lineYAt(x: number, xs: readonly number[], ys: readonly number[]) {
   return bezier((lo + hi) / 2, ys);
 }
 
-export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
+export function SiteFooter({
+  next,
+  scents = false,
+}: { next?: CaseStudyFooterNext; scents?: boolean } = {}) {
+  const showClothesline = Boolean(next) || scents;
   const { copied, copyEmail } = useEmailCopy();
   const footer = useRef<HTMLElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -205,7 +209,7 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
   }, [width]);
 
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || !showClothesline) return;
     let frame = 0;
     let last = performance.now();
 
@@ -236,7 +240,7 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [active, reduced, width]);
+  }, [active, reduced, showClothesline, width]);
 
   const hitTest = (x: number, y: number) => {
     for (const i of visible) {
@@ -299,11 +303,12 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
     <footer
       ref={footer}
       className="relative flex w-full flex-col items-start overflow-hidden py-[32px]"
-      onPointerMove={onPointerMove}
-      onPointerDown={onPointerDown}
-      onPointerLeave={onPointerLeave}
+      onPointerMove={showClothesline ? onPointerMove : undefined}
+      onPointerDown={showClothesline ? onPointerDown : undefined}
+      onPointerLeave={showClothesline ? onPointerLeave : undefined}
     >
-      {(reduced && active !== null ? [active] : washes).map((index) => {
+      {showClothesline
+        ? (reduced && active !== null ? [active] : washes).map((index) => {
         const tag = TAGS[index];
         const hang = hangs[index];
         return (
@@ -332,9 +337,10 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
             }}
           />
         );
-      })}
+      })
+        : null}
 
-      {next ? null : (
+      {showClothesline && !next ? (
         <div className="relative z-10 flex w-full flex-col items-start px-[32px]">
           <p className="text-[24px] leading-normal text-black">
             Inspired by my favorite scents.
@@ -343,8 +349,9 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
             This website smells good.
           </p>
         </div>
-      )}
+      ) : null}
 
+      {showClothesline ? (
       <div ref={stage} className="relative z-10 w-full" style={{ height }}>
         {next && featured ? (
           <div
@@ -411,6 +418,7 @@ export function SiteFooter({ next }: { next?: CaseStudyFooterNext } = {}) {
           />
         </svg>
       </div>
+      ) : null}
 
       <div className="relative z-10 flex w-full items-start justify-end gap-[64px] px-[32px]">
         <nav aria-label="Pages, footer" className="flex flex-col items-start">

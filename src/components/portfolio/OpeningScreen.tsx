@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { animate, motion } from "motion/react";
 import { Wordmark } from "@/components/portfolio/Wordmark";
+import { RESUME } from "@/data/contact";
 
 /** Same hue sets as the footer tags. Origins follow the mockup triangle:
  *  top above ㅊ, then bottom-left, then bottom-right. */
@@ -36,6 +37,7 @@ const WASHES = [
 
 const LINKS = [
   { href: "/", label: "Work" },
+  { href: RESUME, label: "Resume", external: true },
   { href: "/about", label: "About" },
 ] as const;
 
@@ -201,25 +203,37 @@ export function OpeningScreen({
           aria-label="Pages"
           className="pointer-events-auto flex items-center"
         >
-          {LINKS.map(({ href, label }) => (
+          {LINKS.map((item) => (
             <motion.div
-              key={href}
+              key={item.href}
               initial={false}
               animate={{ opacity: settled ? 1 : 0 }}
               transition={{ duration: DOCK_MS / 1000, ease: EASE }}
               className={settled ? "" : "pointer-events-none"}
             >
-              <Link
-                href={href}
-                aria-current={href === "/" ? "page" : undefined}
-                className={`p-3 text-[16px] leading-[24px] tracking-[-1px] transition-colors sm:p-4 ${
-                  href === "/"
-                    ? "text-black"
-                    : "text-black/50 hover:text-black"
-                }`}
-              >
-                {label}
-              </Link>
+              {"external" in item && item.external ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  data-cursor="external"
+                  className="p-3 text-[16px] leading-[24px] tracking-[-1px] text-black/50 transition-colors hover:text-black sm:p-4"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  href={item.href}
+                  aria-current={item.href === "/" ? "page" : undefined}
+                  className={`p-3 text-[16px] leading-[24px] tracking-[-1px] transition-colors sm:p-4 ${
+                    item.href === "/"
+                      ? "text-black"
+                      : "text-black/50 hover:text-black"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              )}
             </motion.div>
           ))}
         </nav>

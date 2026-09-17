@@ -8,7 +8,8 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <PageFrame>
+    <PageFrame scents>
+      <div className="-mt-3 flex flex-col gap-[32px] sm:-mt-4">
       <section className="w-full px-[32px] text-[24px] leading-[24px] tracking-[-1px]">
         {/* The frame is fluid, but reading measure is capped just above the
             1200 design width so long lines stay tractable on wide screens. */}
@@ -24,7 +25,11 @@ export default function AboutPage() {
             passion for creativity and problem-solving through design.
           </p>
           <p className="text-black/50">
-            Apart from design, I also love soccer, cooking, and playing guitar!
+            Outside of design, you can usually find me keeping up with{" "}
+            <span className="text-black">One Piece</span>, cheering on{" "}
+            <span className="text-black">Real Madrid</span>, or hunting down
+            new additions for my{" "}
+            <span className="text-black">fragrance collection.</span>
           </p>
         </div>
       </section>
@@ -35,6 +40,7 @@ export default function AboutPage() {
           Photos from my recent trip to NYC
         </p>
       </section>
+      </div>
     </PageFrame>
   );
 }

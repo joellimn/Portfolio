@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { NameScramble } from "@/components/portfolio/NameScramble";
 import { WorkCover } from "@/components/portfolio/WorkCover";
 import { WorkIntro } from "@/components/portfolio/WorkIntro";
 
@@ -46,16 +45,19 @@ const WORKS = [
 
 export function WorkBody() {
   return (
-    <>
-      <section className="w-full px-[32px] py-[8px] text-[24px]">
+    <div className="-mt-3 flex flex-col gap-[32px] sm:-mt-4">
+      <section className="w-full px-[32px] text-[24px]">
         <div className="flex max-w-[75ch] flex-col gap-[16px] tracking-[-1px]">
-          <p className="text-[24px] leading-[24px] text-black">
-            <NameScramble /> is a product designer who turns dense, complex
+          <p className="text-[32px] leading-[32px] text-black">
+            Joel Lim is a product designer who turns dense, complex
             workflows into intuitive digital experiences.
           </p>
           <p className="text-[20px] leading-[24px] text-black/50">
-            Studying Human and Organizational Development and Computer Science
-            <span className="text-black"> @ Vanderbilt University</span>
+            Studying{" "}
+            <span className="text-black">
+              Human and Organizational Development and Computer Science @
+              Vanderbilt University
+            </span>
             <br />
             Previously UX Intern
             <span className="text-black"> @ Universal Music Group</span>
@@ -101,7 +103,7 @@ export function WorkBody() {
           </Link>
         ))}
       </section>
-    </>
+    </div>
   );
 }
 
