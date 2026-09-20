@@ -139,7 +139,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
         hero="/assets/case-studies/heroes/umg.png?v=3"
         heroAlt="Hardware Asset Management lookup and scan screens"
         tallHero
-        title="Redesigning low-code tools with AI"
+        title="Redesigning internal tools with AI"
         meta={[
           { label: "Role", value: "UX Design Intern" },
           { label: "Timeline", value: "June 2026 - August 2026" },

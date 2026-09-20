@@ -11,7 +11,7 @@ const WORKS = [
     playOnHover: true,
     kicker: "Universal Music Group - Summer 2026",
     engagement: "Internship",
-    title: "Redesigning low-code tools with AI",
+    title: "Redesigning internal tools with AI",
     tags: ["Enterprise Design", "AI", "Figma MCP", "Codex", "Gemini Enterprise"],
   },
   {

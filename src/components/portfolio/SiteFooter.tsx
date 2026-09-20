@@ -112,7 +112,7 @@ export const CASE_STUDY_FOOTER: Record<string, CaseStudyFooterNext> = {
   wttin: {
     href: "/umg",
     kicker: "Next Project:",
-    title: "Redesigning low-code tools with AI.",
+    title: "Redesigning internal tools with AI.",
     tag: 3,
   },
 };
