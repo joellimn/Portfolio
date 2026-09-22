@@ -14,7 +14,8 @@ const SLIDES = [
     alt: "Figma redesign of Hardware Asset Management lookup results",
     width: 2868,
     height: 1758,
-    caption: "My process to get here,",
+    caption:
+      "Redesigned 5 internal apps, including a hardware management platform tracking 2,000+ assets",
     tools: [
       {
         src: "/assets/case-studies/v4/umg/logo-figma.png",
@@ -29,7 +30,8 @@ const SLIDES = [
     alt: "Codex rebuild of Hardware Asset Management",
     width: 2868,
     height: 1758,
-    caption: "From here,",
+    caption:
+      "Redesigned 5 internal apps, including a hardware management platform tracking 2,000+ assets",
     tools: [
       {
         src: "/assets/case-studies/v4/umg/logo-codex.png?v=2",
@@ -50,7 +52,8 @@ const SLIDES = [
     alt: "Original Microsoft Power Apps Hardware Asset Management screen",
     width: 2868,
     height: 1758,
-    caption: "Starting here.",
+    caption:
+      "Redesigned 5 internal apps, including a hardware management platform tracking 2,000+ assets",
     tools: [
       {
         src: "/assets/case-studies/v4/umg/logo-powerapps.png",

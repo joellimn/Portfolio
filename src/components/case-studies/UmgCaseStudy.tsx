@@ -201,9 +201,9 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
         <section id="goal" className="scroll-mt-24">
           <Label color={ACCENT}>Goal</Label>
           <p className="px-8 pb-8 text-[32px] leading-[40px] text-black/50">
-            I was tasked with <Em>systematically migrating</Em> these legacy
-            tools to <Em>code-based applications</Em> while{" "}
-            <Em>upgrading their user experience.</Em>
+            Redesign <Em>5 high-priority internal tools</Em> and establish a{" "}
+            <Em>migration blueprint</Em> for{" "}
+            <Em>hundreds of legacy applications.</Em>
           </p>
         </section>
 
