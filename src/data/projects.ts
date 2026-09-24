@@ -131,7 +131,7 @@ export const projects: Project[] = [
       {
         type: "text",
         label: "Highlights",
-        body: "Transformed a 90-day review cycle across 5 stakeholder tiers into a centralized dashboard, standardizing 44-page candidate packets with a seamless digital rubric and voting process.",
+        body: "Transformed a 90-day review cycle across 5 stakeholder tiers into a centralized dashboard, standardizing 44-page candidate packets with a seamless digital rubric and voting process, and cutting review times from 30 to 12 minutes.",
       },
       {
         type: "media",
@@ -340,9 +340,9 @@ export const projects: Project[] = [
         intro: "Three outcomes from shifting packet review onto one dashboard.",
         tone: "blue",
         items: [
+          "Accelerated Review Time — Reduced individual review times from 30 to 12 minutes (timed user testing).",
           "Cut Admin Overhead — Condensed 44-page dossiers into a single view, ending manual data entry and email threads.",
           "Standardized Scoring — Swapped \u201cgut-feel\u201d reviews for objective benchmarks across 4 core evaluation areas.",
-          "Accelerated Review Time — Real-time tracking cuts down the volatile 3–9 month candidate turnaround time.",
         ],
       },
       {

@@ -76,8 +76,9 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
           <p className="px-8 text-[24px] leading-[27.5px] text-black/50">
             Transformed a <Em>90-day review cycle</Em> across 5 stakeholder
             tiers into a <Em>centralized dashboard</Em>, standardizing{" "}
-            <Em>44-page candidate</Em> packets with a seamless digital rubric
-            and voting process.
+            <Em>44-page candidate packets</Em> with a seamless digital rubric
+            and voting process, and cutting review times{" "}
+            <Em>from 30 to 12 minutes.</Em>
           </p>
           <div className="px-8 py-4">
             <div className="aspect-[956/637] overflow-hidden rounded bg-[#faf7ed]">
@@ -455,6 +456,10 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             — Personnel Officer (S1)
           </p>
           <div className="flex flex-col gap-10 px-8 py-12 md:flex-row">
+            <Card title="Accelerated Review Time" tone="white">
+              Reduced individual review times from 30 to 12 minutes (timed user
+              testing).
+            </Card>
             <Card title="Cut Admin Overhead" tone="white">
               Condensed 44-page dossiers into a single view, ending manual data
               entry and email threads.
@@ -462,10 +467,6 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             <Card title="Standardized Scoring" tone="white">
               Swapped &quot;gut-feel&quot; reviews for objective benchmarks
               across 4 core evaluation areas.
-            </Card>
-            <Card title="Accelerated Review Time" tone="white">
-              Real-time tracking cuts down the volatile 3–9 month candidate
-              turnaround time.
             </Card>
           </div>
         </section>
