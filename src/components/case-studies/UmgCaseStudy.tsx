@@ -64,10 +64,12 @@ function ToolFrame({
   logo,
   label,
   children,
+  flush = false,
 }: {
   logo: string;
   label: string;
   children: ReactNode;
+  flush?: boolean;
 }) {
   return (
     <div>
@@ -75,7 +77,7 @@ function ToolFrame({
         <img src={logo} alt="" className="h-8 w-auto object-contain" />
         <span className="text-[20px] leading-normal text-black">{label}</span>
       </div>
-      <div className="bg-[#f6faff] p-8">{children}</div>
+      <div className={flush ? "" : "bg-[#f6faff] p-8"}>{children}</div>
     </div>
   );
 }
@@ -492,20 +494,20 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             </Card>
           </div>
           <div className="px-8 py-4">
-            <ToolFrame logo={v4("logo-codex.png")} label="Codex">
-              <div className="flex flex-col gap-4">
+            <ToolFrame logo={v4("logo-codex.png")} label="Codex" flush>
+              <div className="flex flex-col">
                 <img
-                  src={v4("codex-lookup.png")}
-                  alt="Codex rebuild of Hardware Asset Management lookup with annotated KPI headers"
-                  width={2776}
-                  height={1407}
+                  src={v4("codex-lookup.png?v=2")}
+                  alt="Codex lookup screen with callouts for missing Lookup Results state and bloated KPI headers"
+                  width={1922}
+                  height={1471}
                   className="h-auto w-full"
                 />
                 <img
-                  src={v4("codex-scan.png")}
-                  alt="Codex rebuild of Hardware Asset Management scan flow"
-                  width={2776}
-                  height={1407}
+                  src={v4("codex-scan.png?v=2")}
+                  alt="Codex scan screen with a callout that Submit is the only path to Lookup Results"
+                  width={1922}
+                  height={1471}
                   className="h-auto w-full"
                 />
               </div>
@@ -595,15 +597,13 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             </div>
           </div>
           <div className="px-8 py-4">
-            <div className="bg-[#f6faff] p-8">
-              <img
-                src={v4("kpi-headers.png")}
-                alt="Codex rebuild with bloated KPI headers circled"
-                width={2868}
-                height={651}
-                className="h-auto w-full"
-              />
-            </div>
+            <img
+              src={v4("kpi-headers.png?v=2")}
+              alt="Codex rebuild cropped to the bloated KPI header cards"
+              width={1912}
+              height={434}
+              className="h-auto w-full"
+            />
           </div>
           <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
             Early agent runs tended to generate{" "}
