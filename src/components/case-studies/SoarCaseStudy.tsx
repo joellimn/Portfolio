@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { CaseStudyLayout } from "@/components/case-studies/CaseStudyLayout";
-import { CaseStudyVideo } from "@/components/case-studies/CaseStudyVideo";
+import {
+  CaseStudyVideo,
+  PlayWhenVisibleVideo,
+} from "@/components/case-studies/CaseStudyVideo";
 import {
   Em,
   Figure,
@@ -82,14 +85,9 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
           </p>
           <div className="px-8 py-4">
             <div className="aspect-[956/637] overflow-hidden rounded bg-[#faf7ed]">
-              <video
+              <PlayWhenVisibleVideo
                 src={HIGHLIGHT_VIDEO}
                 className="h-full w-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
                 aria-label="Walkthrough of the assessment packet inbox, packet overview, and vote submit flow"
               />
             </div>

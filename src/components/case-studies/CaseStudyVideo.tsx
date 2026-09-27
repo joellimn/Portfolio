@@ -1,3 +1,64 @@
+"use client";
+
+import { useEffect, useRef, type VideoHTMLAttributes } from "react";
+
+function usePlayWhenVisible() {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+
+    const playFromStart = () => {
+      const start = () => {
+        video.currentTime = 0;
+        void video.play().catch(() => {});
+      };
+      if (video.readyState >= 1) start();
+      else video.addEventListener("loadedmetadata", start, { once: true });
+    };
+
+    const reset = () => {
+      video.pause();
+      if (video.readyState >= 1) video.currentTime = 0;
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) playFromStart();
+        else reset();
+      },
+      { rootMargin: "-48px 0px", threshold: 0 },
+    );
+
+    observer.observe(video);
+    return () => {
+      observer.disconnect();
+      reset();
+    };
+  }, []);
+
+  return ref;
+}
+
+export function PlayWhenVisibleVideo({
+  autoPlay: _autoPlay,
+  ...props
+}: VideoHTMLAttributes<HTMLVideoElement>) {
+  const ref = usePlayWhenVisible();
+
+  return (
+    <video
+      {...props}
+      ref={ref}
+      muted
+      loop
+      playsInline
+      preload={props.preload ?? "metadata"}
+    />
+  );
+}
+
 type CaseStudyVideoProps = {
   src: string;
   label: string;
@@ -50,17 +111,12 @@ export function CaseStudyVideo({
     <div
       className={`overflow-hidden ${RADIUS[radius]} shadow-[4px_4px_5px_rgba(0,0,0,0.05)] ${className}`}
     >
-      <video
+      <PlayWhenVisibleVideo
         src={src}
         width={width}
         height={height}
         className={`block h-auto ${RADIUS[radius]}`}
         style={cropStyle}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
         aria-label={label}
       />
     </div>

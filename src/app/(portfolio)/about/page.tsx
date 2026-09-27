@@ -22,7 +22,10 @@ export default function AboutPage() {
             was constantly{" "}
             <span className="text-black">surrounded by design</span> since my
             father was an interior designer. That early exposure sparked my own
-            passion for creativity and problem-solving through design.
+            passion for{" "}
+            <span className="text-black">
+              creativity and problem-solving through design.
+            </span>
           </p>
           <p className="text-black/50">
             Outside of design, you can usually find me keeping up with{" "}

@@ -49,8 +49,8 @@ export function WorkBody() {
       <section className="w-full px-[32px] text-[24px]">
         <div className="flex max-w-[75ch] flex-col gap-[16px] tracking-[-1px]">
           <p className="text-[32px] leading-[32px] text-black">
-            Joel Lim is a product designer who turns dense, complex
-            workflows into intuitive digital experiences.
+            Joel Lim is a product designer who builds internal tools
+            with an AI-enhanced workflow.
           </p>
           <p className="text-[20px] leading-[24px] text-black/50">
             Studying{" "}

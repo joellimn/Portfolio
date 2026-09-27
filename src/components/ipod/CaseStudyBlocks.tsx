@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { PlayWhenVisibleVideo } from "@/components/case-studies/CaseStudyVideo";
 import type { CaseStudyBlock } from "@/data/projects";
 
 const TONE_CLASS: Record<"blue" | "pink" | "yellow", string> = {
@@ -57,14 +58,9 @@ function Media({
     >
       <div className="relative w-full border border-black/10">
         {video ? (
-          <video
+          <PlayWhenVisibleVideo
             src={src}
             className="h-auto w-full"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
             aria-label={alt}
           />
         ) : (
