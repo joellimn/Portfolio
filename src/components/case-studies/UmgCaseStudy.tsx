@@ -269,12 +269,59 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             evaluated across{" "}
             <Em>OpenAI, Glean, and Gemini Enterprise (Vertex AI).</Em>
           </p>
-          <Figure
-            src={v4("ai-cards.png")}
-            alt="Benchmark cards comparing Glean, OpenAI, and Gemini Enterprise"
-            width={1912}
-            height={608}
-          />
+          <div className="flex flex-col gap-4 px-8 py-4 md:flex-row md:items-stretch md:gap-6">
+            <div className="flex min-w-0 flex-1 flex-col items-center rounded-[20px] bg-white p-8 text-center shadow-[4px_4px_10px_rgba(0,0,0,0.05)]">
+              <img
+                src={v4("logo-openai.png")}
+                alt=""
+                width={120}
+                height={98}
+                className="h-12 w-auto object-contain"
+              />
+              <p className="pt-6 text-[20px] leading-[26px] text-black">
+                Strong Execution Plans, High Hallucination Rate
+              </p>
+              <p className="pt-3 text-[16px] leading-[22px] text-black/50">
+                Generated granular, well-structured rebuild roadmaps, but
+                suffered from a high mistake rate. Frequently misinterpreting
+                legacy workflows and inventing non-existent app logic.
+              </p>
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col items-center rounded-[20px] bg-white p-8 text-center shadow-[4px_4px_10px_rgba(0,0,0,0.05)]">
+              <img
+                src={v4("logo-glean.png")}
+                alt=""
+                width={260}
+                height={104}
+                className="h-12 w-auto object-contain"
+              />
+              <p className="pt-6 text-[20px] leading-[26px] text-black">
+                Deep Enterprise Context, Weak Technical Planning
+              </p>
+              <p className="pt-3 text-[16px] leading-[22px] text-black/50">
+                Leveraged organizational knowledge to create sharp functional
+                documentation, but lacked the architectural capability to
+                convert those specs into viable technical rebuild paths.
+              </p>
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col items-center rounded-[20px] bg-[#ecffe2] p-8 text-center shadow-[4px_4px_10px_rgba(0,0,0,0.05)]">
+              <img
+                src={v4("logo-gemini.png")}
+                alt=""
+                width={103}
+                height={68}
+                className="h-12 w-auto object-contain"
+              />
+              <p className="pt-6 text-[20px] leading-[26px] text-black">
+                UX Insight &amp; Consistent Architecture
+              </p>
+              <p className="pt-3 text-[16px] leading-[22px] text-black/50">
+                Excelled at interpreting actual app behavior rather than just
+                reading raw files. Delivered reliable rebuild plans while
+                identifying core user needs and proactive UX improvements.
+              </p>
+            </div>
+          </div>
           <p className="px-8 text-[20px] leading-[27.5px] text-black/50">
             Backed by these results, I moved forward with using our{" "}
             <Em>Gemini Enterprise Agent.</Em>
