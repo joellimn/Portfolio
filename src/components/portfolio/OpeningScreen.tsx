@@ -1,54 +1,16 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { animate, motion } from "motion/react";
-import { Wordmark } from "@/components/portfolio/Wordmark";
-import { RESUME } from "@/data/contact";
+import { PearlLogo } from "@/components/portfolio/OpeningBanner";
+import { SiteFooter } from "@/components/portfolio/SiteFooter";
+import { TopBar } from "@/components/portfolio/TopBar";
 
-/** Same hue sets as the footer tags. Origins follow the mockup triangle:
- *  top above ㅊ, then bottom-left, then bottom-right. */
-const WASHES = [
-  {
-    name: "Orphéon",
-    hues: [292, 268, 312, 250, 328],
-    ox: "50%",
-    oy: "28%",
-  },
-  {
-    name: "Light Blue",
-    hues: [205, 188, 222, 172, 236],
-    ox: "28%",
-    oy: "70%",
-  },
-  {
-    name: "Thé Noir 29",
-    hues: [62, 38, 78, 28, 95],
-    ox: "72%",
-    oy: "70%",
-  },
-] as const;
-
-const LINKS = [
-  { href: "/", label: "Work" },
-  { href: RESUME, label: "Resume", external: true },
-  { href: "/about", label: "About" },
-] as const;
-
-const STAGGER_MS = 280;
+const LIGHT_MS = 2000;
+const FADE_MS = 1000;
+const HOLD_MS = 180;
 const DOCK_MS = 1050;
-/** Start the flight shortly after the mark reads as black — don't wait
- *  out the wash animation's invisible tail. */
-const DOCK_AFTER_MS = 3450;
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-type Ripple = { id: number; wash: number };
 
 export function OpeningScreen({
   children,
@@ -57,33 +19,37 @@ export function OpeningScreen({
   children: ReactNode;
   onLanded?: () => void;
 }) {
-  const [ripples, setRipples] = useState<Ripple[]>([]);
   const [reduced, setReduced] = useState(false);
+  const [faded, setFaded] = useState(false);
   const [docked, setDocked] = useState(false);
   const [landed, setLanded] = useState(false);
+  const [flyerGone, setFlyerGone] = useState(false);
   const markRef = useRef<HTMLSpanElement>(null);
   const slotRef = useRef<HTMLSpanElement>(null);
-  const nextId = useRef(0);
   const timers = useRef<number[]>([]);
   const flightRef = useRef<{ stop: () => void } | null>(null);
 
   const finish = () => {
     setLanded(true);
     onLanded?.();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setFlyerGone(true));
+    });
   };
 
   const dock = () => {
     const mark = markRef.current;
     const slot = slotRef.current;
-    if (!mark || !slot) {
+    const dest = slot?.querySelector(".nav-flower") ?? slot;
+    if (!mark || !dest) {
       setDocked(true);
       finish();
       return;
     }
 
     const from = mark.getBoundingClientRect();
-    const to = slot.getBoundingClientRect();
-    const scale = to.width / from.width;
+    const to = dest.getBoundingClientRect();
+    const scale = to.height / from.height;
     const x = to.left - from.left;
     const y = to.top - from.top;
 
@@ -92,7 +58,8 @@ export function OpeningScreen({
     mark.style.top = `${from.top}px`;
     mark.style.transformOrigin = "top left";
     mark.style.willChange = "transform";
-    mark.style.zIndex = "30";
+    mark.style.zIndex = "35";
+    mark.style.backfaceVisibility = "hidden";
     setDocked(true);
 
     const flight = animate(
@@ -111,24 +78,16 @@ export function OpeningScreen({
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (media.matches) {
       setReduced(true);
+      setFaded(true);
       setDocked(true);
       finish();
       return;
     }
 
-    const spawn = (wash: number) => {
-      nextId.current += 1;
-      const id = nextId.current;
-      setRipples((current) => [...current, { id, wash }]);
-    };
-
-    WASHES.forEach((_, index) => {
-      timers.current.push(
-        window.setTimeout(() => spawn(index), index * STAGGER_MS),
-      );
-    });
-
-    timers.current.push(window.setTimeout(dock, DOCK_AFTER_MS));
+    timers.current.push(window.setTimeout(() => setFaded(true), LIGHT_MS));
+    timers.current.push(
+      window.setTimeout(dock, LIGHT_MS + FADE_MS + HOLD_MS),
+    );
 
     return () => {
       timers.current.forEach((timer) => window.clearTimeout(timer));
@@ -154,97 +113,39 @@ export function OpeningScreen({
   return (
     <section
       className={[
-        "relative flex w-full flex-col gap-[32px] bg-white",
-        landed || reduced ? "min-h-screen" : "h-screen overflow-hidden",
+        "relative flex w-full flex-col gap-[32px] bg-white font-source",
+        flyerGone || reduced ? "min-h-screen" : "h-screen overflow-hidden",
       ].join(" ")}
     >
-      {(reduced
-        ? [{ id: -1, wash: 0 }]
-        : ripples
-      ).map((ripple) => {
-        const wash = WASHES[ripple.wash];
-        return (
-          <div
-            key={ripple.id}
-            aria-hidden
-            className={[
-              "footer-wash opening-wash pointer-events-none fixed inset-0",
-              reduced ? "is-held" : "is-rippling",
-            ].join(" ")}
-            style={
-              {
-                "--ox": wash.ox,
-                "--oy": wash.oy,
-                "--hue1": wash.hues[0],
-                "--hue2": wash.hues[1],
-                "--hue3": wash.hues[2],
-                "--hue4": wash.hues[3],
-                "--hue5": wash.hues[4],
-              } as CSSProperties
-            }
-          />
-        );
-      })}
+      {reduced ? null : (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none fixed inset-0 z-20"
+          initial={{ backgroundColor: "#101010" }}
+          animate={{
+            backgroundColor: faded ? "#ffffff" : "#101010",
+            opacity: docked ? 0 : 1,
+          }}
+          transition={{
+            backgroundColor: { duration: FADE_MS / 1000, ease: EASE },
+            opacity: { duration: DOCK_MS / 1000, ease: EASE },
+          }}
+        />
+      )}
 
-      <header className="pointer-events-none relative z-20 flex items-center justify-between px-2 sm:px-4">
-        <Link
-          href="/"
-          aria-label="Joel Lim"
-          className="pointer-events-auto p-3 text-black sm:p-4"
-        >
-          <span
-            ref={slotRef}
-            className={`inline-block ${landed || reduced ? "" : "opacity-0"}`}
-          >
-            <Wordmark className="w-[63px]" />
-          </span>
-        </Link>
-        <nav
-          aria-label="Pages"
-          className="pointer-events-auto flex items-center"
-        >
-          {LINKS.map((item) => (
-            <motion.div
-              key={item.href}
-              initial={false}
-              animate={{ opacity: settled ? 1 : 0 }}
-              transition={{ duration: DOCK_MS / 1000, ease: EASE }}
-              className={settled ? "" : "pointer-events-none"}
-            >
-              {"external" in item && item.external ? (
-                <a
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  data-cursor="external"
-                  className="p-3 text-[16px] leading-[24px] tracking-[-1px] text-black/50 transition-colors hover:text-black sm:p-4"
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <Link
-                  href={item.href}
-                  aria-current={item.href === "/" ? "page" : undefined}
-                  className={`p-3 text-[16px] leading-[24px] tracking-[-1px] transition-colors sm:p-4 ${
-                    item.href === "/"
-                      ? "text-black"
-                      : "text-black/50 hover:text-black"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              )}
-            </motion.div>
-          ))}
-        </nav>
-      </header>
+      <TopBar
+        logoSlotRef={slotRef}
+        hideLogo={!landed && !reduced}
+        hideNav={!settled}
+        className={`transition-opacity ${
+          faded || reduced ? "opacity-100" : "opacity-0"
+        }`}
+        style={{ transitionDuration: `${FADE_MS}ms` }}
+      />
 
-      {reduced || landed ? null : (
-        <div className="pointer-events-none fixed inset-0 z-20 flex items-center justify-center">
-          <Wordmark
-            ref={markRef}
-            className="opening-ink w-[700px] max-w-[90vw]"
-          />
+      {reduced || flyerGone ? null : (
+        <div className="pointer-events-none fixed inset-0 z-[35] flex items-center justify-center">
+          <PearlLogo markRef={markRef} once faded={faded} />
         </div>
       )}
 
@@ -252,12 +153,11 @@ export function OpeningScreen({
         data-opening-body
         className="relative z-10 flex flex-col gap-[32px]"
         initial={reduced ? false : { y: "48vh", opacity: 0 }}
-        animate={
-          settled ? { y: 0, opacity: 1 } : { y: "48vh", opacity: 0 }
-        }
+        animate={settled ? { y: 0, opacity: 1 } : { y: "48vh", opacity: 0 }}
         transition={{ duration: DOCK_MS / 1000, ease: EASE }}
       >
         {children}
+        <SiteFooter />
       </motion.div>
     </section>
   );

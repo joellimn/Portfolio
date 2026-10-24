@@ -9,13 +9,16 @@ type WorkCoverProps = {
   cover: string;
   video?: string;
   playOnHover?: boolean;
+  fit?: "cover" | "contain";
 };
 
 export function WorkCover({
   cover,
   video,
   playOnHover = false,
+  fit = "cover",
 }: WorkCoverProps) {
+  const objectFit = fit === "contain" ? "object-contain" : "object-cover";
   const videoRef = useRef<HTMLVideoElement>(null);
   const resetTimer = useRef<number>(0);
 
@@ -26,7 +29,7 @@ export function WorkCover({
         alt=""
         fill
         sizes="(max-width: 640px) 100vw, 50vw"
-        className="object-cover"
+        className={objectFit}
         quality={95}
         unoptimized
         priority
@@ -42,7 +45,7 @@ export function WorkCover({
         loop
         playsInline
         poster={cover}
-        className="absolute inset-0 h-full w-full object-cover"
+        className={`absolute inset-0 h-full w-full ${objectFit}`}
       >
         <source src={encodeURI(video)} type="video/mp4" />
       </video>
@@ -79,7 +82,7 @@ export function WorkCover({
         loop
         playsInline
         preload="auto"
-        className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 ease-out group-hover/cover:opacity-100 motion-reduce:transition-none"
+        className={`absolute inset-0 h-full w-full ${objectFit} opacity-0 transition-opacity duration-700 ease-out group-hover/cover:opacity-100 motion-reduce:transition-none`}
       >
         <source src={encodeURI(video)} type="video/mp4" />
       </video>
@@ -88,7 +91,7 @@ export function WorkCover({
         alt=""
         fill
         sizes="(max-width: 640px) 100vw, 50vw"
-        className="object-cover transition-opacity duration-700 ease-out group-hover/cover:opacity-0 motion-reduce:transition-none"
+        className={`${objectFit} transition-opacity duration-700 ease-out group-hover/cover:opacity-0 motion-reduce:transition-none`}
         quality={95}
         unoptimized
         priority

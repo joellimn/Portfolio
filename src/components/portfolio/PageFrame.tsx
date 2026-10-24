@@ -13,7 +13,7 @@ export function PageFrame({
   scents?: boolean;
 }) {
   return (
-    <div className="flex w-full flex-col gap-[32px]">
+    <div className="flex w-full flex-col gap-[32px] font-source">
       <TopBar />
       {children}
       <SiteFooter scents={scents} />

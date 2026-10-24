@@ -55,7 +55,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
     <div className="w-full bg-white pb-16 font-sans">
       <CaseStudyLayout
         onHome={onReturn}
-        hero="/assets/case-studies/heroes/soar.png"
+        hero="/assets/case-studies/heroes/soar.png?v=2"
         heroAlt="160th SOAR assessment packet inbox overlapping a packet overview"
         tallHero
         title="Modernizing Manual Application Review"
@@ -258,19 +258,26 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             scores across core performance categories.
           </p>
           <Figure
-            src={v4("rubric.png")}
+            src={`${v4("rubric.png")}?v=3`}
             alt="Evaluation rubric with 1–5 benchmarked scores"
             width={3824}
-            height={2924}
+            height={2600}
           />
           <p className="px-8 pt-8 text-[24px] leading-[27.5px] text-black">
             What started as a <Em>simple pdf...</Em>
           </p>
           <Figure
-            src={v4("pdf.png")}
+            src={`${v4("pdf.png")}?v=3`}
             alt="Initial PDF packet beside the first digital prototype"
             width={3824}
-            height={2055}
+            height={1920}
+            notes={
+              <div className="grid grid-cols-2 text-center text-[16px] leading-[28.5px] font-light text-black/50">
+                <p>initial pdf rendition</p>
+                <p>first digital prototype</p>
+              </div>
+            }
+            noteClassName=""
           />
           <p className="px-8 pt-4 text-[24px] leading-[27.5px] text-black">
             evolved into an <Em>interactive digital experience.</Em>
@@ -292,10 +299,17 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             </p>
           </div>
           <Figure
-            src={v4("scoring.png")}
+            src={`${v4("scoring.png")}?v=3`}
             alt="Automated scoring row on the evaluation rubric"
             width={3825}
-            height={1287}
+            height={900}
+            notes={
+              <p>
+                Automated scoring reduces manual grading time while enforcing
+                objective, benchmarked standards across every packet.
+              </p>
+            }
+            noteClassName="text-[20px] leading-[27.5px] font-light text-black/50"
           />
           <p className="px-8 pt-8 text-[32px] leading-[40px] text-black">
             Remember, our users are <Em>military.</Em>

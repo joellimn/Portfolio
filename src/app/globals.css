@@ -61,9 +61,14 @@
   --color-aqua-gel-hi: var(--aqua-gel-hi);
   --color-aqua-gel-mid: var(--aqua-gel-mid);
   --color-aqua-gel-light: var(--aqua-gel-light);
-  --font-sans: var(--font-geist), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-serif: var(--font-playfair), "Playfair Display", Georgia, serif;
-  --font-hangul: var(--font-inter), var(--font-noto-kr), sans-serif;
+  --font-sans: var(--font-source-sans), "Source Sans 3", "Source Sans Pro",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: var(--font-source-sans), "Source Sans 3", "Source Sans Pro",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-hangul: var(--font-source-sans), "Source Sans 3", "Source Sans Pro",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-source: var(--font-source-sans), "Source Sans 3", "Source Sans Pro",
+    "Helvetica Neue", sans-serif;
 }
 
 @utility preserve-3d {
@@ -89,7 +94,20 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-weight: 300;
   overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+th {
+  font-weight: 300;
 }
 
 ::selection {
@@ -793,5 +811,190 @@ body {
     .nyc-slide {
       width: calc((100% - 48px) / 4);
     }
+  }
+}
+
+@property --opening-light {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -30%;
+}
+
+.opening-logo-wrap {
+  display: grid;
+  place-items: center;
+}
+
+.opening-logo-glow {
+  position: absolute;
+  width: 180%;
+  aspect-ratio: 1;
+  background: radial-gradient(
+    circle,
+    rgba(196, 214, 255, 0.16) 0%,
+    rgba(160, 190, 255, 0.05) 38%,
+    transparent 68%
+  );
+  filter: blur(18px);
+  animation: opening-glow 4.8s ease-in-out infinite;
+}
+
+.opening-logo-holo.is-once,
+.opening-logo-sheen.is-once {
+  animation: opening-light 2s ease-in-out 1 forwards;
+}
+
+.opening-logo-glow.is-once {
+  animation: opening-glow 2s ease-in-out 1 forwards;
+}
+
+.opening-logo-wrap.is-faded .opening-logo-glow {
+  opacity: 0;
+  animation: none;
+}
+
+.opening-logo-ink {
+  position: absolute;
+  inset: 0;
+  background: #111111;
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.opening-logo-wrap.is-faded .opening-logo-ink {
+  opacity: 1;
+}
+
+.opening-logo-wrap.is-faded .opening-logo-pearl,
+.opening-logo-wrap.is-faded .opening-logo-holo,
+.opening-logo-wrap.is-faded .opening-logo-sheen {
+  opacity: 0;
+}
+
+.nav-flower {
+  display: block;
+  height: 24px;
+  aspect-ratio: 213.707 / 246.734;
+  background: #111111;
+  transform-origin: 50% 50%;
+  -webkit-mask-image: url("/assets/opening/logo-mask.svg");
+  mask-image: url("/assets/opening/logo-mask.svg");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.nav-flower.is-spinning {
+  animation: nav-flower-spin 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes nav-flower-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-flower.is-spinning {
+    animation: none;
+  }
+}
+
+.opening-logo {
+  position: relative;
+  z-index: 1;
+  width: min(17.8vw, 214px);
+  aspect-ratio: 213.707 / 246.734;
+  -webkit-mask-image: url("/assets/opening/logo-mask.svg");
+  mask-image: url("/assets/opening/logo-mask.svg");
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.opening-logo-pearl,
+.opening-logo-holo,
+.opening-logo-sheen {
+  position: absolute;
+  inset: 0;
+}
+
+.opening-logo-pearl {
+  background:
+    url("/assets/opening/pearl.png") center / 220% auto no-repeat,
+    url("/assets/opening/logo.png") center / cover no-repeat;
+}
+
+.opening-logo-holo {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 36%,
+    #9bb8c4 42%,
+    #b4a8c4 46%,
+    #8eaea8 50%,
+    #7ea8b4 54%,
+    #a898b4 58%,
+    transparent 64%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  background-position: var(--opening-light) 0;
+  mix-blend-mode: color;
+  opacity: 0.7;
+  animation: opening-light 4.8s ease-in-out infinite;
+}
+
+.opening-logo-sheen {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 44%,
+    rgba(255, 255, 255, 0.12) 47%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(210, 230, 255, 0.28) 53%,
+    transparent 56%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  background-position: var(--opening-light) 0;
+  mix-blend-mode: plus-lighter;
+  animation: opening-light 4.8s ease-in-out infinite;
+}
+
+@keyframes opening-light {
+  from {
+    --opening-light: -25%;
+  }
+  to {
+    --opening-light: 125%;
+  }
+}
+
+@keyframes opening-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateX(-12%) scale(0.92);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(12%) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opening-logo-pearl,
+  .opening-logo-holo,
+  .opening-logo-sheen,
+  .opening-logo-glow {
+    animation: none;
+  }
+
+  .opening-logo-holo,
+  .opening-logo-sheen {
+    --opening-light: 45%;
   }
 }

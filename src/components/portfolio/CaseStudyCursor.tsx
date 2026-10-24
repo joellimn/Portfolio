@@ -23,7 +23,7 @@ type CaseStudyCursorProps = {
   hint?: CursorHint | null;
 };
 
-const CURSOR_PURPLE = "#7C3AED";
+const CURSOR_AMBER = "#D97706";
 
 export function CaseStudyCursor({ x, y, hint = null }: CaseStudyCursorProps) {
   const showLabel = Boolean(hint);
@@ -38,17 +38,17 @@ export function CaseStudyCursor({ x, y, hint = null }: CaseStudyCursorProps) {
         className={`block rounded-full transition-opacity duration-150 ${
           showLabel ? "size-0 opacity-0" : "size-4 opacity-100"
         }`}
-        style={{ backgroundColor: CURSOR_PURPLE }}
+        style={{ backgroundColor: CURSOR_AMBER }}
       />
       <span
         className={`absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-[3px] rounded-full px-3 py-1 font-sans text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-white transition-[opacity,transform] duration-200 ease-out ${
           showLabel ? "scale-100 opacity-100" : "scale-50 opacity-0"
         }`}
-        style={{ backgroundColor: CURSOR_PURPLE }}
+        style={{ backgroundColor: CURSOR_AMBER }}
       >
         {hint?.label ?? ""}
         {hint?.external ? (
-          <ArrowUpRight className="size-[14px] shrink-0" strokeWidth={2.5} />
+          <ArrowUpRight className="size-[14px] shrink-0" strokeWidth={1.5} />
         ) : null}
       </span>
     </div>
@@ -90,11 +90,19 @@ export function getCursorHint(target: EventTarget | null): CursorHint | null {
   if (!(target instanceof Element)) return null;
   if (target.closest("[data-native-cursor]")) return null;
   if (target.closest(".is-dragging")) return null;
-  if (isCenterCoverTarget(target)) return { label: "view case study" };
+  if (isCenterCoverTarget(target)) return { label: "View Case Study" };
   if (coverFromTarget(target)) return { label: "view" };
 
   const labeled = target.closest("[data-cursor]");
   if (!(labeled instanceof HTMLElement)) return null;
+
+  const custom = labeled.dataset.cursorLabel?.trim();
+  if (custom) {
+    return {
+      label: custom,
+      external: labeled.dataset.cursor === "external",
+    };
+  }
 
   switch (labeled.dataset.cursor) {
     case "click":
@@ -106,7 +114,7 @@ export function getCursorHint(target: EventTarget | null): CursorHint | null {
     case "view":
       return { label: "view" };
     case "case-study":
-      return { label: "view case study" };
+      return { label: "View Case Study" };
     case "external":
       return { label: "view", external: true };
     default:

@@ -54,7 +54,7 @@ function PhotoSet({ hidden = false }: { hidden?: boolean }) {
       {PHOTOS.map((photo) => (
         <div
           key={`${hidden ? "dup-" : ""}${photo.src}`}
-          className="nyc-slide relative aspect-[308/336] overflow-hidden rounded-[4px]"
+          className="nyc-slide relative aspect-[308/336] overflow-hidden"
         >
           <Image
             src={photo.src}

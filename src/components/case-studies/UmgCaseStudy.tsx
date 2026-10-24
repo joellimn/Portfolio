@@ -138,7 +138,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
     <div className="w-full bg-white pb-16 font-sans">
       <CaseStudyLayout
         onHome={onReturn}
-        hero="/assets/case-studies/heroes/umg.png?v=3"
+        hero="/assets/case-studies/heroes/umg.png?v=4"
         heroAlt="Hardware Asset Management lookup and scan screens"
         tallHero
         title="Redesigning internal tools with AI"
@@ -215,7 +215,7 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             Here’s the quick overview of my workflow.
           </p>
           <Figure
-            src={v4("workflow.png?v=2")}
+            src={v4("workflow.png?v=3")}
             alt="Export, Document, Build, and Refine workflow across Power Apps, Gemini, Codex, and Figma MCP"
             width={2868}
             height={1288}
@@ -272,11 +272,11 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
           <div className="flex flex-col gap-4 px-8 py-4 md:flex-row md:items-stretch md:gap-6">
             <div className="flex min-w-0 flex-1 flex-col items-center rounded-[20px] bg-white p-8 text-center shadow-[4px_4px_10px_rgba(0,0,0,0.05)]">
               <img
-                src={v4("logo-openai.png")}
+                src={v4("logo-openai.png?v=2")}
                 alt=""
-                width={120}
-                height={98}
-                className="h-12 w-auto object-contain"
+                width={274}
+                height={270}
+                className="h-12 w-auto shrink-0 object-contain"
               />
               <p className="pt-6 text-[20px] leading-[26px] text-black">
                 Strong Execution Plans, High Hallucination Rate
@@ -544,14 +544,14 @@ export function UmgCaseStudy({ onReturn }: UmgCaseStudyProps) {
             <ToolFrame logo={v4("logo-codex.png")} label="Codex" flush>
               <div className="flex flex-col">
                 <img
-                  src={v4("codex-lookup.png?v=2")}
+                  src={v4("codex-lookup.png?v=4")}
                   alt="Codex lookup screen with callouts for missing Lookup Results state and bloated KPI headers"
                   width={1922}
                   height={1471}
                   className="h-auto w-full"
                 />
                 <img
-                  src={v4("codex-scan.png?v=2")}
+                  src={v4("codex-scan.png?v=4")}
                   alt="Codex scan screen with a callout that Submit is the only path to Lookup Results"
                   width={1922}
                   height={1471}

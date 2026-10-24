@@ -118,7 +118,7 @@ export const CASE_STUDY_FOOTER: Record<string, CaseStudyFooterNext> = {
 };
 
 const columnHeading =
-  "px-[8px] py-[4px] text-[16px] leading-normal font-medium text-black";
+  "px-[8px] py-[4px] text-[16px] leading-normal font-light text-black";
 const columnLink =
   "px-[8px] py-[4px] text-[16px] leading-normal text-black/50 transition-colors hover:text-black";
 
@@ -345,7 +345,7 @@ export function SiteFooter({
           <p className="text-[24px] leading-normal text-black">
             Inspired by my favorite scents.
           </p>
-          <p className="font-serif text-[24px] leading-normal text-white italic">
+          <p className="font-source text-[24px] leading-normal text-white italic">
             This website smells good.
           </p>
         </div>

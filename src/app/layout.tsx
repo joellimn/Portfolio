@@ -1,31 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Inter, Noto_Sans_KR, Playfair_Display } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const geist = Geist({
+const sourceSans = Source_Sans_3({
   subsets: ["latin"],
-  variable: "--font-geist",
-  display: "swap",
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  style: ["italic", "normal"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const notoSansKr = Noto_Sans_KR({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-noto-kr",
+  weight: "300",
+  style: ["normal", "italic"],
+  variable: "--font-source-sans",
   display: "swap",
 });
 
@@ -56,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`h-full antialiased ${geist.variable} ${playfair.variable} ${inter.variable} ${notoSansKr.variable}`}
+      className={`h-full antialiased ${sourceSans.variable}`}
     >
       <head>
         <link
@@ -74,7 +56,7 @@ export default function RootLayout({
         />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className="min-h-full bg-white font-sans text-foreground">
+      <body className="min-h-full bg-white font-sans font-light text-foreground">
         {children}
         <Analytics />
       </body>

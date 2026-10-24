@@ -12,6 +12,50 @@ import { CASE_STUDY_TOC } from "@/data/caseStudyToc";
 const asset = (file: string) => `/assets/case-studies/v4/wearitt/${file}`;
 const ACCENT = "#924892";
 
+function ProcessStepIcon({ name }: { name: "doc" | "pen" | "nodes" | "spark" }) {
+  const common = {
+    width: 20,
+    height: 20,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    className: "size-5 shrink-0 text-black",
+    "aria-hidden": true,
+  };
+  if (name === "doc") {
+    return (
+      <svg {...common}>
+        <path d="M7 3.5h7l4 4V20.5H7z" />
+        <path d="M14 3.5V8h4" />
+      </svg>
+    );
+  }
+  if (name === "pen") {
+    return (
+      <svg {...common}>
+        <path d="M4 20.5 8.2 19 19.5 7.7a2 2 0 0 0 0-2.8L18.1 3.5a2 2 0 0 0-2.8 0L4 14.8z" />
+        <path d="m13.8 5 4.2 4.2" />
+      </svg>
+    );
+  }
+  if (name === "nodes") {
+    return (
+      <svg {...common}>
+        <path d="M12 4.5 19 8.5v7l-7 4-7-4v-7z" />
+        <path d="M12 12.5v7M5 8.5l7 4 7-4" />
+      </svg>
+    );
+  }
+  return (
+    <svg {...common}>
+      <path d="M12 3.5v17M5.5 7.5l13 9M5.5 16.5l13-9" />
+    </svg>
+  );
+}
+
 type WearittCaseStudyProps = {
   onReturn?: () => void;
 };
@@ -21,7 +65,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
     <div className="w-full bg-white pb-16 font-sans">
       <CaseStudyLayout
         onHome={onReturn}
-        hero="/assets/case-studies/heroes/wearitt.png"
+        hero="/assets/case-studies/heroes/wearitt.png?v=2"
         heroAlt="Wearitt logo and design-system components"
         title="Wearitt: Building a design system for mobile wardrobe app"
         meta={[
@@ -78,12 +122,36 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
               feature-specific.
             </p>
           </div>
-          <Figure
-            src={asset("process-steps.png")}
-            alt="Audit, Design, Component, Implement"
-            width={3904}
-            height={288}
-          />
+          <div
+            className="flex flex-col items-stretch gap-3 px-8 py-4 sm:flex-row sm:items-center"
+            aria-label="Audit, Design, Component, Implement"
+          >
+            {(
+              [
+                { label: "Audit", icon: "doc" },
+                { label: "Design", icon: "pen" },
+                { label: "Component", icon: "nodes" },
+                { label: "Implement", icon: "spark" },
+              ] as const
+            ).map((step, i) => (
+              <div key={step.label} className="flex min-w-0 flex-1 items-center">
+                {i > 0 ? (
+                  <span
+                    aria-hidden
+                    className="hidden px-2 text-[20px] font-light text-black/40 sm:block"
+                  >
+                    →
+                  </span>
+                ) : null}
+                <div className="flex w-full items-center justify-center gap-3 rounded-full border border-[#f3e6f3] bg-white px-4 py-3">
+                  <ProcessStepIcon name={step.icon} />
+                  <span className="text-[20px] leading-[27.5px] font-light text-black">
+                    {step.label}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section id="design-language" className="scroll-mt-24">
@@ -175,10 +243,19 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             </p>
           </div>
           <Figure
-            src={asset("components.png")}
+            src={`${asset("components.png")}?v=3`}
             alt="Buttons, cards, navigation bars, and text fields"
             width={3824}
-            height={852}
+            height={760}
+            notes={
+              <div className="grid grid-cols-2 text-center text-[16px] leading-[24px] font-light text-black md:grid-cols-4">
+                <p>Buttons</p>
+                <p>Cards</p>
+                <p>Navigation Bars</p>
+                <p>Text fields</p>
+              </div>
+            }
+            noteClassName=""
           />
           <p className="px-8 pt-8 pb-2 text-[24px] leading-[27.5px] text-black">
             Properties

@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
-import { OpeningScreen } from "@/components/portfolio/OpeningScreen";
-import { SiteFooter } from "@/components/portfolio/SiteFooter";
-import { WorkBody } from "@/components/portfolio/WorkPage";
+import { OpeningBanner } from "@/components/portfolio/OpeningBanner";
 
 export const metadata: Metadata = {
   title: "Opening — Joel Lim",
 };
 
 export default function OpeningPage() {
-  return (
-    <OpeningScreen>
-      <WorkBody />
-      <SiteFooter />
-    </OpeningScreen>
-  );
+  return <OpeningBanner />;
 }

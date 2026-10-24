@@ -71,6 +71,8 @@ export function Figure({
   width,
   height,
   caption,
+  notes,
+  noteClassName = "text-[20px] leading-[27.5px] font-light text-black",
   priority = false,
 }: {
   src: string;
@@ -78,6 +80,8 @@ export function Figure({
   width: number;
   height: number;
   caption?: string;
+  notes?: ReactNode;
+  noteClassName?: string;
   priority?: boolean;
 }) {
   return (
@@ -91,6 +95,7 @@ export function Figure({
         unoptimized
         priority={priority}
       />
+      {notes ? <div className={`pt-4 ${noteClassName}`}>{notes}</div> : null}
       {caption ? (
         <figcaption className="pt-1 text-right text-[16px] leading-[28.5px] text-black/50">
           {caption}
