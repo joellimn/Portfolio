@@ -12,7 +12,7 @@ export default function AboutPage() {
       <div className="-mt-3 flex flex-col gap-[32px] sm:-mt-4">
       <section className="w-full px-[32px] text-[24px] leading-[24px] tracking-[-1px]">
         <div className="flex w-full flex-col gap-[24px]">
-          <p className="text-black">A little bit about myself</p>
+          <p className="text-black">A Little Bit About Myself</p>
           <p className="text-black/50">
             I am a student at{" "}
             <span className="text-black">Vanderbilt University</span> from{" "}
