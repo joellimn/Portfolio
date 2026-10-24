@@ -11,9 +11,7 @@ export default function AboutPage() {
     <PageFrame scents>
       <div className="-mt-3 flex flex-col gap-[32px] sm:-mt-4">
       <section className="w-full px-[32px] text-[24px] leading-[24px] tracking-[-1px]">
-        {/* The frame is fluid, but reading measure is capped just above the
-            1200 design width so long lines stay tractable on wide screens. */}
-        <div className="flex max-w-[75ch] flex-col gap-[24px]">
+        <div className="flex w-full flex-col gap-[24px]">
           <p className="text-black">A little bit about myself</p>
           <p className="text-black/50">
             I am a student at{" "}
