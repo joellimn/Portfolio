@@ -23,7 +23,7 @@ function Card({
   children: ReactNode;
 }) {
   return (
-    <div className="flex min-w-0 flex-1 flex-col self-stretch rounded bg-[#f6faff] p-4">
+    <div className="flex min-w-0 flex-1 flex-col self-stretch bg-[#f6faff] p-4">
       <p className="p-2 text-[24px] leading-[27.5px] text-black">{title}</p>
       <p className="p-2 text-[20px] leading-[27.5px] text-black/50">
         {children}
@@ -68,7 +68,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             local aid instantly.
           </p>
           <Figure
-            src={v4("printed-guide.png")}
+            src={`${v4("printed-guide.png")}?v=2`}
             alt="Printed Where to Turn in Nashville guide access point"
             width={4080}
             height={2361}
@@ -130,13 +130,13 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             into clear, actionable physical help locations.
           </p>
           <figure className="px-8 py-4">
-            <MediaMat tone="blue" className="w-full p-8">
+            <MediaMat tone="blue" square className="w-full p-8">
               <Image
                 src={v4("flowchart.png")}
                 alt="User flow chart mapping multi-tier navigation to help locations"
                 width={2111}
                 height={1481}
-                className="h-auto w-full max-w-[582px] rounded-[16px] shadow-[4px_4px_10px_rgba(0,0,0,0.05)]"
+                className="h-auto w-full max-w-[582px] shadow-[4px_4px_10px_rgba(0,0,0,0.05)]"
                 unoptimized
               />
             </MediaMat>
@@ -160,7 +160,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
             users quickly locate community resources near them.
           </p>
           <figure className="px-8 py-4">
-            <MediaMat tone="blue" className="w-full px-6 py-8">
+            <MediaMat tone="blue" square className="w-full px-6 py-8">
               <CaseStudyVideo
                 src={media("map-overview.mp4")}
                 label="Map of nearby resources with a pull-up list of directory results"
@@ -180,7 +180,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
           </p>
           <div className="flex flex-col gap-8 px-8 py-4 md:flex-row">
             <figure className="flex min-w-0 flex-1 flex-col items-center">
-              <MediaMat tone="blue" className="w-full px-6 py-8">
+              <MediaMat tone="blue" square className="w-full px-6 py-8">
                 <CaseStudyVideo
                   src={`${media("map-select.mp4")}?v=3`}
                   label="Tap a nearby resource on the map"
@@ -194,7 +194,7 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
               </figcaption>
             </figure>
             <figure className="flex min-w-0 flex-1 flex-col items-center">
-              <MediaMat tone="blue" className="w-full px-6 py-8">
+              <MediaMat tone="blue" square className="w-full px-6 py-8">
                 <CaseStudyVideo
                   src={`${media("map-filter.mp4")}?v=5`}
                   label="Filter map results by distance and category"
@@ -261,13 +261,13 @@ export function WttinCaseStudy({ onReturn }: WttinCaseStudyProps) {
               redesigns and <Em>keeping our team aligned.</Em>
             </Takeaway>
             <div className="flex flex-col items-center gap-2 py-8">
-              <div className="flex w-full justify-center rounded bg-[#f0f4f8] py-8">
+              <div className="flex w-full justify-center bg-[#f0f4f8] py-8">
                 <Image
                   src="/assets/case-studies/wttin/team.jpg"
                   alt="Where to Turn in Nashville team photo"
                   width={1600}
                   height={1200}
-                  className="h-auto w-full max-w-[538px] rounded-[32px] shadow-[4px_4px_5px_rgba(0,0,0,0.05)]"
+                  className="h-auto w-full max-w-[538px] shadow-[4px_4px_5px_rgba(0,0,0,0.05)]"
                   unoptimized
                 />
               </div>

@@ -1,16 +1,38 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { animate, motion } from "motion/react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { PearlLogo } from "@/components/portfolio/OpeningBanner";
 import { SiteFooter } from "@/components/portfolio/SiteFooter";
 import { TopBar } from "@/components/portfolio/TopBar";
+import { OPENING_SEEN_ATTR, OPENING_SEEN_KEY } from "@/lib/opening";
 
 const LIGHT_MS = 2000;
 const FADE_MS = 1000;
 const HOLD_MS = 180;
 const DOCK_MS = 1050;
-const EASE = [0.22, 1, 0.36, 1] as const;
+const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+const SKIP_EVENTS = ["wheel", "touchstart", "keydown", "pointerdown"] as const;
+
+function hasSeenOpening() {
+  try {
+    return sessionStorage.getItem(OPENING_SEEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function rememberOpening() {
+  try {
+    sessionStorage.setItem(OPENING_SEEN_KEY, "1");
+  } catch {}
+}
 
 export function OpeningScreen({
   children,
@@ -19,7 +41,7 @@ export function OpeningScreen({
   children: ReactNode;
   onLanded?: () => void;
 }) {
-  const [reduced, setReduced] = useState(false);
+  const [instant, setInstant] = useState(false);
   const [faded, setFaded] = useState(false);
   const [docked, setDocked] = useState(false);
   const [landed, setLanded] = useState(false);
@@ -27,7 +49,9 @@ export function OpeningScreen({
   const markRef = useRef<HTMLSpanElement>(null);
   const slotRef = useRef<HTMLSpanElement>(null);
   const timers = useRef<number[]>([]);
-  const flightRef = useRef<{ stop: () => void } | null>(null);
+  const flightRef = useRef<Animation | null>(null);
+  const instantRef = useRef<boolean | null>(null);
+  const dockingRef = useRef(false);
 
   const finish = () => {
     setLanded(true);
@@ -38,9 +62,15 @@ export function OpeningScreen({
   };
 
   const dock = () => {
+    if (dockingRef.current) return;
+    dockingRef.current = true;
+    timers.current.forEach((timer) => window.clearTimeout(timer));
+    timers.current = [];
+
     const mark = markRef.current;
     const slot = slotRef.current;
     const dest = slot?.querySelector(".nav-flower") ?? slot;
+    setFaded(true);
     if (!mark || !dest) {
       setDocked(true);
       finish();
@@ -59,106 +89,138 @@ export function OpeningScreen({
     mark.style.transformOrigin = "top left";
     mark.style.willChange = "transform";
     mark.style.zIndex = "35";
-    mark.style.backfaceVisibility = "hidden";
     setDocked(true);
 
-    const flight = animate(
-      mark,
-      { x, y, scale },
-      {
-        duration: DOCK_MS / 1000,
-        ease: EASE,
-        onComplete: finish,
-      },
+    const flight = mark.animate(
+      [
+        { transform: "translate3d(0, 0, 0) scale(1)" },
+        { transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})` },
+      ],
+      { duration: DOCK_MS, easing: EASE, fill: "forwards" },
     );
+    flight.onfinish = finish;
     flightRef.current = flight;
   };
 
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (media.matches) {
-      setReduced(true);
+  useLayoutEffect(() => {
+    if (instantRef.current === null) {
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      instantRef.current = reduced || hasSeenOpening();
+    }
+    if (instantRef.current) {
+      setInstant(true);
       setFaded(true);
       setDocked(true);
       finish();
-      return;
     }
+    // runs once; finish only sets state
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useLayoutEffect(() => {
+    if (instant) document.documentElement.removeAttribute(OPENING_SEEN_ATTR);
+  }, [instant]);
+
+  useEffect(() => {
+    if (instantRef.current) return;
+    rememberOpening();
 
     timers.current.push(window.setTimeout(() => setFaded(true), LIGHT_MS));
     timers.current.push(
       window.setTimeout(dock, LIGHT_MS + FADE_MS + HOLD_MS),
     );
 
+    const skip = () => dock();
+    SKIP_EVENTS.forEach((type) =>
+      window.addEventListener(type, skip, { passive: true, once: true }),
+    );
+
     return () => {
       timers.current.forEach((timer) => window.clearTimeout(timer));
       timers.current = [];
-      flightRef.current?.stop();
+      SKIP_EVENTS.forEach((type) => window.removeEventListener(type, skip));
+      flightRef.current?.cancel();
+      dockingRef.current = false;
     };
     // dock only reads refs
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (landed || reduced) return;
+    if (landed || instant) return;
     const html = document.documentElement;
     const previous = html.style.overflow;
     html.style.overflow = "hidden";
     return () => {
       html.style.overflow = previous;
     };
-  }, [landed, reduced]);
+  }, [landed, instant]);
 
-  const settled = docked || reduced;
+  const settled = docked || instant;
 
   return (
     <section
+      data-opening-root
       className={[
         "relative flex w-full flex-col gap-[32px] bg-white font-source",
-        flyerGone || reduced ? "min-h-screen" : "h-screen overflow-hidden",
+        flyerGone || instant ? "min-h-screen" : "h-screen overflow-hidden",
       ].join(" ")}
     >
-      {reduced ? null : (
-        <motion.div
+      {instant ? null : (
+        <div
           aria-hidden
-          className="pointer-events-none fixed inset-0 z-20"
-          initial={{ backgroundColor: "#101010" }}
-          animate={{
-            backgroundColor: faded ? "#ffffff" : "#101010",
+          data-opening-overlay
+          className="pointer-events-none fixed inset-0 z-20 bg-white"
+          style={{
             opacity: docked ? 0 : 1,
+            transition: `opacity ${DOCK_MS}ms ${EASE}`,
           }}
-          transition={{
-            backgroundColor: { duration: FADE_MS / 1000, ease: EASE },
-            opacity: { duration: DOCK_MS / 1000, ease: EASE },
-          }}
-        />
+        >
+          <div
+            className="absolute inset-0 bg-[#101010]"
+            style={{
+              opacity: faded ? 0 : 1,
+              transition: `opacity ${FADE_MS}ms ${EASE}`,
+            }}
+          />
+        </div>
       )}
 
       <TopBar
         logoSlotRef={slotRef}
-        hideLogo={!landed && !reduced}
+        hideLogo={!landed && !instant}
         hideNav={!settled}
         className={`transition-opacity ${
-          faded || reduced ? "opacity-100" : "opacity-0"
+          faded || instant ? "opacity-100" : "opacity-0"
         }`}
         style={{ transitionDuration: `${FADE_MS}ms` }}
       />
 
-      {reduced || flyerGone ? null : (
-        <div className="pointer-events-none fixed inset-0 z-[35] flex items-center justify-center">
+      {instant || flyerGone ? null : (
+        <div
+          data-opening-flyer
+          className="pointer-events-none fixed inset-0 z-[35] flex items-center justify-center"
+        >
           <PearlLogo markRef={markRef} once faded={faded} />
         </div>
       )}
 
-      <motion.div
+      <div
         data-opening-body
         className="relative z-10 flex flex-col gap-[32px]"
-        initial={reduced ? false : { y: "48vh", opacity: 0 }}
-        animate={settled ? { y: 0, opacity: 1 } : { y: "48vh", opacity: 0 }}
-        transition={{ duration: DOCK_MS / 1000, ease: EASE }}
+        style={{
+          opacity: settled ? 1 : 0,
+          transform: settled ? "none" : "translateY(48vh)",
+          transition: instant
+            ? "none"
+            : `transform ${DOCK_MS}ms ${EASE}, opacity ${DOCK_MS}ms ${EASE}`,
+        }}
       >
         {children}
         <SiteFooter />
-      </motion.div>
+      </div>
     </section>
   );
 }

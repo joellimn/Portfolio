@@ -12,7 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { WorkPage } from "@/components/portfolio/WorkPage";
 import { markOpeningPlayed } from "@/components/portfolio/WorkIntro";
 import { projects } from "@/data/projects";
-import { EASE_OUT, SHEET_DURATION } from "@/lib/motion";
+import { EASE_OUT, SHEET_DURATION, SHEET_EXIT_DURATION } from "@/lib/motion";
 
 function caseStudyIdFromPath(pathname: string) {
   return projects.find((project) => pathname === `/${project.id}`)?.id;
@@ -81,10 +81,30 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
             aria-label="Case study"
             className="fixed inset-0 z-40 overflow-y-auto scroll-smooth bg-white"
             initial={
-              skipEnter ? false : reduced ? { opacity: 0 } : { y: "100%" }
+              skipEnter
+                ? false
+                : reduced
+                  ? { opacity: 0 }
+                  : { transform: "translateY(100%)" }
             }
-            animate={reduced ? { opacity: 1 } : { y: 0 }}
-            exit={reduced ? { opacity: 0 } : { y: "100%" }}
+            animate={
+              reduced
+                ? { opacity: 1 }
+                : {
+                    transform: "translateY(0%)",
+                    // a lingering transform would trap the case study's
+                    // fixed back link inside this scroll container
+                    transitionEnd: { transform: "none" },
+                  }
+            }
+            exit={
+              reduced
+                ? { opacity: 0, transition: { duration: SHEET_EXIT_DURATION } }
+                : {
+                    transform: "translateY(100%)",
+                    transition: { duration: SHEET_EXIT_DURATION, ease: EASE_OUT },
+                  }
+            }
             transition={{ duration: SHEET_DURATION, ease: EASE_OUT }}
           >
             {sheet.node}

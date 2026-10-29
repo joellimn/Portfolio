@@ -756,8 +756,15 @@ th {
   animation: nyc-marquee 42s linear infinite;
 }
 
-.nyc-carousel:hover .nyc-track {
+.nyc-carousel:focus-visible .nyc-track,
+.nyc-carousel[data-paused] .nyc-track {
   animation-play-state: paused;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nyc-carousel:hover .nyc-track {
+    animation-play-state: paused;
+  }
 }
 
 .nyc-set {
@@ -823,6 +830,28 @@ th {
 .opening-logo-wrap {
   display: grid;
   place-items: center;
+}
+
+/* Set by the root layout's inline script when the intro already played this
+   session, so the server-rendered opening never paints before hydration. */
+[data-opening-seen] [data-opening-overlay],
+[data-opening-seen] [data-opening-flyer] {
+  display: none;
+}
+
+[data-opening-seen] [data-opening-root] {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
+[data-opening-seen] [data-opening-body],
+[data-opening-seen] [data-opening-root] header,
+[data-opening-seen] [data-opening-root] header nav,
+[data-opening-seen] [data-opening-root] [data-logo-slot] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
 }
 
 .opening-logo-glow {

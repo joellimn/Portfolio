@@ -43,22 +43,24 @@ export function Body({
 const MEDIA_MAT = {
   cream: "bg-[#faf7ed]",
   gold: "bg-[#f2e7c4] border border-solid border-[#f3ebcf]",
-  blue: "bg-[#f0f4f8] border border-solid border-[#e7eef5]",
+  blue: "bg-[#f0f4f8]",
 } as const;
 
 /** 4px mat used around product recordings in the V4 Figma frames. */
 export function MediaMat({
   tone,
+  square = false,
   children,
   className = "",
 }: {
   tone: keyof typeof MEDIA_MAT;
+  square?: boolean;
   children: ReactNode;
   className?: string;
 }) {
   return (
     <div
-      className={`flex items-center justify-center rounded ${MEDIA_MAT[tone]} ${className}`}
+      className={`flex items-center justify-center ${square ? "" : "rounded"} ${MEDIA_MAT[tone]} ${className}`}
     >
       {children}
     </div>

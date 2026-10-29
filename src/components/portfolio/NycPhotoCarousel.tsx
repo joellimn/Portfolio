@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 const PHOTOS = [
   {
@@ -70,10 +73,31 @@ function PhotoSet({ hidden = false }: { hidden?: boolean }) {
   );
 }
 
+/** Pauses off screen, on keyboard focus, and on tap or click — anything that
+ * moves for longer than five seconds needs a way to stop it. */
 export function NycPhotoCarousel() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [offscreen, setOffscreen] = useState(false);
+  const [held, setHeld] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) =>
+      setOffscreen(!entry?.isIntersecting),
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
-      className="nyc-carousel overflow-hidden px-[32px] py-[16px]"
+      ref={ref}
+      role="region"
+      tabIndex={0}
+      data-paused={offscreen || held ? "" : undefined}
+      onClick={() => setHeld((value) => !value)}
+      className="nyc-carousel overflow-hidden px-[32px] py-[16px] outline-none focus-visible:ring-2 focus-visible:ring-black/20"
       aria-label="Photos from my recent trip to NYC"
     >
       <div className="nyc-track">

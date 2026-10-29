@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { OPENING_SEEN_ATTR, OPENING_SEEN_KEY } from "@/lib/opening";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -39,8 +40,14 @@ export default function RootLayout({
     <html
       lang="en"
       className={`h-full antialiased ${sourceSans.variable}`}
+      suppressHydrationWarning
     >
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{if(sessionStorage.getItem("${OPENING_SEEN_KEY}")==="1")document.documentElement.setAttribute("${OPENING_SEEN_ATTR}","")}catch(e){}})()`,
+          }}
+        />
         <link
           rel="icon"
           type="image/png"

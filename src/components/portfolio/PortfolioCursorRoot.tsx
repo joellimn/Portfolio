@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useState, type PointerEvent, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+  type ReactNode,
+} from "react";
 import {
   CaseStudyCursor,
   getCursorHint,
@@ -8,25 +15,34 @@ import {
   type CursorHint,
 } from "@/components/portfolio/CaseStudyCursor";
 
+function sameHint(a: CursorHint | null, b: CursorHint | null) {
+  return a?.label === b?.label && a?.external === b?.external;
+}
+
+/** Position is written straight to the cursor's transform; React state only
+ * changes when the cursor shows, hides, or swaps its label. */
 export function PortfolioCursorRoot({ children }: { children: ReactNode }) {
-  const [cursor, setCursor] = useState<{
-    x: number;
-    y: number;
-    hint: CursorHint | null;
-  } | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [hint, setHint] = useState<CursorHint | null>(null);
+  const position = useRef({ x: 0, y: 0 });
+  const node = useRef<HTMLDivElement | null>(null);
+
+  const place = useCallback((el: HTMLDivElement | null) => {
+    node.current = el;
+    if (!el) return;
+    const { x, y } = position.current;
+    el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  }, []);
+
+  const updateHint = (next: CursorHint | null) =>
+    setHint((prev) => (sameHint(prev, next) ? prev : next));
 
   useEffect(
     () =>
-      onCursorRefresh(() =>
-        setCursor((prev) =>
-          prev
-            ? {
-                ...prev,
-                hint: getCursorHint(document.elementFromPoint(prev.x, prev.y)),
-              }
-            : prev,
-        ),
-      ),
+      onCursorRefresh(() => {
+        const { x, y } = position.current;
+        updateHint(getCursorHint(document.elementFromPoint(x, y)));
+      }),
     [],
   );
 
@@ -36,37 +52,30 @@ export function PortfolioCursorRoot({ children }: { children: ReactNode }) {
       event.target instanceof Element &&
       event.target.closest("[data-native-cursor]")
     ) {
-      setCursor(null);
+      setVisible(false);
       return;
     }
-    setCursor({
-      x: event.clientX,
-      y: event.clientY,
-      hint: getCursorHint(event.target),
-    });
+    position.current = { x: event.clientX, y: event.clientY };
+    place(node.current);
+    setVisible(true);
+    updateHint(getCursorHint(event.target));
   };
 
   return (
     <div
       className="portfolio-cursor-root min-h-screen"
       onPointerMove={updateCursor}
-      onPointerLeave={() => setCursor(null)}
+      onPointerLeave={() => setVisible(false)}
       onPointerUp={(event) => {
         if (event.pointerType !== "mouse") return;
         const { clientX, clientY } = event;
         window.setTimeout(() => {
-          setCursor({
-            x: clientX,
-            y: clientY,
-            hint: getCursorHint(document.elementFromPoint(clientX, clientY)),
-          });
+          updateHint(getCursorHint(document.elementFromPoint(clientX, clientY)));
         }, 0);
       }}
     >
       {children}
-      {cursor ? (
-        <CaseStudyCursor x={cursor.x} y={cursor.y} hint={cursor.hint} />
-      ) : null}
+      {visible ? <CaseStudyCursor ref={place} hint={hint} /> : null}
     </div>
   );
 }

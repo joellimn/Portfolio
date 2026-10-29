@@ -7,7 +7,7 @@ import {
   ExternalLink,
   useEmailCopy,
 } from "@/components/portfolio/contactLinks";
-import { LINKEDIN, RESUME } from "@/data/contact";
+import { LINKEDIN, RESUME, X } from "@/data/contact";
 
 const DESIGN_W = 1200;
 /** Extra drop so the line sits lower; bottles are a bit smaller than the
@@ -217,6 +217,7 @@ export function SiteFooter({
       const dt = Math.min(0.032, (now - last) / 1000);
       last = now;
       const pointer = mouse.current;
+      let moving = active !== null;
 
       TAGS.forEach((tag, index) => {
         const p = pendula.current[index];
@@ -229,13 +230,17 @@ export function SiteFooter({
 
         p.vel = (p.vel + acc * dt) * 0.935;
         p.theta = Math.max(-0.4, Math.min(0.4, p.theta + p.vel * dt));
+        if (Math.abs(p.theta) > 0.0005 || Math.abs(p.vel) > 0.0005) {
+          moving = true;
+        }
         const node = tagRefs.current[index];
         if (node) {
           node.style.transform = `rotate(${p.theta}rad)`;
         }
       });
 
-      frame = requestAnimationFrame(tick);
+      // Tags at rest with no pointer over them: stop until the next hover.
+      if (moving) frame = requestAnimationFrame(tick);
     };
 
     frame = requestAnimationFrame(tick);
@@ -428,6 +433,7 @@ export function SiteFooter({
               {label}
             </Link>
           ))}
+          <ExternalLink href={RESUME} label="Resume" className={columnLink} />
         </nav>
 
         <div className="flex flex-col items-start">
@@ -446,7 +452,7 @@ export function SiteFooter({
             label="LinkedIn"
             className={columnLink}
           />
-          <ExternalLink href={RESUME} label="Resume" className={columnLink} />
+          <ExternalLink href={X} label="X" className={columnLink} />
         </div>
       </div>
     </footer>

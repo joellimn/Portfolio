@@ -90,7 +90,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             </p>
           </div>
           <Figure
-            src={asset("problem-features.png")}
+            src={`${asset("problem-features.png")}?v=4`}
             alt="Wearitt home, look generator, product, and collage screens"
             width={3824}
             height={2075}
@@ -184,7 +184,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             </p>
           </div>
           <Figure
-            src={asset("color-a11y.png")}
+            src={`${asset("color-a11y.png")}?v=4`}
             alt="Contrast checker and gradient brand moments"
             width={3824}
             height={1372}
@@ -212,7 +212,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             spacing and margins to ensure cohesiveness.
           </Body>
           <Figure
-            src={asset("spacing.png")}
+            src={`${asset("spacing.png")}?v=4`}
             alt="16pt spacing and margin system"
             width={3824}
             height={1524}
@@ -243,7 +243,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             </p>
           </div>
           <Figure
-            src={`${asset("components.png")}?v=3`}
+            src={`${asset("components.png")}?v=4`}
             alt="Buttons, cards, navigation bars, and text fields"
             width={3824}
             height={760}
@@ -264,7 +264,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             Various properties allow for quick changes and modifications.
           </Body>
           <Figure
-            src={asset("properties.png")}
+            src={`${asset("properties.png")}?v=4`}
             alt="Button and item-card component properties"
             width={3824}
             height={1272}
@@ -280,7 +280,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             Before and after
           </p>
           <Figure
-            src={asset("result.png")}
+            src={`${asset("result.png")}?v=4`}
             alt="Before and after profile and account screens"
             width={3824}
             height={1856}
@@ -314,7 +314,7 @@ export function WearittCaseStudy({ onReturn }: WearittCaseStudyProps) {
             ).map((card) => (
               <div
                 key={card.title}
-                className={`flex min-w-0 flex-1 flex-col rounded p-4 ${card.bg}`}
+                className={`flex min-w-0 flex-1 flex-col p-4 ${card.bg}`}
               >
                 <p className="p-2 text-[24px] leading-[27.5px] text-black">
                   {card.title}

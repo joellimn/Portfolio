@@ -1,3 +1,4 @@
+import type { Ref } from "react";
 import { ArrowUpRight } from "lucide-react";
 
 /** `external` adds the redirect arrow, marking targets that leave the site. */
@@ -18,31 +19,32 @@ export function onCursorRefresh(listener: () => void) {
 }
 
 type CaseStudyCursorProps = {
-  x: number;
-  y: number;
+  ref?: Ref<HTMLDivElement>;
   hint?: CursorHint | null;
 };
 
 const CURSOR_AMBER = "#D97706";
+const MORPH =
+  "transition-[opacity,scale] duration-[180ms] ease-[cubic-bezier(0.23,1,0.32,1)]";
 
-export function CaseStudyCursor({ x, y, hint = null }: CaseStudyCursorProps) {
+export function CaseStudyCursor({ ref, hint = null }: CaseStudyCursorProps) {
   const showLabel = Boolean(hint);
 
   return (
     <div
+      ref={ref}
       aria-hidden
-      className="pointer-events-none fixed z-[9999] -translate-x-1/2 -translate-y-1/2"
-      style={{ left: x, top: y }}
+      className="pointer-events-none fixed top-0 left-0 z-[9999] will-change-transform"
     >
       <span
-        className={`block rounded-full transition-opacity duration-150 ${
-          showLabel ? "size-0 opacity-0" : "size-4 opacity-100"
+        className={`absolute top-0 left-0 block size-4 -translate-x-1/2 -translate-y-1/2 rounded-full ${MORPH} ${
+          showLabel ? "scale-90 opacity-0" : "scale-100 opacity-100"
         }`}
         style={{ backgroundColor: CURSOR_AMBER }}
       />
       <span
-        className={`absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-[3px] rounded-full px-3 py-1 font-sans text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-white transition-[opacity,transform] duration-200 ease-out ${
-          showLabel ? "scale-100 opacity-100" : "scale-50 opacity-0"
+        className={`absolute top-0 left-0 flex -translate-x-1/2 -translate-y-1/2 items-center gap-[3px] rounded-full px-3 py-1 font-sans text-[15px] leading-[18px] tracking-[-0.75px] whitespace-nowrap text-white ${MORPH} ${
+          showLabel ? "scale-100 opacity-100" : "scale-90 opacity-0"
         }`}
         style={{ backgroundColor: CURSOR_AMBER }}
       >

@@ -36,7 +36,7 @@ function Card({
     <div
       className={`flex min-w-0 flex-1 flex-col self-stretch border border-solid p-4 ${
         cream
-          ? "rounded border-[#f6f0de] bg-[#faf7ed]"
+          ? "border-transparent bg-[#faf7ed]"
           : "rounded-[32px] border-[#f6f0de] bg-white shadow-[4px_4px_5px_rgba(0,0,0,0.05)]"
       }`}
     >
@@ -125,7 +125,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             scoring.
           </p>
           <Figure
-            src={v4("problem.png")}
+            src={`${v4("problem.png")}?v=4`}
             alt="Old SharePoint portal used to review candidate packets"
             width={1912}
             height={530}
@@ -153,7 +153,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
               stakeholders, I moved into interactive prototyping.
             </p>
             <Image
-              src={v4("edt-loop.png")}
+              src={`${v4("edt-loop.png")}?v=4`}
               alt="Observe, Reflect, and Make loop from Enterprise Design Thinking"
               width={940}
               height={559}
@@ -185,7 +185,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             A <Em>solid foundation</Em>. A necessary <Em>redesign.</Em>
           </p>
           <Figure
-            src={v4("figma-make.png")}
+            src={`${v4("figma-make.png")}?v=4`}
             alt="Figma Make assessment tracker prototype"
             width={1912}
             height={1342}
@@ -209,7 +209,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             color palettes and typography scales.
           </p>
           <Figure
-            src={v4("design-system.png")}
+            src={`${v4("design-system.png")}?v=2`}
             alt="Typography scale and yellow, white, and army color tokens"
             width={1912}
             height={1138}
@@ -236,7 +236,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             compartmentalizing packet types and features.
           </p>
           <Figure
-            src={v4("ia-gmail.png")}
+            src={`${v4("ia-gmail.png")}?v=4`}
             alt="Gmail inbox beside the restructured SOAR assessment packet inbox"
             width={1912}
             height={733}
@@ -258,7 +258,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             scores across core performance categories.
           </p>
           <Figure
-            src={`${v4("rubric.png")}?v=3`}
+            src={`${v4("rubric.png")}?v=4`}
             alt="Evaluation rubric with 1–5 benchmarked scores"
             width={3824}
             height={2600}
@@ -267,7 +267,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             What started as a <Em>simple pdf...</Em>
           </p>
           <Figure
-            src={`${v4("pdf.png")}?v=3`}
+            src={`${v4("pdf.png")}?v=4`}
             alt="Initial PDF packet beside the first digital prototype"
             width={3824}
             height={1920}
@@ -283,7 +283,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             evolved into an <Em>interactive digital experience.</Em>
           </p>
           <div className="flex flex-col gap-4 px-8 py-8">
-            <MediaMat tone="cream" className="w-full p-8">
+            <MediaMat tone="cream" square className="w-full p-8">
               <CaseStudyVideo
                 src={media("rubric-extended.mp4")}
                 label="Collapsible rubric details expanding over 1–5 benchmark scores"
@@ -299,7 +299,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             </p>
           </div>
           <Figure
-            src={`${v4("scoring.png")}?v=3`}
+            src={`${v4("scoring.png")}?v=4`}
             alt="Automated scoring row on the evaluation rubric"
             width={3825}
             height={900}
@@ -329,7 +329,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
                 cropX={3}
                 cropTop={3}
                 cropBottom={3}
-                className="w-full border border-solid border-[#f8e575]"
+                className="w-full border border-solid border-[#f6f0de]"
               />
               <p className="p-2 text-[24px] leading-[27.5px] text-black/50">
                 Hover <Em>tooltips</Em> over icons so you never have to guess
@@ -377,7 +377,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
                 estate and eliminating learning curves for reviewers.
               </p>
             </div>
-            <MediaMat tone="gold" className="w-full shrink-0 p-8 md:w-auto">
+            <MediaMat tone="cream" square className="w-full shrink-0 p-8 md:w-auto">
               <CaseStudyVideo
                 src={media("sidebar-expand.mp4")}
                 label="Sidebar expanding from icon rail to a traditional navigation list"
@@ -399,7 +399,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             was captured.
           </p>
           <Figure
-            src={`${v4("success.png")}?v=2`}
+            src={`${v4("success.png")}?v=4`}
             alt="Peak-End Rule success state after submitting a vote"
             width={2504}
             height={1648}
@@ -421,7 +421,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             through the entire review chain before being caught.
           </p>
           <Figure
-            src={`${v4("flags.png")}?v=2`}
+            src={`${v4("flags.png")}?v=4`}
             alt="Flags disqualifiers early in the packet review"
             width={3824}
             height={1129}
@@ -435,7 +435,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             the cracks.
           </p>
           <Figure
-            src={`${v4("activity.png")}?v=2`}
+            src={`${v4("activity.png")}?v=4`}
             alt="Live activity log of packet reviews and handoffs"
             width={3824}
             height={1066}
@@ -446,7 +446,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             cross-referencing and <Em>cut down review times.</Em>
           </p>
           <figure className="px-8 py-4">
-            <MediaMat tone="cream" className="w-full p-8">
+            <MediaMat tone="cream" square className="w-full p-8">
               <CaseStudyVideo
                 src={media("rubric-splitscreen.mp4")}
                 label="Split-screen packet and rubric view"
@@ -489,7 +489,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             <Takeaway
               title="User Research"
               star={v4("star.svg")}
-              border="#f8e575"
+              border="#f6f0de"
             >
               <Em>8 rounds</Em> of <Em>interviewing real operators</Em> cuts
               through operational complexity and grounds design decisions in
@@ -498,7 +498,7 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             <Takeaway
               title="Using AI as a Tool"
               star={v4("star.svg")}
-              border="#f8e575"
+              border="#f6f0de"
             >
               AI is great for spinning up functional prototypes in days,{" "}
               <Em>
@@ -509,20 +509,20 @@ export function SoarCaseStudy({ onReturn }: SoarCaseStudyProps) {
             <Takeaway
               title="User-Centered Interactions"
               star={v4("star.svg")}
-              border="#f8e575"
+              border="#f6f0de"
             >
               Building familiar, frictionless micro-interactions flattens the
               learning curve for <Em>non-technical users</Em> in{" "}
               <Em>high-stakes environments.</Em>
             </Takeaway>
             <div className="flex flex-col items-center gap-2 py-8">
-              <div className="flex w-full justify-center rounded bg-[#f2e7c4] py-8">
+              <div className="flex w-full justify-center bg-[#faf7ed] py-8">
                 <Image
                   src={v4("team.png")}
                   alt="EDT Spring 26 team at Fort Campbell"
                   width={1076}
                   height={804}
-                  className="h-auto w-full max-w-[538px] rounded-2xl shadow-[4px_4px_5px_rgba(0,0,0,0.05)]"
+                  className="h-auto w-full max-w-[538px] shadow-[4px_4px_5px_rgba(0,0,0,0.05)]"
                   unoptimized
                 />
               </div>

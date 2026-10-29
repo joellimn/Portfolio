@@ -98,6 +98,7 @@ export function TopBar({
       >
         <span
           ref={logoSlotRef}
+          data-logo-slot
           className={`col-start-1 row-start-1 inline-block ${
             hideLogo
               ? "opacity-0"
