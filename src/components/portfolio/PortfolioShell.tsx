@@ -10,6 +10,7 @@ import {
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { WorkPage } from "@/components/portfolio/WorkPage";
+import { ScrollThumb } from "@/components/portfolio/ScrollThumb";
 import { markOpeningPlayed } from "@/components/portfolio/WorkIntro";
 import { projects } from "@/data/projects";
 import { EASE_OUT, SHEET_DURATION, SHEET_EXIT_DURATION } from "@/lib/motion";
@@ -68,6 +69,7 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
         <WorkPage />
       </div>
       {otherPage ? children : null}
+      {homeCovered ? null : <ScrollThumb target="window" />}
       <AnimatePresence
         onExitComplete={() => {
           if (!caseId) setSheet(null);
@@ -79,7 +81,7 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
             role="dialog"
             aria-modal="true"
             aria-label="Case study"
-            className="fixed inset-0 z-40 overflow-y-auto scroll-smooth bg-white"
+            className="fixed inset-0 z-40 overflow-y-auto scroll-smooth bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             initial={
               skipEnter
                 ? false
@@ -108,6 +110,7 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
             transition={{ duration: SHEET_DURATION, ease: EASE_OUT }}
           >
             {sheet.node}
+            <ScrollThumb />
           </motion.div>
         ) : null}
       </AnimatePresence>

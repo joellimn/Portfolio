@@ -832,6 +832,63 @@ th {
   place-items: center;
 }
 
+/* Locomotive-style scrollbar (see ScrollThumb). */
+.has-scroll-thumb {
+  scrollbar-width: none;
+}
+
+.has-scroll-thumb::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-thumb {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  width: 11px;
+  opacity: 0;
+  transform-origin: center right;
+  transition:
+    transform 0.3s,
+    opacity 0.4s ease-out;
+}
+
+.scroll-thumb[hidden] {
+  display: none;
+}
+
+.scroll-thumb[data-scrolling],
+.scroll-thumb[data-dragging] {
+  opacity: 1;
+  transition-duration: 0.3s, 0.12s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .scroll-thumb:hover {
+    opacity: 1;
+    transform: scaleX(1.45);
+    transition-duration: 0.3s, 0.12s;
+  }
+}
+
+.scroll-thumb-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 7px;
+  margin: 0 2px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: grab;
+  will-change: transform;
+}
+
+.scroll-thumb[data-dragging] .scroll-thumb-bar {
+  cursor: grabbing;
+}
+
 /* Set by the root layout's inline script when the intro already played this
    session, so the server-rendered opening never paints before hydration. */
 [data-opening-seen] [data-opening-overlay],
@@ -890,14 +947,19 @@ th {
   transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* The corner wipe reaches the centre last, so the pearl→ink swap waits for it. */
 .opening-logo-wrap.is-faded .opening-logo-ink {
   opacity: 1;
+  transition-duration: var(--logo-swap-ms, 480ms);
+  transition-delay: var(--logo-swap-delay, 420ms);
 }
 
 .opening-logo-wrap.is-faded .opening-logo-pearl,
 .opening-logo-wrap.is-faded .opening-logo-holo,
 .opening-logo-wrap.is-faded .opening-logo-sheen {
   opacity: 0;
+  transition: opacity var(--logo-swap-ms, 480ms) cubic-bezier(0.22, 1, 0.36, 1)
+    var(--logo-swap-delay, 420ms);
 }
 
 .nav-flower {
